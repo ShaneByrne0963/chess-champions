@@ -41,6 +41,7 @@ function gameInit() {
 function startGame() {
     for (let i = 0; i < boardSize; i++) {
         for (let j = 0; j < boardSize; j++) {
+            setTile(i, j, 'pawn', 'white');
         }
     }
 }
@@ -59,6 +60,7 @@ function setTile(x, y, piece, color) {
 
     tileClass += ` ${piece} ${color}`;
     currentTile.className = tileClass;
+    currentTile.style.backgroundImage = `url(assets/images/chess-pieces/${color}-${piece}.png)`;
 }
 
 /**

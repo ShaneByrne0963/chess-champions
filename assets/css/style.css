@@ -101,6 +101,8 @@ body {
     width: 100%;
     height: 100%;
     border: 2px solid black;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .tile-white {
@@ -109,14 +111,4 @@ body {
 
 .tile-black {
     background-color: rgb(59, 59, 51);
-}
-
-/* displays the chess pieces */
-.piece-image {
-    width: 100%;
-    height: 100%;
-    background-image: url("../images/chess-pieces/black-pawn.png");
-    background-repeat: no-repeat;
-    /* background-position: center center; */
-    background-size: cover;
 }
