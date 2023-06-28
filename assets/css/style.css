@@ -1,0 +1,21 @@
+/* global styles */
+
+* {
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: #6f189e;
+    color: white;
+    text-align: center;
+}
+
+/* game settings page */
+
+#title-homepage {
+    font-size: 2.5rem;
+    line-height: 80px;
+    color: #dbca72;
+    margin: 32px 0;
+}
