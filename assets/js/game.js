@@ -19,7 +19,7 @@ function gameInit() {
                 tileClass = 'tile-black';
             }
             chessGrid += `
-            <div class="tile ${tileClass}"></div>`;
+            <div id="tile-${j}-${i}" class="tile ${tileClass}"></div>`;
 
             //reverses the tile order
             isWhite = !isWhite;
