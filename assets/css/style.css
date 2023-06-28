@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Carlito&family=Lato:wght@300&display=swap');
+
 /* global styles */
 
 * {
@@ -18,4 +20,13 @@ body {
     line-height: 80px;
     color: #dbca72;
     margin: 32px 0;
+}
+
+#menu-settings {
+    max-width: 960px;
+    background-color: white;
+    margin: 32px auto;
+    color: black;
+    text-align: left;
+    padding: 32px;
 }

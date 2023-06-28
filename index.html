@@ -24,24 +24,26 @@
     </header>
 
     <!--game settings form-->
-    <section id="menu-settings">
-        <form action="#" method="post">
-            <!--dropdown menu for player selection-->
-            <label for="settings-players">Players:</label>
-            <select id="settings-players" name="players">
-                <option value="pvp">Player vs. Player</option>
-                <option value="pve">Player vs. Computer</option>
-                <option value="eve">Computer vs. Computer</option>
-            </select>
+    <section>
+        <div id="menu-settings">
+            <form action="#" method="post">
+                <!--dropdown menu for player selection-->
+                <label for="settings-players">Players:</label>
+                <select id="settings-players" name="players">
+                    <option value="pvp">Player vs. Player</option>
+                    <option value="pve">Player vs. Computer</option>
+                    <option value="eve">Computer vs. Computer</option>
+                </select>
 
-            <!--the div which will store the javascript generated part of the form-->
-            <div id="settings-dynamic"></div>
+                <!--the div which will store the javascript generated part of the form-->
+                <div id="settings-dynamic"></div>
 
-            <!--the button that takes the user to the game-->
-            <div>
-                <input id="settings-submit" type="submit" value="Play Game">
-            </div>
-        </form>
+                <!--the button that takes the user to the game-->
+                <div>
+                    <input id="settings-submit" type="submit" value="Play Game">
+                </div>
+            </form>
+        </div>
     </section>
 
     <script src="assets/js/script.js"></script>
