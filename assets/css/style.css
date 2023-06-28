@@ -30,3 +30,21 @@ body {
     text-align: left;
     padding: 32px;
 }
+
+/* main game */
+
+#game {
+    display: grid;
+    grid-template-columns: 4fr 5fr;
+    grid-template-rows: auto;
+    text-align: left;
+}
+
+#ui-area {
+    background-color: gray;
+    height: 100vh;
+}
+
+#ui-area>div {
+    padding: 32px;
+}
