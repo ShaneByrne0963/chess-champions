@@ -46,5 +46,17 @@ body {
 }
 
 #ui-area>div {
-    padding: 32px;
+    padding: 16px;
+}
+
+#ui-area>#players-ui {
+    padding: 0;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 320px;
+}
+
+#players-ui>div {
+    padding: 16px;
+    border: 1px solid black;
 }
