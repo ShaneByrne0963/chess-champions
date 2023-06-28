@@ -8,7 +8,7 @@
 }
 
 body {
-    background-color: #6f189e;
+    /* background-color: #6f189e; */
     color: white;
     text-align: center;
 }
@@ -35,7 +35,7 @@ body {
 
 #game {
     display: grid;
-    grid-template-columns: 4fr 5fr;
+    grid-template-columns: 1fr 100vh;
     grid-template-rows: auto;
     text-align: left;
 }
@@ -48,10 +48,12 @@ body {
     position: relative;
 }
 
+/* player turn display */
 #ui-area h2 {
     padding: 16px;
 }
 
+/* keeps track of each player's destroyed pieces and time remaining */
 #ui-area>#players-ui {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -63,6 +65,7 @@ body {
     border: 1px solid black;
 }
 
+/* game options for restarting and returning to the main menu */
 #game-options {
     width: 100%;
     height: 64px;
@@ -77,4 +80,21 @@ body {
     margin: 0 10%;
     height: 100%;
     padding: 0 16px;
+}
+
+/* chess board */
+
+#game-area {
+    width: 100%;
+    height: 100%;
+}
+
+#chess-board {
+    padding: 16px;
+    display: grid;
+
+    /* creates the grid cells for each tile */
+    /* link to where i learned repeat(): https: //css-tricks.com/snippets/css/complete-guide-grid/ */
+    grid-template-columns: repeat(8, 1fr);
+    grid-template-rows: repeat(8, 1fr);
 }
