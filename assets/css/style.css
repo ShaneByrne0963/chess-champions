@@ -84,17 +84,29 @@ body {
 
 /* chess board */
 
-#game-area {
-    width: 100%;
-    height: 100%;
-}
-
 #chess-board {
     padding: 16px;
+    /* board takes up 100% of the available space minus the padding */
+    /* link to where i learned about calc(): https: //developer.mozilla.org/en-US/docs/Web/CSS/calc */
+    height: calc(100% - 32px);
     display: grid;
 
     /* creates the grid cells for each tile */
-    /* link to where i learned repeat(): https: //css-tricks.com/snippets/css/complete-guide-grid/ */
+    /* link to where i learned about repeat(): https: //css-tricks.com/snippets/css/complete-guide-grid/ */
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(8, 1fr);
+}
+
+.tile {
+    width: 100%;
+    height: 100%;
+    border: 2px solid black;
+}
+
+.tile-white {
+    background-color: rgb(234, 233, 213);
+}
+
+.tile-black {
+    background-color: rgb(59, 59, 51);
 }
