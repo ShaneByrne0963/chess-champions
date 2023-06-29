@@ -223,6 +223,30 @@ function setTile(x, y, piece, color) {
     currentTile.style.backgroundImage = `url(assets/images/chess-pieces/${color}-${piece}.png)`;
 }
 
+function getTileInfo(tile) {
+    //getting the coordinates
+    let x = parseInt(tile.id[5]); //"tile-x-y": "x" is the 5th character of the id string
+    let y = parseInt(tile.id[7]); //"tile-x-y": "y" is the 7th character of the id string
+
+    //getting the tile piece and color
+    let tileClass = tile.classList;
+    let piece = chessPieces.getPieceFromClass(tileClass);
+    let color = '';
+    if (tileClass.contains('white')) {
+        color = 'white';
+    } else if (tileClass.contains('black')) {
+        color = 'black';
+    }
+
+    //builds the object containing the information and returns it
+    return {
+        x: x,
+        y: y,
+        piece: piece,
+        color: color
+    };
+}
+
 /**
  * Clears a given tile of any pieces
  * @param {The x position of the tile (from 0 to boardSize - 1)} x 
@@ -239,23 +263,38 @@ function clearTile(x, y) {
  * the tile has a player piece or if a selected piece can move to that tile
  */
 function tileClick(x, y) {
-    //first, clear all selected tiles
+    //checking if the tile that's been clicked on is a possible move
+    let clickedTile = document.getElementById(`tile-${x}-${y}`);
+    let clickedChildren = clickedTile.children;
+    
+    //if the tile has any children
+    if (clickedChildren) {
+        //loop through all the children until a child with class name 'possible-move' is found.
+        //should only have one child but this is a safeguard in case there's more than one
+        for (let i of clickedChildren) {
+            if (i.classList.contains('possible-move')) {
+                let selectedDiv = document.getElementById('tile-selected').parentNode;
+
+                break;
+            }
+        }
+    }
+
+    //clear all selected tiles
     deselectTiles();
 
     //getting the tile that was clicked on
-    let selectedTile = document.getElementById(`tile-${x}-${y}`);
-    let selectedClasses = selectedTile.classList;
-    let selectedPiece = chessPieces.getPieceFromClass(selectedClasses);
+    let clickedClasses = clickedTile.classList;
+    let clickedPiece = chessPieces.getPieceFromClass(clickedClasses);
 
-    if (selectedClasses.contains('white')) {
+    if (clickedClasses.contains('white')) {
         //creates another div as a child of the selected tile
         let selectDiv = document.createElement('div');
         selectDiv.id = 'tile-selected';
-        selectedTile.appendChild(selectDiv);
+        clickedTile.appendChild(selectDiv);
 
         //show all the available moves the selected piece can take
-        let possibleMoves = chessPieces.getAllMoveTiles(x, y, chessPieces[selectedPiece].moves, 'white');
-        console.log(possibleMoves);
+        let possibleMoves = chessPieces.getAllMoveTiles(x, y, chessPieces[clickedPiece].moves, 'white');
         
         for (let i of possibleMoves) {
             let moveOption = document.createElement('div');
