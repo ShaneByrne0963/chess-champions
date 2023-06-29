@@ -6,13 +6,15 @@ document.onload = gameInit();
 
 //object that stores the information of different pieces
 let chessPieces = {
-    //for pawns that have not made a move yet.'attack' means the piece can only move to the tile if an enemy is on it
+    //for pawns that have not made a move yet.
+    //'attack' means the piece can only move to the tile if an enemy is on it
+    //'disarmed' means the piece cannot move to the tile if an enemy is on it
     pawnNew: {
-        moves: [[0, 'forward-1'], [0, 'forward-2'], ['attack', -1, 'forward'], ['attack', 1, 'forward']],
+        moves: [['disarmed', 0, 'forward1'], ['disarmed', 0, 'forward2'], ['attack', -1, 'forward1'], ['attack', 1, 'forward1']],
         value: 100
     },
     pawn: {
-        moves: [[0, 'forward-1'], ['attack', -1, 'forward'], ['attack', 1, 'forward']],
+        moves: [['disarmed', 0, 'forward1'], ['attack', -1, 'forward1'], ['attack', 1, 'forward1']],
         value: 100
     },
     knight: {
@@ -43,15 +45,22 @@ let chessPieces = {
 
     /**
      * reads a tiles class and determines what piece it has
-     * @param {*} tileClass the class of the tile. should be in string form
+     * @param {*} tileClass the class of the tile. should be in string or array form
      */
     getPieceFromClass: (tileClass) => {
-        if (typeof tileClass === 'string') {
+        if (typeof tileClass === 'string' || typeof tileClass === 'object') {
             let pieceNames = ['pawn-new', 'pawn', 'knight', 'bishop', 'rook', 'queen', 'king'];
             let foundPiece = '';
             for (let i = 0; i < pieceNames.length && !foundPiece; i++) {
-                if (tileClass.contains(pieceNames[i])) {
-                    foundPiece = pieceNames[i];
+                if (typeof tileClass === 'string') {
+                    if (tileClass.includes(pieceNames[i])) {
+                        foundPiece = pieceNames[i];
+                    }
+                }
+                else {
+                    if (tileClass.contains(pieceNames[i])) {
+                        foundPiece = pieceNames[i];
+                    }
                 }
             }
             if (foundPiece) {
@@ -61,7 +70,7 @@ let chessPieces = {
                 throw `Error in getPieceFromClass(): cannot find a valid piece in the tile's class. Aborting...`;
             }
         } else {
-            throw `Error in getPieceFromClass(): ${tileClass} should be in string format. Aborting...`;
+            throw `Error in getPieceFromClass(): ${tileClass} should be in string or array format. Aborting...`;
         }
     },
 
@@ -200,6 +209,7 @@ function tileClick(x, y) {
     //getting the tile that was clicked on
     let selectedTile = document.getElementById(`tile-${x}-${y}`);
     let selectedClasses = selectedTile.classList;
+    let selectedPiece = chessPieces.getPieceFromClass(selectedClasses);
 
     if (selectedClasses.contains('white')) {
         //creates another div as a child of the selected tile
@@ -208,7 +218,7 @@ function tileClick(x, y) {
         selectedTile.appendChild(selectDiv);
 
         //show all the available moves the selected piece can take
-        chessPieces.getAllMoveTiles(x, y, [0]);
+        chessPieces.getAllMoveTiles(x, y, chessPieces[selectedPiece].moves);
     }
 }
 
