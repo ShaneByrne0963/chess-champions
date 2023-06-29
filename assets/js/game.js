@@ -65,12 +65,11 @@ let chessPieces = {
             }
             if (foundPiece) {
                 return foundPiece;
-            }
-            else {
-                throw `Error in getPieceFromClass(): cannot find a valid piece in the tile's class. Aborting...`;
+            } else {
+                return null;
             }
         } else {
-            throw `Error in getPieceFromClass(): ${tileClass} should be in string or array format. Aborting...`;
+            return null;
         }
     },
 
