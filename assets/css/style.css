@@ -117,3 +117,9 @@ body {
     height: 100%;
     background-color: rgba(255, 128, 255, 0.5);
 }
+
+.possible-move {
+    height: 100%;
+    background: url("../images/possible-move.png") no-repeat center center;
+    background-size: cover;
+}
