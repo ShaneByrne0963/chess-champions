@@ -259,18 +259,24 @@ function tileClick(x, y) {
         
         for (let i of possibleMoves) {
             let moveOption = document.createElement('div');
-            moveOption.class = "hello";
-            selectedTile.appendChild(moveOption);
+            moveOption.className = "possible-move";
+            i.appendChild(moveOption);
         }
     }
 }
 
 /**
- * Removes the selected div from the tile that is selected
+ * Removes the selected div from the tile that is selected and any tiles showing possible moves
  */
 function deselectTiles() {
     let selectExisting = document.getElementById('tile-selected');
     if (selectExisting) {
         selectExisting.remove();
+    }
+    //removing the possible move divs
+    let movesExisting = document.getElementsByClassName('possible-move');
+    
+    while (movesExisting.length > 0) {
+        movesExisting[0].remove();
     }
 }
