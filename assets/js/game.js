@@ -33,14 +33,50 @@ let chessPieces = {
     queen: {
         //moves in the four cardinal directions and to tiles diagonal to it
         moves: [['vector', 1, 0], ['vector', 1, 1], ['vector', 0, -1], ['vector', -1, 1],
-            ['vector', -1, 0], ['vector', -1, -1], ['vector', 0, 1], ['vector', 1, -1]],
+        ['vector', -1, 0], ['vector', -1, -1], ['vector', 0, 1], ['vector', 1, -1]],
         value: 900
     },
     king: {
         moves: [[1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1]],
         value: 2000
+    },
+
+    /**
+     * reads a tiles class and determines what piece it has
+     * @param {*} tileClass the class of the tile. should be in string form
+     */
+    getPieceFromClass: (tileClass) => {
+        if (typeof tileClass === 'string') {
+            let pieceNames = ['pawn-new', 'pawn', 'knight', 'bishop', 'rook', 'queen', 'king'];
+            let foundPiece = '';
+            for (let i = 0; i < pieceNames.length && !foundPiece; i++) {
+                if (tileClass.contains(pieceNames[i])) {
+                    foundPiece = pieceNames[i];
+                }
+            }
+            if (foundPiece) {
+                return foundPiece;
+            }
+            else {
+                throw `Error in getPieceFromClass(): cannot find a valid piece in the tile's class. Aborting...`;
+            }
+        } else {
+            throw `Error in getPieceFromClass(): ${tileClass} should be in string format. Aborting...`;
+        }
+    },
+
+    /**
+     * Will return all the tiles a piece can move to within it's move set
+     * @param {*} x The x position of the piece on the board
+     * @param {*} y The y position of the piece on the board
+     * @param {*} moves The array containing all the moves the piece can make. This will be taken from the chessPieces object
+     */
+    getAllMoveTiles: (x, y, moves) => {
+        for (let i = 0; i < moves.length; i++) {
+            console.log(moves[i]);
+        }
     }
-}
+};
 
 /**
  * Creates the chess tiles and then starts the game
@@ -165,11 +201,14 @@ function tileClick(x, y) {
     let selectedTile = document.getElementById(`tile-${x}-${y}`);
     let selectedClasses = selectedTile.classList;
 
-    if (selectedClasses.contains('white'))  {
+    if (selectedClasses.contains('white')) {
         //creates another div as a child of the selected tile
         let selectDiv = document.createElement('div');
         selectDiv.id = 'tile-selected';
         selectedTile.appendChild(selectDiv);
+
+        //show all the available moves the selected piece can take
+        chessPieces.getAllMoveTiles(x, y, [0]);
     }
 }
 
@@ -182,3 +221,4 @@ function deselectTiles() {
         selectExisting.remove();
     }
 }
+
