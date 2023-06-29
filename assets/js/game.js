@@ -22,7 +22,7 @@ function gameInit() {
             }
 
             chessGrid += `
-            <div id="tile-${j}-${i}" class="tile ${tileClass}"></div>`;
+            <div id="tile-${j}-${i}" class="tile ${tileClass}" onclick="tileClick(${j}, ${i});"></div>`;
 
             //reverses the tile order
             isWhite = !isWhite;
@@ -100,11 +100,6 @@ function setTile(x, y, piece, color) {
     tileClass += ` ${piece} ${color}`;
     currentTile.className = tileClass;
     currentTile.style.backgroundImage = `url(assets/images/chess-pieces/${color}-${piece}.png)`;
-
-    //setting the event listener if it is a player owned piece
-    if (color === 'white') {
-        currentTile.addEventListener('click', tileClick);
-    }
 }
 
 /**
@@ -118,15 +113,29 @@ function clearTile(x, y) {
     tileClass = tileClass.slice(0, 15); //removes any classes added in the previous game (ends up with "tile tile-white" or "tile tile-black")
 }
 
-function tileClick() {
-    //first, remove any tile selected divs before adding a new one
-    let selectExisting = document.getElementById('tile-selected');
-    if (selectExisting) {
-        selectExisting.remove();
-    }
+/**
+ * Is called when a player clicks on a tile containing a click event listener, ie. if
+ * the tile has a player piece or if a selected piece can move to that tile
+ */
+function tileClick(x, y) {
+    //first, clear all selected tiles
+    deselectTiles();
+
+    //getting the tile that was clicked on
+    let selectedTile = document.getElementById(`tile-${x}-${y}`);
 
     //creates another div as a child of the selected tile
     let selectDiv = document.createElement('div');
     selectDiv.id = 'tile-selected';
-    this.appendChild(selectDiv);
+    selectedTile.appendChild(selectDiv);
+}
+
+/**
+ * Removes the selected div from the tile that is selected
+ */
+function deselectTiles() {
+    let selectExisting = document.getElementById('tile-selected');
+    if (selectExisting) {
+        selectExisting.remove();
+    }
 }
