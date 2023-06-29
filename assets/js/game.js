@@ -6,9 +6,12 @@ document.onload = gameInit();
 
 //object that stores the information of different pieces
 let chessPieces = {
+    //chess move rules:
+    // 'attack' means the piece can only move to the tile if an enemy is on it
+    // 'disarmed' means the piece cannot move to the tile if an enemy is on it
+    // 'vector' means continue in that direction until an obstacle is reached
+
     //for pawns that have not made a move yet.
-    //'attack' means the piece can only move to the tile if an enemy is on it
-    //'disarmed' means the piece cannot move to the tile if an enemy is on it
     pawnNew: {
         moves: [['disarmed', 0, 'forward1'], ['disarmed', 0, 'forward2'], ['attack', -1, 'forward1'], ['attack', 1, 'forward1']],
         value: 100
@@ -23,7 +26,7 @@ let chessPieces = {
         value: 300
     },
     bishop: {
-        //can only move to the tiles diagonal to it. 'vector' means continue in that direction until an obstacle is reached
+        //can only move to the tiles diagonal to it.
         moves: [['vector', 1, 1], ['vector', -1, 1], ['vector', -1, -1], ['vector', 1, -1]],
         value: 300
     },
@@ -46,6 +49,7 @@ let chessPieces = {
     /**
      * reads a tiles class and determines what piece it has
      * @param {*} tileClass the class of the tile. should be in string or array form
+     * @returns The piece in the given tile, in string format
      */
     getPieceFromClass: (tileClass) => {
         if (typeof tileClass === 'string' || typeof tileClass === 'object') {
@@ -78,11 +82,44 @@ let chessPieces = {
      * @param {*} x The x position of the piece on the board
      * @param {*} y The y position of the piece on the board
      * @param {*} moves The array containing all the moves the piece can make. This will be taken from the chessPieces object
+     * @param {*} color The color of the selected piece
+     * @returns An array of all the tiles the piece can move to
      */
-    getAllMoveTiles: (x, y, moves) => {
-        for (let i = 0; i < moves.length; i++) {
-            console.log(moves[i]);
+    getAllMoveTiles: (x, y, moves, color) => {
+        //the array that will store all the tiles the piece can move to
+        let moveTiles = [];
+
+        //getting the enemy's color
+        let enemyColor;
+        if (color === 'white') {
+            enemyColor = 'black';
+        } else {
+            enemyColor = 'white';
         }
+
+        for (let i = 0; i < moves.length; i++) {
+            //if the array has 3 values, then the first one is a rule. see chessPieces object for move rules
+            if (moves[i].length > 3) {
+
+            }
+            else {
+                let currentMove = moves[i];
+                let newX = x + currentMove[0];
+                let newY = y + currentMove[1];
+                //checking if the move is within the bounding box of the chess board
+                if (newX >= 0 && newX < boardSize && newY >= 0 && newY < boardSize) {
+                    let checkTile = document.getElementById(`tile-${newX}-${newY}`);
+                    let checkClass = checkTile.classList;
+
+                    //cannot move to a tile that has a friendly piece
+                    if (!checkClass.contains('color')) {
+                        moveTiles.push(checkTile);
+                    }
+                }
+            }
+        }
+
+        return moveTiles;
     }
 };
 
@@ -217,7 +254,14 @@ function tileClick(x, y) {
         selectedTile.appendChild(selectDiv);
 
         //show all the available moves the selected piece can take
-        chessPieces.getAllMoveTiles(x, y, chessPieces[selectedPiece].moves);
+        let possibleMoves = chessPieces.getAllMoveTiles(x, y, chessPieces[selectedPiece].moves, 'white');
+        console.log(possibleMoves);
+        
+        for (let i of possibleMoves) {
+            let moveOption = document.createElement('div');
+            moveOption.class = "hello";
+            selectedTile.appendChild(moveOption);
+        }
     }
 }
 
@@ -230,4 +274,3 @@ function deselectTiles() {
         selectExisting.remove();
     }
 }
-
