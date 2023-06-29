@@ -123,11 +123,14 @@ function tileClick(x, y) {
 
     //getting the tile that was clicked on
     let selectedTile = document.getElementById(`tile-${x}-${y}`);
+    let selectedClasses = selectedTile.classList;
 
-    //creates another div as a child of the selected tile
-    let selectDiv = document.createElement('div');
-    selectDiv.id = 'tile-selected';
-    selectedTile.appendChild(selectDiv);
+    if (selectedClasses.contains('white'))  {
+        //creates another div as a child of the selected tile
+        let selectDiv = document.createElement('div');
+        selectDiv.id = 'tile-selected';
+        selectedTile.appendChild(selectDiv);
+    }
 }
 
 /**
