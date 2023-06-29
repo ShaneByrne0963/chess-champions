@@ -208,10 +208,10 @@ function startGame() {
 
 /**
  * Sets a chess piece at a given tile
- * @param {*The x position of the tile (from 0 to boardSize - 1)*} x 
- * @param {*The y position of the tile (from 0 to boardSize - 1)*} y 
- * @param {*The type of piece you wish to set the tile to*} piece 
- * @param {*The color of the piece you wish to set the tile to*} color 
+ * @param {*} x The x position of the tile (from 0 to boardSize - 1)
+ * @param {*} y The y position of the tile (from 0 to boardSize - 1) 
+ * @param {*} piece The type of piece you wish to set the tile to 
+ * @param {*} color The color of the piece you wish to set the tile to
  */
 function setTile(x, y, piece, color) {
     let currentTile = document.getElementById(`tile-${x}-${y}`);
@@ -223,6 +223,11 @@ function setTile(x, y, piece, color) {
     currentTile.style.backgroundImage = `url(assets/images/chess-pieces/${color}-${piece}.png)`;
 }
 
+/**
+ * Gets the coordinates, piece type and color of a tile
+ * @param {*} tile The tile you wish to retrieve the information from
+ * @returns The information of the tile in object form
+ */
 function getTileInfo(tile) {
     //getting the coordinates
     let x = parseInt(tile.id[5]); //"tile-x-y": "x" is the 5th character of the id string
@@ -249,8 +254,8 @@ function getTileInfo(tile) {
 
 /**
  * Clears a given tile of any pieces
- * @param {The x position of the tile (from 0 to boardSize - 1)} x 
- * @param {The y position of the tile (from 0 to boardSize - 1)} y 
+ * @param {*} x The x position of the tile (from 0 to boardSize - 1)
+ * @param {*} y The y position of the tile (from 0 to boardSize - 1)}
  */
 function clearTile(x, y) {
     let currentTile = document.getElementById(`tile-${y}-${x}`);
@@ -274,7 +279,7 @@ function tileClick(x, y) {
         for (let i of clickedChildren) {
             if (i.classList.contains('possible-move')) {
                 let selectedDiv = document.getElementById('tile-selected').parentNode;
-
+                let selectedDivInfo = getTileInfo(selectedDiv);
                 break;
             }
         }
