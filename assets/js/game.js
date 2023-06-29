@@ -112,7 +112,7 @@ let chessPieces = {
                     let checkClass = checkTile.classList;
 
                     //cannot move to a tile that has a friendly piece
-                    if (!checkClass.contains('color')) {
+                    if (!checkClass.contains(color)) {
                         moveTiles.push(checkTile);
                     }
                 }
