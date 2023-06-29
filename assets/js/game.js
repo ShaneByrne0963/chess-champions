@@ -1,6 +1,46 @@
+//constants
 const boardSize = 8;
 
+//initializes game when the page loads
 document.onload = gameInit();
+
+//object that stores the information of different pieces
+let chessPieces = {
+    //for pawns that have not made a move yet.'attack' means the piece can only move to the tile if an enemy is on it
+    pawnNew: {
+        moves: [[0, 'forward-1'], [0, 'forward-2'], ['attack', -1, 'forward'], ['attack', 1, 'forward']],
+        value: 100
+    },
+    pawn: {
+        moves: [[0, 'forward-1'], ['attack', -1, 'forward'], ['attack', 1, 'forward']],
+        value: 100
+    },
+    knight: {
+        //can only move in an "L"-shaped pattern
+        moves: [[-1, -2], [1, -2], [-2, -1], [2, -1], [-2, 1], [2, 1], [-1, 2], [1, 2]],
+        value: 300
+    },
+    bishop: {
+        //can only move to the tiles diagonal to it. 'vector' means continue in that direction until an obstacle is reached
+        moves: [['vector', 1, 1], ['vector', -1, 1], ['vector', -1, -1], ['vector', 1, -1]],
+        value: 300
+    },
+    rook: {
+        //moves in the four cardinal directions
+        moves: [['vector', 1, 0], ['vector', 0, -1], ['vector', -1, 0], ['vector', 0, 1]],
+        value: 500
+    },
+    queen: {
+        //moves in the four cardinal directions and to tiles diagonal to it
+        moves: [['vector', 1, 0], ['vector', 1, 1], ['vector', 0, -1], ['vector', -1, 1],
+            ['vector', -1, 0], ['vector', -1, -1], ['vector', 0, 1], ['vector', 1, -1]],
+        value: 900
+    },
+    king: {
+        moves: [[1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1]],
+        value: 2000
+    }
+}
 
 /**
  * Creates the chess tiles and then starts the game
