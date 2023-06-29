@@ -112,3 +112,8 @@ body {
 .tile-black {
     background-color: rgb(59, 59, 51);
 }
+
+#tile-selected {
+    height: 100%;
+    background-color: rgba(255, 128, 255, 0.5);
+}

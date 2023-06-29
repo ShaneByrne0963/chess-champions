@@ -100,6 +100,11 @@ function setTile(x, y, piece, color) {
     tileClass += ` ${piece} ${color}`;
     currentTile.className = tileClass;
     currentTile.style.backgroundImage = `url(assets/images/chess-pieces/${color}-${piece}.png)`;
+
+    //setting the event listener if it is a player owned piece
+    if (color === 'white') {
+        currentTile.addEventListener('click', tileClick);
+    }
 }
 
 /**
@@ -111,4 +116,17 @@ function clearTile(x, y) {
     let currentTile = document.getElementById(`tile-${y}-${x}`);
     let tileClass = currentTile.className;
     tileClass = tileClass.slice(0, 15); //removes any classes added in the previous game (ends up with "tile tile-white" or "tile tile-black")
+}
+
+function tileClick() {
+    //first, remove any tile selected divs before adding a new one
+    let selectExisting = document.getElementById('tile-selected');
+    if (selectExisting) {
+        selectExisting.remove();
+    }
+
+    //creates another div as a child of the selected tile
+    let selectDiv = document.createElement('div');
+    selectDiv.id = 'tile-selected';
+    this.appendChild(selectDiv);
 }
