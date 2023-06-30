@@ -482,12 +482,20 @@ function getPlayerTurn() {
     };
 }
 
+/**
+ * 
+ * @param {*} playerPlace the place of the player on the ui. is either 1 or 2
+ */
 function setPlayerTurn(playerPlace) {
-    //clearing the 'player-active' class from the previous turn
-    let previousTurnDiv = document.getElementsByClassName('player-active');
-    previousTurnDiv[0].removeAttribute('class');
+    if (playerPlace === 1 || playerPlace === 2) {
+        //clearing the 'player-active' class from the previous turn
+        let previousTurnDiv = document.getElementsByClassName('player-active');
+        previousTurnDiv[0].removeAttribute('class');
 
-    //finding the player ui div with the id that contains the playerPlace number
-    let newTurnDiv = document.getElementById(`player${playerPlace}-ui`);
-    newTurnDiv.className = 'player-active';
+        //finding the player ui div with the id that contains the playerPlace number
+        let newTurnDiv = document.getElementById(`player${playerPlace}-ui`);
+        newTurnDiv.className = 'player-active';
+    } else {
+        throw `Error in setPlayerTurn: Invalid input ${playerPlace} (Should be either 1 or 2)`;
+    }
 }
