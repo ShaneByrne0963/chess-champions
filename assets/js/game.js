@@ -101,16 +101,36 @@ let chessPieces = {
             //declaring the variables storing the coordinates of the tiles to check
             let newX = x + currentMove[currentMove.length - 2]; //the x coordinate is always the second last element in a moves array
             let newY;
+
             //adding forward movement only support for pawns
             let moveY = currentMove[currentMove.length - 1]; //the y coordinate is always the last element in a moves array
+
             if (typeof moveY === 'string' && moveY.includes('forward')) {
                 //getting the last character of the forward move, which specifies the number of moves forward it can take
                 let forwardAmount = parseInt(moveY[moveY.length - 1]);
+                
+                //determines which direction is forward
+                let yDirection;
                 if (color === 'white') {
-                    newY = y - forwardAmount;
+                    yDirection = -1;
                 } else {
-                    newY = y + forwardAmount;
+                    yDirection = 1;
                 }
+
+                //if the forward value is greater than 1, then all tiles in between will be checked to see if they are blank
+                let blockMove = false;
+                for (let i = 1; i < forwardAmount && !blockMove; i++) {
+                    let tileInfo = getPositionInfo(newX, y + (i * yDirection));
+                    //if there is a friendly piece, or any piece at all if the rule 'disarmed' applies, the tile will be considered blocked
+                    if (tileInfo.color === color || (currentMove[0] === 'disarmed' && tileInfo.color !== '')) {
+                        blockMove = true;
+                    }
+                }
+                //continue onto the next move if this move is blocked by a tile
+                if (blockMove) {
+                    continue;
+                }
+                newY = y + (forwardAmount * yDirection);
             } else {
                 newY = y + moveY;
             }
@@ -318,6 +338,31 @@ function getTileInfo(tile) {
 }
 
 /**
+ * Gets the tile piece and color from a coordinate
+ * @param {*} x The x coordinate of the tile
+ * @param {*} y The y coordinate of the tile
+ * @returns The information of the tile in object form
+ */
+function getPositionInfo(x, y) {
+    let tile = document.getElementById(`tile-${x}-${y}`);
+    //getting the tile piece and color
+    let tileClass = tile.classList;
+    let piece = chessPieces.getPieceFromClass(tileClass);
+    let color = '';
+    if (tileClass.contains('white')) {
+        color = 'white';
+    } else if (tileClass.contains('black')) {
+        color = 'black';
+    }
+
+    //builds the object containing the information and returns it
+    return {
+        piece: piece,
+        color: color
+    };
+}
+
+/**
  * Checks if a tile is within the board boundaries
  * @param {*} x The x position of the tile
  * @param {*} y The y position of the tile
@@ -408,4 +453,8 @@ function deselectTiles() {
     while (movesExisting.length > 0) {
         movesExisting[0].remove();
     }
+}
+
+function getPlayerTurn() {
+
 }

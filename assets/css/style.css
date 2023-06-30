@@ -54,7 +54,7 @@ body {
 }
 
 /* keeps track of each player's destroyed pieces and time remaining */
-#ui-area>#players-ui {
+#players-ui {
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: 320px;
@@ -63,6 +63,10 @@ body {
 #players-ui>div {
     padding: 16px;
     border: 1px solid black;
+}
+
+.player-active {
+    background-color: #555555;
 }
 
 /* game options for restarting and returning to the main menu */
