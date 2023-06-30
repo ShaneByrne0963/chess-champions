@@ -271,9 +271,10 @@ function getTileInfo(tile) {
  * @param {*} y The y position of the tile (from 0 to boardSize - 1)}
  */
 function clearTile(x, y) {
-    let currentTile = document.getElementById(`tile-${y}-${x}`);
+    let currentTile = document.getElementById(`tile-${x}-${y}`);
     let tileClass = currentTile.className;
-    tileClass = tileClass.slice(0, 15); //removes any classes added in the previous game (ends up with "tile tile-white" or "tile tile-black")
+    currentTile.className = tileClass.slice(0, 15); //removes any classes added in the previous game (ends up with "tile tile-white" or "tile tile-black")
+    currentTile.style.backgroundImage = "";
 }
 
 /**
