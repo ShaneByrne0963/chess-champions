@@ -76,7 +76,7 @@ function startGame() {
                 } else {
                     color = 'white';
                 }
-                setTile(i, j, piece, color);
+                tile.set(i, j, piece, color);
             }
             //setting up the pawns for both sides
             else if (j === 1 || j === boardSize - 2) {
@@ -86,7 +86,7 @@ function startGame() {
                 } else {
                     color = 'white';
                 }
-                setTile(i, j, piece, color);
+                tile.set(i, j, piece, color);
             }
             //Clearing any tiles set from the previous game
             else {
@@ -94,141 +94,6 @@ function startGame() {
             }
         }
     }
-}
-
-/**
- * Sets a chess piece at a given tile
- * @param {*} x The x position of the tile (from 0 to boardSize - 1)
- * @param {*} y The y position of the tile (from 0 to boardSize - 1) 
- * @param {*} piece The type of piece you wish to set the tile to 
- * @param {*} color The color of the piece you wish to set the tile to
- */
-function setTile(x, y, piece, color) {
-    let currentTile = document.getElementById(`tile-${x}-${y}`);
-    let tileClass = currentTile.className;
-    tileClass = tileClass.slice(0, 15); //removes any classes added in the previous game (ends up with "tile tile-white" or "tile tile-black")
-
-    //converts the camelCase spelling to html naming convention
-    let convertPiece = piece;
-    if (convertPiece === 'pawnNew') {
-        convertPiece = 'pawn-new';
-    }
-
-    tileClass += ` ${convertPiece} ${color}`;
-    currentTile.className = tileClass;
-    //setting the piece type to a regular pawn for the image to be located
-    if (piece === 'pawnNew') {
-        piece = 'pawn';
-    }
-    currentTile.style.backgroundImage = `url(assets/images/chess-pieces/${color}-${piece}.png)`;
-}
-
-/**
- * Moves a chess piece from one tile to another
- * @param {*} tileFrom The tile you are looking to move
- * @param {*} tileTo The tile you are looking to move tileFrom to
- */
-function moveTile(tileFrom, tileTo) {
-    let tileFromInfo = getTileInfo(tileFrom);
-    let tileToInfo = getTileInfo(tileTo);
-
-    //if the piece is "pawnNew", then it will be converted to 'pawn' after it's first move
-    let tilePiece = tileFromInfo.piece;
-    if (tilePiece === 'pawnNew') {
-        tilePiece = 'pawn';
-    }
-
-    //if a piece is destroyed, add it to one of the graveyards
-    if (tileToInfo.color !== '' && tileFromInfo.color !== tileToInfo.color) {
-        destroyPiece(tileTo);
-    }
-
-    setTile(tileToInfo.x, tileToInfo.y, tilePiece, tileFromInfo.color);
-    tile.clear(tileFromInfo.x, tileFromInfo.y);
-}
-
-function destroyPiece(tile) {
-    let tileInfo = getTileInfo(tile);
-    let deadPiece = document.createElement('div');
-    deadPiece.className = 'piece-dead';
-
-    //making pawns and new pawns the same for the image address
-    if (tileInfo.piece === 'pawnNew') {
-        tileInfo.piece = 'pawn';
-    }
-    deadPiece.style.backgroundImage = `url(assets/images/chess-pieces/${tileInfo.color}-${tileInfo.piece}.png)`;
-
-    let graveyardDiv;
-    if (tileInfo.color === 'black') {
-        graveyardDiv = document.getElementById('player1-graveyard');
-    } else {
-        graveyardDiv = document.getElementById('player2-graveyard');
-    }
-    graveyardDiv.appendChild(deadPiece);
-}
-
-/**
- * Gets an HTML element in a given location
- * @param {*} x The x position of the tile on the board
- * @param {*} y The y position of the tile on the board
- * @returns The tile HTML element
- */
-function getTile(x, y) {
-    return document.getElementById(`tile-${x}-${y}`);
-}
-
-/**
- * Gets the coordinates, piece type and color of a tile
- * @param {*} tile The tile you wish to retrieve the information from
- * @returns The information of the tile in object form
- */
-function getTileInfo(tile) {
-    //getting the coordinates
-    let x = parseInt(tile.id[5]); //"tile-x-y": "x" is the 5th character of the id string
-    let y = parseInt(tile.id[7]); //"tile-x-y": "y" is the 7th character of the id string
-
-    //getting the tile piece and color
-    let tileClass = tile.classList;
-    let piece = chessPieces.getPieceFromClass(tileClass);
-    let color = '';
-    if (tileClass.contains('white')) {
-        color = 'white';
-    } else if (tileClass.contains('black')) {
-        color = 'black';
-    }
-
-    //builds the object containing the information and returns it
-    return {
-        x: x,
-        y: y,
-        piece: piece,
-        color: color
-    };
-}
-
-/**
- * Gets the tile piece and color from a coordinate
- * @param {*} x The x coordinate of the tile
- * @param {*} y The y coordinate of the tile
- * @returns The information of the tile in object form
- */
-function getPositionInfo(x, y) {
-    let tile = document.getElementById(`tile-${x}-${y}`);
-    //getting the tile piece and color
-    let tileClass = tile.classList;
-    let piece = chessPieces.getPieceFromClass(tileClass);
-    let color = '';
-    if (tileClass.contains('white')) {
-        color = 'white';
-    } else if (tileClass.contains('black')) {
-        color = 'black';
-    }
-
-    //builds the object containing the information and returns it
-    return {
-        piece: piece,
-        color: color
-    };
 }
 
 /**
@@ -250,11 +115,11 @@ function tileClick(x, y) {
         if (clickedChildren.length > 0) {
             //loop through all the children until a child with class name 'possible-move' is found.
             //should only have one child but this is a safeguard in case there's more than one
-            for (let i of clickedChildren) {
-                if (i.classList.contains('possible-move')) {
+            for (let child of clickedChildren) {
+                if (child.classList.contains('possible-move')) {
                     //gets the div of the selected piece
                     let selectedTile = document.getElementById('tile-selected').parentNode;
-                    moveTile(selectedTile, clickedTile);
+                    tile.move(tile.getData(selectedTile), tile.getData(clickedTile));
 
                     //moving onto the next player's turn
                     nextTurn();
@@ -286,10 +151,11 @@ function tileClick(x, y) {
                 //show all the available moves the selected piece can take
                 let possibleMoves = chessPieces.getAllMoveTiles(x, y, clickedPiece, 'white');
 
-                for (let i of possibleMoves) {
+                for (let move of possibleMoves) {
                     let moveOption = document.createElement('div');
                     moveOption.className = "possible-move";
-                    i.appendChild(moveOption);
+                    let moveElement = tile.getElement(move.x, move.y);
+                    moveElement.appendChild(moveOption);
                 }
             }
         }

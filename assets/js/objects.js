@@ -1,27 +1,102 @@
 //object that stores tile functions
 let tile = {
+    /**
+     * Gets the tile information at a certain coordinate
+     * @param {*} x the x coordinate of the tile
+     * @param {*} y the y coordinate of the tile
+     * @returns The information of the tile in object form {x, y, piece, color}
+     */
     get: (x, y) => {
-
+        let currentTile = tile.getElement(x, y);
+        return tile.getData(currentTile);
     },
 
+    /**
+     * Gets the coordinates, piece type and color of a tile
+     * @param {*} tileElement The tile element you wish to retrieve the information from
+     * @returns The information of the tile in object form {x, y, piece, color}
+     */
     getData: (tileElement) => {
+        let x = parseInt(tileElement.id[5]); //"tile-x-y": "x" is the 5th character of the id string
+        let y = parseInt(tileElement.id[7]); //"tile-x-y": "y" is the 7th character of the id string
+        let tileClass = tileElement.classList;
+        let piece = chessPieces.getPieceFromClass(tileClass);
+        let color = '';
+        if (tileClass.contains('white')) {
+            color = 'white';
+        } else if (tileClass.contains('black')) {
+            color = 'black';
+        }
 
+        //builds the object containing the information and returns it
+        return {
+            x: x,
+            y: y,
+            piece: piece,
+            color: color
+        };
     },
 
+    /**
+     * Gets an HTML element in a given location
+     * @param {*} x The x position of the tile on the board
+     * @param {*} y The y position of the tile on the board
+     * @returns The tile HTML element
+     */
     getElement: (x, y) => {
-
+        return document.getElementById(`tile-${x}-${y}`);
     },
 
+    /**
+     * Sets a chess piece at a certain tile
+     * @param {*} x The x position of the tile (from 0 to boardSize - 1)
+     * @param {*} y The y position of the tile (from 0 to boardSize - 1) 
+     * @param {*} piece The type of piece you wish to set the tile to 
+     * @param {*} color The color of the piece you wish to set the tile to
+     */
     set: (x, y, piece, color) => {
+        let currentTile = document.getElementById(`tile-${x}-${y}`);
+        let tileClass = currentTile.className;
+        tileClass = tileClass.slice(0, 15); //removes any classes added in the previous game (ends up with "tile tile-white" or "tile tile-black")
 
+        //converts the camelCase spelling to html naming convention
+        let convertPiece = piece;
+        if (convertPiece === 'pawnNew') {
+            convertPiece = 'pawn-new';
+        }
+
+        tileClass += ` ${convertPiece} ${color}`;
+        currentTile.className = tileClass;
+        //setting the piece type to a regular pawn for the image to be located
+        if (piece === 'pawnNew') {
+            piece = 'pawn';
+        }
+        currentTile.style.backgroundImage = `url(assets/images/chess-pieces/${color}-${piece}.png)`;
     },
 
     setData: (x, y, tileData) => {
-
+        tile.set(x, y, tileData.piece, tileData.color);
     },
 
-    move: () => {
+    /**
+     * Moves a chess piece from one tile to another
+     * @param {*} tileDataFrom The data {x, y, piece, color} of the tile you are looking to move
+     * @param {*} tileDataTo The data {x, y, piece, color} of the tile you are looking to move tileDataFrom to
+     */
+    move: (tileDataFrom, tileDataTo) => {
+        //if the piece is "pawnNew", then it will be converted to 'pawn' after it's first move
+        let tilePiece = tileDataFrom.piece;
+        if (tilePiece === 'pawnNew') {
+            tilePiece = 'pawn';
+        }
 
+        //if a piece is destroyed, add it to one of the graveyards
+        if (tileDataTo.color !== '' && tileDataFrom.color !== tileDataTo.color) {
+            chessPieces.destroy(tileDataTo);
+        }
+
+        tile.set(tileDataTo.x, tileDataTo.y, tilePiece, tileDataFrom.color);
+        tile.clear(tileDataFrom.x, tileDataFrom.y);
     },
 
     /**
@@ -181,7 +256,7 @@ let chessPieces = {
                 //if the forward value is greater than 1, then all tiles in between will be checked to see if they are blank
                 let blockMove = false;
                 for (let i = 1; i < forwardAmount && !blockMove; i++) {
-                    let tileInfo = getPositionInfo(newX, y + (i * yDirection));
+                    let tileInfo = tile.get(newX, y + (i * yDirection));
                     //if there is a friendly piece, or any piece at all if the rule 'disarmed' applies, the tile will be considered blocked
                     if (tileInfo.color === color || (currentMove[0] === 'disarmed' && tileInfo.color !== '')) {
                         blockMove = true;
@@ -199,35 +274,33 @@ let chessPieces = {
             //checking if the move is within the bounding box of the chess board
             if (tile.inBounds(newX, newY)) {
                 //the tile element that is being checked
-                let checkTile = document.getElementById(`tile-${newX}-${newY}`);
-                let checkInfo = getTileInfo(checkTile);
+                let checkTile = tile.get(newX, newY);
 
                 //if the array has 3 values, then the first one is a rule. see chessPieces object for move rules
                 if (currentMove.length >= 3) {
                     switch (currentMove[0]) {
                         case 'attack':
-                            if (checkInfo.color === enemyColor) {
+                            if (checkTile.color === enemyColor) {
                                 moveTiles.push(checkTile);
                             }
                             break;
                         case 'disarmed':
-                            if (checkInfo.color === '') {
+                            if (checkTile.color === '') {
                                 moveTiles.push(checkTile);
                             }
                             break;
                         case 'vector':
                             do {
-                                if (checkInfo.color !== color) {
+                                if (checkTile.color !== color) {
                                     moveTiles.push(checkTile);
                                 }
-                                if (checkInfo.color !== '') {
+                                if (checkTile.color !== '') {
                                     break;
                                 }
                                 newX += currentMove[1];
                                 newY += currentMove[2];
                                 if (tile.inBounds(newX, newY)) {
-                                    checkTile = document.getElementById(`tile-${newX}-${newY}`);
-                                    checkInfo = getTileInfo(checkTile);
+                                    checkTile = tile.get(newX, newY);
                                 }
                             } while (tile.inBounds(newX, newY));
                             break;
@@ -235,7 +308,7 @@ let chessPieces = {
                 }
                 else {
                     //cannot move to a tile that has a friendly piece
-                    if (checkInfo.color !== color) {
+                    if (checkTile.color !== color) {
                         moveTiles.push(checkTile);
                     }
                 }
@@ -243,5 +316,28 @@ let chessPieces = {
         }
 
         return moveTiles;
+    },
+
+    /**
+     * Adds an icon div representing the destroyed piece into the opposing player's graveyard
+     * @param {*} tileData the tile data object {x, y, piece, color} you wish to destroy
+     */
+    destroy: (tileData) => {
+        let deadPiece = document.createElement('div');
+        deadPiece.className = 'piece-dead';
+
+        //making pawns and new pawns the same for the image address
+        if (tileData.piece === 'pawnNew') {
+            tileData.piece = 'pawn';
+        }
+        deadPiece.style.backgroundImage = `url(assets/images/chess-pieces/${tileData.color}-${tileData.piece}.png)`;
+
+        let graveyardDiv;
+        if (tileData.color === 'black') {
+            graveyardDiv = document.getElementById('player1-graveyard');
+        } else {
+            graveyardDiv = document.getElementById('player2-graveyard');
+        }
+        graveyardDiv.appendChild(deadPiece);
     }
 };

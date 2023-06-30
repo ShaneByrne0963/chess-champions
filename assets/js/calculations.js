@@ -14,23 +14,22 @@ function makeMove() {
     for (let piece of pieces) {
         //if the piece has not yet been added to the high score array
         let added = false;
-        let currentInfo = getTileInfo(piece);
+        let currentInfo = tile.getData(piece);
         //stores any moves that have the same score as the highest score
         currentInfo.highestMoves = [];
         let tileMoves = chessPieces.getAllMoveTiles(currentInfo.x, currentInfo.y, currentInfo.piece, currentInfo.color);
 
         for (let move of tileMoves) {
-            let moveInfo = getTileInfo(move);
             let moveScore = 0;
 
-            if (moveInfo.piece !== '') {
-                moveScore = chessPieces[moveInfo.piece].value;
+            if (move.piece !== '') {
+                moveScore = chessPieces[move.piece].value;
             }
 
             if (isFirstCheck) {
                 highestScore = moveScore;
                 highestScorePieces.push(currentInfo);
-                currentInfo.highestMoves.push(moveInfo);
+                currentInfo.highestMoves.push(move);
                 isFirstCheck = false;
                 continue;
             } else {
@@ -44,7 +43,7 @@ function makeMove() {
                         currentInfo.highestMoves = [];
                     }
                     highestScore = moveScore;
-                    currentInfo.highestMoves.push(moveInfo);
+                    currentInfo.highestMoves.push(move);
                 }
             }
         }
@@ -61,8 +60,8 @@ function makeMove() {
     //picking a piece at random out of the array that contains all the pieces that can move
     let movePiece = highestScorePieces[Math.floor(Math.random() * highestScorePieces.length)];
     //then, that piece will pick one of it's moves at random
-    let tile = movePiece.highestMoves[Math.floor(Math.random() * movePiece.highestMoves.length)];
+    let finalTile = movePiece.highestMoves[Math.floor(Math.random() * movePiece.highestMoves.length)];
 
-    moveTile(getTile(movePiece.x, movePiece.y), getTile(tile.x, tile.y));
+    tile.move(movePiece, finalTile);
     nextTurn();
 }
