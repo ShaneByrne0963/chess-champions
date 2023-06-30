@@ -231,6 +231,8 @@ function startGame() {
     //player1 always starts first
     setPlayerTurn(1);
 
+    //removing any piece imag
+
     for (let i = 0; i < boardSize; i++) {
         for (let j = 0; j < boardSize; j++) {
             let piece = '';

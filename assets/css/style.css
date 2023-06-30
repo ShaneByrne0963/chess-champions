@@ -57,7 +57,7 @@ body {
 #players-ui {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: 320px;
+    grid-template-rows: auto;
 }
 
 #players-ui>div {
@@ -84,7 +84,7 @@ body {
 }
 
 .graveyard {
-    min-height: 320px;
+    min-height: 240px;
 }
 
 .piece-dead {
