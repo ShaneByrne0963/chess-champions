@@ -68,6 +68,10 @@ let chessPieces = {
                 }
             }
             if (foundPiece) {
+                //converting the html naming convention to camelCase
+                if (foundPiece === 'pawn-new') {
+                    foundPiece = 'pawnNew';
+                }
                 return foundPiece;
             } else {
                 return null;
@@ -81,13 +85,15 @@ let chessPieces = {
      * Will return all the tiles a piece can move to within it's move set
      * @param {*} x The x position of the piece on the board
      * @param {*} y The y position of the piece on the board
-     * @param {*} moves The array containing all the moves the piece can make. This will be taken from the chessPieces object
+     * @param {*} piece The piece that will be making the move
      * @param {*} color The color of the selected piece
      * @returns An array of all the tiles the piece can move to
      */
-    getAllMoveTiles: (x, y, moves, color) => {
+    getAllMoveTiles: (x, y, piece, color) => {
         //the array that will store all the tiles the piece can move to
         let moveTiles = [];
+
+        let moves = chessPieces[piece].moves;
 
         //getting the enemy's color
         let enemyColor;
@@ -255,7 +261,7 @@ function startGame() {
             }
             //setting up the pawns for both sides
             else if (j === 1 || j === boardSize - 2) {
-                piece = 'pawn-new';
+                piece = 'pawnNew';
                 if (j === 1) {
                     color = 'black';
                 } else {
@@ -283,10 +289,16 @@ function setTile(x, y, piece, color) {
     let tileClass = currentTile.className;
     tileClass = tileClass.slice(0, 15); //removes any classes added in the previous game (ends up with "tile tile-white" or "tile tile-black")
 
-    tileClass += ` ${piece} ${color}`;
+    //converts the camelCase spelling to html naming convention
+    let convertPiece = piece;
+    if (convertPiece === 'pawnNew') {
+        convertPiece = 'pawn-new';
+    }
+
+    tileClass += ` ${convertPiece} ${color}`;
     currentTile.className = tileClass;
     //setting the piece type to a regular pawn for the image to be located
-    if (piece === 'pawn-new') {
+    if (piece === 'pawnNew') {
         piece = 'pawn';
     }
     currentTile.style.backgroundImage = `url(assets/images/chess-pieces/${color}-${piece}.png)`;
@@ -440,7 +452,7 @@ function tileClick(x, y) {
                 clickedTile.appendChild(selectDiv);
 
                 //show all the available moves the selected piece can take
-                let possibleMoves = chessPieces.getAllMoveTiles(x, y, chessPieces[clickedPiece].moves, 'white');
+                let possibleMoves = chessPieces.getAllMoveTiles(x, y, clickedPiece, 'white');
                 
                 for (let i of possibleMoves) {
                     let moveOption = document.createElement('div');
