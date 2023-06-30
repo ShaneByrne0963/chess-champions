@@ -74,10 +74,10 @@ let chessPieces = {
                 }
                 return foundPiece;
             } else {
-                return null;
+                return '';
             }
         } else {
-            return null;
+            return '';
         }
     },
 

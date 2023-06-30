@@ -10,7 +10,7 @@ function makeMove() {
     let pieceInfo = [];
     //this array will store all the pieces in the array that can move
     let moveablePieces = [];
-    
+
     for (let piece of pieces) {
         //if the piece has not yet been added to the high score array
         let added = false;
@@ -24,12 +24,13 @@ function makeMove() {
             let moveScore = 0;
 
             if (moveInfo.piece !== '') {
-                moveScore = chessPieces[moveInfo.piece];
+                moveScore = chessPieces[moveInfo.piece].value;
             }
 
             if (isFirstCheck) {
                 highestScore = moveScore;
-                highestScorePieces.push(move);
+                highestScorePieces.push(currentInfo);
+                currentInfo.highestMoves.push(moveInfo);
                 isFirstCheck = false;
                 continue;
             } else {
@@ -43,11 +44,11 @@ function makeMove() {
                         currentInfo.highestMoves = [];
                     }
                     highestScore = moveScore;
-                    currentInfo.highestMoves.push[moveInfo];
+                    currentInfo.highestMoves.push(moveInfo);
                 }
             }
         }
-        
+
         if (tileMoves.length > 0) {
             currentInfo.possibleMoves = tileMoves;
             moveablePieces.push(currentInfo);
@@ -56,16 +57,13 @@ function makeMove() {
         pieceInfo.push(currentInfo);
     }
 
-    console.log()
-
-
-
     //temporary logic for the ai making a move. it will pick a move at random
     //picking a piece at random out of the array that contains all the pieces that can move
-    let movePiece = moveablePieces[Math.floor(Math.random() * moveablePieces.length)];
+    let movePiece = highestScorePieces[Math.floor(Math.random() * highestScorePieces.length)];
     //then, that piece will pick one of it's moves at random
-    let tile = movePiece.possibleMoves[Math.floor(Math.random() * movePiece.possibleMoves.length)];
+    console.log(movePiece);
+    let tile = movePiece.highestMoves[Math.floor(Math.random() * movePiece.highestMoves.length)];
 
-    moveTile(getTile(movePiece.x, movePiece.y), tile);
+    moveTile(getTile(movePiece.x, movePiece.y), getTile(tile.x, tile.y));
     nextTurn();
 }
