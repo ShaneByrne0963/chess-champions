@@ -69,15 +69,13 @@ body {
     font-size: 1.5em;
 }
 
-#players-ui span {
+#player1-ui span {
     float: right;
-}
-
-#ui-piece-white {
     color: white;
 }
 
-#ui-piece-black {
+#player2-ui span {
+    float: right;
     color: black;
 }
 

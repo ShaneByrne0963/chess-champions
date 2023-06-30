@@ -455,7 +455,39 @@ function deselectTiles() {
     }
 }
 
+/**
+ * Gets the information about the player making the next move
+ * @returns an object containing the information of the player
+ */
 function getPlayerTurn() {
     let currentPlayerDiv = document.getElementsByClassName('player-active')[0];
-    
+    let currentChildren = currentPlayerDiv.children;
+
+    //the name of the player
+    let name = currentChildren[0].innerText;
+
+    //gets the place of the current player on the ui. the 7th character of the player ui divs is either 1 or 2.
+    //can be used to get the color. white is always first so if the value is 1 then the color is white
+    let playerPlace = parseInt(currentPlayerDiv.id[6]);
+    let playerColor = '';
+    if (playerPlace === 1) {
+        playerColor = 'white';
+    } else {
+        playerColor = 'black';
+    }
+
+    return {
+        name: name,
+        color: playerColor
+    };
+}
+
+function setPlayerTurn(playerPlace) {
+    //clearing the 'player-active' class from the previous turn
+    let previousTurnDiv = document.getElementsByClassName('player-active');
+    previousTurnDiv[0].removeAttribute('class');
+
+    //finding the player ui div with the id that contains the playerPlace number
+    let newTurnDiv = document.getElementById(`player${playerPlace}-ui`);
+    newTurnDiv.className = 'player-active';
 }
