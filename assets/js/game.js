@@ -224,6 +224,19 @@ function setTile(x, y, piece, color) {
 }
 
 /**
+ * Moves a chess piece from one tile to another
+ * @param {*} tileFrom The tile you are looking to move
+ * @param {*} tileTo The tile you are looking to move tileFrom to
+ */
+function moveTile(tileFrom, tileTo) {
+    let tileFromInfo = getTileInfo(tileFrom);
+    let tileToInfo = getTileInfo(tileTo);
+
+    setTile(tileToInfo.x, tileToInfo.y, tileFromInfo.piece, tileFromInfo.color);
+    clearTile(tileFromInfo.x, tileFromInfo.y);
+}
+
+/**
  * Gets the coordinates, piece type and color of a tile
  * @param {*} tile The tile you wish to retrieve the information from
  * @returns The information of the tile in object form
@@ -278,8 +291,9 @@ function tileClick(x, y) {
         //should only have one child but this is a safeguard in case there's more than one
         for (let i of clickedChildren) {
             if (i.classList.contains('possible-move')) {
-                let selectedDiv = document.getElementById('tile-selected').parentNode;
-                let selectedDivInfo = getTileInfo(selectedDiv);
+                //gets the div of the selected piece
+                let selectedTile = document.getElementById('tile-selected').parentNode;
+                moveTile(selectedTile, clickedTile);
                 break;
             }
         }
