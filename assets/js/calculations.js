@@ -61,7 +61,6 @@ function makeMove() {
     //picking a piece at random out of the array that contains all the pieces that can move
     let movePiece = highestScorePieces[Math.floor(Math.random() * highestScorePieces.length)];
     //then, that piece will pick one of it's moves at random
-    console.log(movePiece);
     let tile = movePiece.highestMoves[Math.floor(Math.random() * movePiece.highestMoves.length)];
 
     moveTile(getTile(movePiece.x, movePiece.y), getTile(tile.x, tile.y));
