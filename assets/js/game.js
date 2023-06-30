@@ -116,7 +116,7 @@ let chessPieces = {
             }
 
             //checking if the move is within the bounding box of the chess board
-            if (newX >= 0 && newX < boardSize && newY >= 0 && newY < boardSize) {
+            if (getTileBounds(newX, newY)) {
                 //the tile element that is being checked
                 let checkTile = document.getElementById(`tile-${newX}-${newY}`);
                 let checkInfo = getTileInfo(checkTile);
@@ -133,6 +133,23 @@ let chessPieces = {
                             if (checkInfo.color === '') {
                                 moveTiles.push(checkTile);
                             }
+                            break;
+                        case 'vector':
+                            do {
+                                if (checkInfo.color !== color) {
+                                    moveTiles.push(checkTile);
+                                }
+                                if (checkInfo.color !== '') {
+                                    break;
+                                }
+                                newX += currentMove[1];
+                                newY += currentMove[2];
+                                if (getTileBounds(newX, newY)) {
+                                    checkTile = document.getElementById(`tile-${newX}-${newY}`);
+                                    checkInfo = getTileInfo(checkTile);
+                                }
+                            } while (getTileBounds(newX, newY));
+                            break;
                     }
                 }
                 else {
@@ -291,9 +308,19 @@ function getTileInfo(tile) {
 }
 
 /**
+ * Checks if a tile is within the board boundaries
+ * @param {*} x The x position of the tile
+ * @param {*} y The y position of the tile
+ * @returns A boolean that is true if the tile to be checked is within the chess board
+ */
+function getTileBounds(x, y) {
+    return (x >= 0 && x < boardSize && y >= 0 && y < boardSize);
+}
+
+/**
  * Clears a given tile of any pieces
  * @param {*} x The x position of the tile (from 0 to boardSize - 1)
- * @param {*} y The y position of the tile (from 0 to boardSize - 1)}
+ * @param {*} y The y position of the tile (from 0 to boardSize - 1)
  */
 function clearTile(x, y) {
     let currentTile = document.getElementById(`tile-${x}-${y}`);
