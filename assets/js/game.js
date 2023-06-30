@@ -339,7 +339,7 @@ function tileClick(x, y) {
     let clickedChildren = clickedTile.children;
     
     //if the tile has any children
-    if (clickedChildren) {
+    if (clickedChildren.length > 0) {
         //loop through all the children until a child with class name 'possible-move' is found.
         //should only have one child but this is a safeguard in case there's more than one
         for (let i of clickedChildren) {
@@ -350,28 +350,31 @@ function tileClick(x, y) {
                 break;
             }
         }
+        deselectTiles();
     }
+    
+    else {
+        //clear all selected tiles
+        deselectTiles();
 
-    //clear all selected tiles
-    deselectTiles();
+        //getting the tile that was clicked on
+        let clickedClasses = clickedTile.classList;
+        let clickedPiece = chessPieces.getPieceFromClass(clickedClasses);
 
-    //getting the tile that was clicked on
-    let clickedClasses = clickedTile.classList;
-    let clickedPiece = chessPieces.getPieceFromClass(clickedClasses);
+        if (clickedClasses.contains('white')) {
+            //creates another div as a child of the selected tile
+            let selectDiv = document.createElement('div');
+            selectDiv.id = 'tile-selected';
+            clickedTile.appendChild(selectDiv);
 
-    if (clickedClasses.contains('white')) {
-        //creates another div as a child of the selected tile
-        let selectDiv = document.createElement('div');
-        selectDiv.id = 'tile-selected';
-        clickedTile.appendChild(selectDiv);
-
-        //show all the available moves the selected piece can take
-        let possibleMoves = chessPieces.getAllMoveTiles(x, y, chessPieces[clickedPiece].moves, 'white');
-        
-        for (let i of possibleMoves) {
-            let moveOption = document.createElement('div');
-            moveOption.className = "possible-move";
-            i.appendChild(moveOption);
+            //show all the available moves the selected piece can take
+            let possibleMoves = chessPieces.getAllMoveTiles(x, y, chessPieces[clickedPiece].moves, 'white');
+            
+            for (let i of possibleMoves) {
+                let moveOption = document.createElement('div');
+                moveOption.className = "possible-move";
+                i.appendChild(moveOption);
+            }
         }
     }
 }
