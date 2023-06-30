@@ -97,17 +97,31 @@ let chessPieces = {
             enemyColor = 'white';
         }
 
-        for (let i = 0; i < moves.length; i++) {
-            //if the array has 3 values, then the first one is a rule. see chessPieces object for move rules
-            if (moves[i].length > 3) {
-
+        for (let currentMove of moves) {
+            //declaring the variables storing the coordinates of the tiles to check
+            let newX = x + currentMove[currentMove.length - 2]; //the x coordinate is always the second last element in a moves array
+            let newY;
+            //adding forward movement only support for pawns
+            let moveY = currentMove[currentMove.length - 1]; //the y coordinate is always the last element in a moves array
+            if (typeof moveY === 'string' && moveY.includes('forward')) {
+                //getting the last character of the forward move, which specifies the number of moves forward it can take
+                let forwardAmount = parseInt(moveY[moveY.length - 1]);
+                if (color === 'white') {
+                    newY = y - forwardAmount;
+                } else {
+                    newY = y + forwardAmount;
+                }
+            } else {
+                newY = y + moveY;
             }
-            else {
-                let currentMove = moves[i];
-                let newX = x + currentMove[0];
-                let newY = y + currentMove[1];
-                //checking if the move is within the bounding box of the chess board
-                if (newX >= 0 && newX < boardSize && newY >= 0 && newY < boardSize) {
+
+            //checking if the move is within the bounding box of the chess board
+            if (newX >= 0 && newX < boardSize && newY >= 0 && newY < boardSize) {
+                //if the array has 3 values, then the first one is a rule. see chessPieces object for move rules
+                if (currentMove.length >= 3) {
+                    
+                }
+                else {
                     let checkTile = document.getElementById(`tile-${newX}-${newY}`);
                     let checkClass = checkTile.classList;
 
