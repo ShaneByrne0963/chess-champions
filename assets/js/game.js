@@ -232,7 +232,7 @@ function startGame() {
             }
             //setting up the pawns for both sides
             else if (j === 1 || j === boardSize - 2) {
-                piece = 'pawn';
+                piece = 'pawn-new';
                 if (j === 1) {
                     color = 'black';
                 } else {
@@ -262,6 +262,10 @@ function setTile(x, y, piece, color) {
 
     tileClass += ` ${piece} ${color}`;
     currentTile.className = tileClass;
+    //setting the piece type to a regular pawn for the image to be located
+    if (piece === 'pawn-new') {
+        piece = 'pawn';
+    }
     currentTile.style.backgroundImage = `url(assets/images/chess-pieces/${color}-${piece}.png)`;
 }
 
@@ -274,7 +278,13 @@ function moveTile(tileFrom, tileTo) {
     let tileFromInfo = getTileInfo(tileFrom);
     let tileToInfo = getTileInfo(tileTo);
 
-    setTile(tileToInfo.x, tileToInfo.y, tileFromInfo.piece, tileFromInfo.color);
+    //if the piece has a class of 'pawn-new', then it will be converted to 'pawn' after it's first move
+    let tilePiece = tileFromInfo.piece;
+    if (tilePiece === 'pawn-new') {
+        tilePiece = 'pawn';
+    }
+
+    setTile(tileToInfo.x, tileToInfo.y, tilePiece, tileFromInfo.color);
     clearTile(tileFromInfo.x, tileFromInfo.y);
 }
 
@@ -360,6 +370,11 @@ function tileClick(x, y) {
         //getting the tile that was clicked on
         let clickedClasses = clickedTile.classList;
         let clickedPiece = chessPieces.getPieceFromClass(clickedClasses);
+
+        //converting the class name for new pawns to the chessPieces object key to access it
+        if (clickedPiece === 'pawn-new') {
+            clickedPiece = 'pawnNew';
+        }
 
         if (clickedClasses.contains('white')) {
             //creates another div as a child of the selected tile
