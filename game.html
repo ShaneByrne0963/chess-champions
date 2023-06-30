@@ -18,29 +18,41 @@
     <!--user interface-->
     <section id="game">
         <div id="ui-area" onclick="deselectTiles();">
+            <!--tells the user who's turn it is-->
             <div id="player-turn">
                 <h2>It's Player1's turn</h2>
             </div>
+            <!--important information about player 1-->
             <div id="players-ui">
                 <div id="player1-ui" class="player-active">
                     <h3>Player 1
                         <span id="ui-piece-white"><i class="fa-solid fa-chess-king"></i></span>
                     </h3>
-                    <p>Enemies Killed:</p>
+                    <!--displays the enemy pieces destroyed by this player-->
+                    <p>Pieces Destroyed:</p>
+                    <!--spans of destroyed pieces will be added to this div-->
+                    <div id="player1-graveyard"></div>
                 </div>
+                <!--important information about player 2-->
                 <div id="player2-ui">
                     <h3>Player 2
                         <span id="ui-piece-black"><i class="fa-solid fa-chess-king"></i></span>
                     </h3>
-                    <p>Enemies Killed:</p>
+                    <!--displays the enemy pieces destroyed by this player-->
+                    <p>Pieces Destroyed:</p>
+                    <!--spans of destroyed pieces will be added to this div-->
+                    <div id="player2-graveyard"></div>
                 </div>
             </div>
+            <!--reserved for information like "check" or "checkmate"-->
             <div id="announcements"></div>
+            <!--buttons for restarting the game or returning to the main menu-->
             <div id="game-options">
                 <button id="reset">Restart Game</button>
                 <button id="to-menu">Back to Menu</button>
             </div>
         </div>
+        <!--where the game takes place. the structure of this div will be implemented in javascript-->
         <div id="game-area">
             <div id="chess-board"></div>
         </div>
