@@ -83,6 +83,19 @@ body {
     background-color: #555555;
 }
 
+.graveyard {
+    min-height: 320px;
+}
+
+.piece-dead {
+    width: 64px;
+    height: 64px;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: cover;
+}
+
 /* game options for restarting and returning to the main menu */
 #game-options {
     width: 100%;

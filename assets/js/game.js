@@ -319,8 +319,33 @@ function moveTile(tileFrom, tileTo) {
         tilePiece = 'pawn';
     }
 
+    //if a piece is destroyed, add it to one of the graveyards
+    if (tileToInfo.color !== '' && tileFromInfo.color !== tileToInfo.color) {
+        destroyPiece(tileTo);
+    }
+
     setTile(tileToInfo.x, tileToInfo.y, tilePiece, tileFromInfo.color);
     clearTile(tileFromInfo.x, tileFromInfo.y);
+}
+
+function destroyPiece(tile) {
+    let tileInfo = getTileInfo(tile);
+    let deadPiece = document.createElement('div');
+    deadPiece.className = 'piece-dead';
+
+    //making pawns and new pawns the same for the image address
+    if (tileInfo.piece === 'pawnNew') {
+        tileInfo.piece = 'pawn';
+    }
+    deadPiece.style.backgroundImage = `url(assets/images/chess-pieces/${tileInfo.color}-${tileInfo.piece}.png)`;
+
+    let graveyardDiv;
+    if (tileInfo.color === 'black') {
+        graveyardDiv = document.getElementById('player1-graveyard');
+    } else {
+        graveyardDiv = document.getElementById('player2-graveyard');
+    }
+    graveyardDiv.appendChild(deadPiece);
 }
 
 /**

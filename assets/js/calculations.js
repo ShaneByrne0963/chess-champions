@@ -1,5 +1,3 @@
-
-
 function makeMove() {
     let pieces = document.getElementsByClassName('black');
     let pieceInfo = [];
