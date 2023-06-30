@@ -435,8 +435,7 @@ function tileClick(x, y) {
                     moveTile(selectedTile, clickedTile);
 
                     //moving onto the next player's turn
-                    setPlayerTurn(3 - playerTurn.place); //if place = 2, 3 - 2 = 1. if place = 1, 3 - 1 = 2.
-                    makeMove();
+                    nextTurn();
                     break;
                 }
             }
@@ -536,5 +535,18 @@ function setPlayerTurn(playerPlace) {
         newTurnDiv.className = 'player-active';
     } else {
         throw `Error in setPlayerTurn: Invalid input ${playerPlace} (Should be either 1 or 2)`;
+    }
+}
+
+/**
+ * Switches to the next turn
+ */
+function nextTurn() {
+    let playerTurn = getPlayerTurn();
+    //if place = 2, then 3 - 2 = 1. if place = 1, then 3 - 1 = 2.
+    let newTurn = 3 - playerTurn.place
+    setPlayerTurn(newTurn);
+    if (newTurn == 2) {
+        makeMove();
     }
 }

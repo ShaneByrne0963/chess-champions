@@ -25,4 +25,5 @@ function makeMove() {
     let tile = movePiece.possibleMoves[Math.floor(Math.random() * movePiece.possibleMoves.length)];
 
     moveTile(getTile(movePiece.x, movePiece.y), tile);
+    nextTurn();
 }
