@@ -126,12 +126,12 @@ function tileClick(x, y) {
                     break;
                 }
             }
-            deselectTiles();
+            tile.deselectAll();
         }
 
         else {
             //clear all selected tiles
-            deselectTiles();
+            tile.deselectAll();
 
             //getting the tile that was clicked on
             let clickedClasses = clickedTile.classList;
@@ -159,22 +159,6 @@ function tileClick(x, y) {
                 }
             }
         }
-    }
-}
-
-/**
- * Removes the selected div from the tile that is selected and any tiles showing possible moves
- */
-function deselectTiles() {
-    let selectExisting = document.getElementById('tile-selected');
-    if (selectExisting) {
-        selectExisting.remove();
-    }
-    //removing the possible move divs
-    let movesExisting = document.getElementsByClassName('possible-move');
-
-    while (movesExisting.length > 0) {
-        movesExisting[0].remove();
     }
 }
 

@@ -7,14 +7,11 @@ function makeMove() {
     let highestScorePieces = [];
 
     let pieces = document.getElementsByClassName('black');
-    let pieceInfo = [];
-    //this array will store all the pieces in the array that can move
-    let moveablePieces = [];
 
-    for (let piece of pieces) {
+    for (let currentPiece of pieces) {
         //if the piece has not yet been added to the high score array
         let added = false;
-        let currentInfo = tile.getData(piece);
+        let currentInfo = tile.getData(currentPiece);
         //stores any moves that have the same score as the highest score
         currentInfo.highestMoves = [];
         //gets all of the tiles the current piece can move to
@@ -30,6 +27,15 @@ function makeMove() {
             //if there is an enemy on the tile the piece can destroy, then the value of that piece will be added to the score
             if (move.piece !== '') {
                 moveScore = chessPieces[move.piece].value;
+            }
+
+            //monitoring all the tiles around it for information
+            let tileEval = tile.evaluate(move);
+
+            //if there is an enemy that can attack the piece at this tile, then subtract the current piece's value from the score
+            if (tileEval.enemyThreat.length > 0) {
+                console.log(currentInfo, move, tileEval.enemyThreat);
+                moveScore -= chessPieces[currentInfo.piece].value;
             }
 
             //score evaluation ends here

@@ -112,8 +112,48 @@ let tile = {
         currentTile.style.backgroundImage = "";
     },
 
-    evaluate: () => {
+    /**
+     * Evaluates the surrounding tiles of a certain tile and returns other tile data
+     * @param {*} tileData 
+     * @returns an object {enemyThreat}
+     */
+    evaluate: (tileData) => {
+        //if there are any enemies that can attack the piece if it moves to that tile, it will be kept in this array
+        let enemyThreat = [];
 
+        //finds the color of the opponent
+        enemyColor = (tileData.color === 'white') ? 'black' : 'white';
+
+        //the tile will be evaluated using the moves of the queen and the knight, as that will cover all the possible move types
+        for (let move of chessPieces['queen'].moves) {
+            //the coordinates the loop will be manipulating
+            let x = tileData.x;
+            let y = tileData.y;
+            let vector1 = move[1]; //because move[0] is 'vector'
+            let vector2 = move[2];
+            let isDiagonal = (Math.abs(vector1) === Math.abs(vector2)); //diagonal vectors have all values either 1 or -1
+
+            x += vector1;
+            y += vector2;
+            while (tile.inBounds(x, y)) {
+                let secondTile = tile.get(x, y);
+                if (secondTile.color === tileData.color) {
+                    break;
+                } else if (secondTile.color === enemyColor) {
+                    if (secondTile.piece === 'queen'
+                        || (isDiagonal && secondTile.piece === 'bishop')
+                        || (!isDiagonal && secondTile.piece === 'rook')) {
+                        enemyThreat.push(secondTile);
+                    }
+                    break;
+                }
+                x += vector1;
+                y += vector2;
+            }
+        }
+        return {
+            enemyThreat: enemyThreat
+        };
     },
 
     /**
@@ -130,8 +170,20 @@ let tile = {
 
     },
 
+    /**
+     * Removes the selected div from the tile that is selected and any tiles showing possible moves
+     */
     deselectAll: () => {
+        let selectExisting = document.getElementById('tile-selected');
+        if (selectExisting) {
+            selectExisting.remove();
+        }
+        //removing the possible move divs
+        let movesExisting = document.getElementsByClassName('possible-move');
 
+        while (movesExisting.length > 0) {
+            movesExisting[0].remove();
+        }
     }
 };
 
