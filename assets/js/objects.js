@@ -74,6 +74,7 @@ let tile = {
         currentTile.style.backgroundImage = `url(assets/images/chess-pieces/${color}-${piece}.png)`;
     },
 
+    
     setData: (x, y, tileData) => {
         tile.set(x, y, tileData.piece, tileData.color);
     },
