@@ -4,6 +4,49 @@ const boardSize = 8;
 //initializes game when the page loads
 document.onload = gameInit();
 
+//object that stores tile functions
+let tile = {
+    get: (x, y) => {
+
+    },
+
+    getElement: (x, y) => {
+
+    },
+
+    set: (x, y, piece, color) => {
+
+    },
+
+    setData: (x, y, tileData) => {
+
+    },
+
+    move: () => {
+
+    },
+
+    clear: () => {
+
+    },
+
+    evaluate: () => {
+
+    },
+
+    inBounds: (x, y) => {
+
+    },
+
+    select: (x, y) => {
+
+    },
+
+    deselectAll: () => {
+
+    }
+}
+
 //object that stores the information of different pieces
 let chessPieces = {
     //chess move rules:
