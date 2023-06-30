@@ -117,16 +117,27 @@ let chessPieces = {
 
             //checking if the move is within the bounding box of the chess board
             if (newX >= 0 && newX < boardSize && newY >= 0 && newY < boardSize) {
+                //the tile element that is being checked
+                let checkTile = document.getElementById(`tile-${newX}-${newY}`);
+                let checkInfo = getTileInfo(checkTile);
+                
                 //if the array has 3 values, then the first one is a rule. see chessPieces object for move rules
                 if (currentMove.length >= 3) {
-                    
+                    switch (currentMove[0]) {
+                        case 'attack':
+                            if (checkInfo.color === enemyColor) {
+                                moveTiles.push(checkTile);
+                            }
+                            break;
+                        case 'disarmed':
+                            if (checkInfo.color === '') {
+                                moveTiles.push(checkTile);
+                            }
+                    }
                 }
                 else {
-                    let checkTile = document.getElementById(`tile-${newX}-${newY}`);
-                    let checkClass = checkTile.classList;
-
                     //cannot move to a tile that has a friendly piece
-                    if (!checkClass.contains(color)) {
+                    if (checkInfo.color !== color) {
                         moveTiles.push(checkTile);
                     }
                 }
