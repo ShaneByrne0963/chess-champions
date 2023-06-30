@@ -34,8 +34,14 @@ let tile = {
 
     },
 
+    /**
+     * Checks if a coordinate is within the board boundaries
+     * @param {*} x The x position of the tile
+     * @param {*} y The y position of the tile
+     * @returns A boolean that is true if the tile to be checked is within the chess board
+     */
     inBounds: (x, y) => {
-
+        return (x >= 0 && x < boardSize && y >= 0 && y < boardSize);
     },
 
     select: (x, y) => {
@@ -185,7 +191,7 @@ let chessPieces = {
             }
 
             //checking if the move is within the bounding box of the chess board
-            if (getTileBounds(newX, newY)) {
+            if (tile.inBounds(newX, newY)) {
                 //the tile element that is being checked
                 let checkTile = document.getElementById(`tile-${newX}-${newY}`);
                 let checkInfo = getTileInfo(checkTile);
@@ -213,11 +219,11 @@ let chessPieces = {
                                 }
                                 newX += currentMove[1];
                                 newY += currentMove[2];
-                                if (getTileBounds(newX, newY)) {
+                                if (tile.inBounds(newX, newY)) {
                                     checkTile = document.getElementById(`tile-${newX}-${newY}`);
                                     checkInfo = getTileInfo(checkTile);
                                 }
-                            } while (getTileBounds(newX, newY));
+                            } while (tile.inBounds(newX, newY));
                             break;
                     }
                 }
@@ -459,16 +465,6 @@ function getPositionInfo(x, y) {
         piece: piece,
         color: color
     };
-}
-
-/**
- * Checks if a tile is within the board boundaries
- * @param {*} x The x position of the tile
- * @param {*} y The y position of the tile
- * @returns A boolean that is true if the tile to be checked is within the chess board
- */
-function getTileBounds(x, y) {
-    return (x >= 0 && x < boardSize && y >= 0 && y < boardSize);
 }
 
 /**
