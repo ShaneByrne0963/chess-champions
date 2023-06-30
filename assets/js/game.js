@@ -222,6 +222,9 @@ function gameInit() {
  * Places the chess pieces in their starting positions on the board
  */
 function startGame() {
+    //player1 always starts first
+    setPlayerTurn(1);
+
     for (let i = 0; i < boardSize; i++) {
         for (let j = 0; j < boardSize; j++) {
             let piece = '';
@@ -387,53 +390,63 @@ function clearTile(x, y) {
 /**
  * Is called when a player clicks on a tile containing a click event listener, ie. if
  * the tile has a player piece or if a selected piece can move to that tile
+ * @param {*} x The x position of the clicked tile
+ * @param {*} x The y position of the clicked tile
  */
 function tileClick(x, y) {
-    //checking if the tile that's been clicked on is a possible move
-    let clickedTile = document.getElementById(`tile-${x}-${y}`);
-    let clickedChildren = clickedTile.children;
-    
-    //if the tile has any children
-    if (clickedChildren.length > 0) {
-        //loop through all the children until a child with class name 'possible-move' is found.
-        //should only have one child but this is a safeguard in case there's more than one
-        for (let i of clickedChildren) {
-            if (i.classList.contains('possible-move')) {
-                //gets the div of the selected piece
-                let selectedTile = document.getElementById('tile-selected').parentNode;
-                moveTile(selectedTile, clickedTile);
-                break;
+    let playerTurn = getPlayerTurn();
+
+    //only allow for interaction if it is player 1's turn
+    if (playerTurn.place === 1) {
+        //checking if the tile that's been clicked on is a possible move
+        let clickedTile = document.getElementById(`tile-${x}-${y}`);
+        let clickedChildren = clickedTile.children;
+        
+        //if the tile has any children
+        if (clickedChildren.length > 0) {
+            //loop through all the children until a child with class name 'possible-move' is found.
+            //should only have one child but this is a safeguard in case there's more than one
+            for (let i of clickedChildren) {
+                if (i.classList.contains('possible-move')) {
+                    //gets the div of the selected piece
+                    let selectedTile = document.getElementById('tile-selected').parentNode;
+                    moveTile(selectedTile, clickedTile);
+
+                    //moving onto the next player's turn
+                    setPlayerTurn(3 - playerTurn.place) //if place = 2, 3 - 2 = 1. if place = 1, 3 - 1 = 2.
+                    break;
+                }
             }
+            deselectTiles();
         }
-        deselectTiles();
-    }
-    
-    else {
-        //clear all selected tiles
-        deselectTiles();
+        
+        else {
+            //clear all selected tiles
+            deselectTiles();
 
-        //getting the tile that was clicked on
-        let clickedClasses = clickedTile.classList;
-        let clickedPiece = chessPieces.getPieceFromClass(clickedClasses);
+            //getting the tile that was clicked on
+            let clickedClasses = clickedTile.classList;
+            let clickedPiece = chessPieces.getPieceFromClass(clickedClasses);
 
-        //converting the class name for new pawns to the chessPieces object key to access it
-        if (clickedPiece === 'pawn-new') {
-            clickedPiece = 'pawnNew';
-        }
+            //converting the class name for new pawns to the chessPieces object key to access it
+            if (clickedPiece === 'pawn-new') {
+                clickedPiece = 'pawnNew';
+            }
 
-        if (clickedClasses.contains('white')) {
-            //creates another div as a child of the selected tile
-            let selectDiv = document.createElement('div');
-            selectDiv.id = 'tile-selected';
-            clickedTile.appendChild(selectDiv);
+            if (clickedClasses.contains('white')) {
+                //creates another div as a child of the selected tile
+                let selectDiv = document.createElement('div');
+                selectDiv.id = 'tile-selected';
+                clickedTile.appendChild(selectDiv);
 
-            //show all the available moves the selected piece can take
-            let possibleMoves = chessPieces.getAllMoveTiles(x, y, chessPieces[clickedPiece].moves, 'white');
-            
-            for (let i of possibleMoves) {
-                let moveOption = document.createElement('div');
-                moveOption.className = "possible-move";
-                i.appendChild(moveOption);
+                //show all the available moves the selected piece can take
+                let possibleMoves = chessPieces.getAllMoveTiles(x, y, chessPieces[clickedPiece].moves, 'white');
+                
+                for (let i of possibleMoves) {
+                    let moveOption = document.createElement('div');
+                    moveOption.className = "possible-move";
+                    i.appendChild(moveOption);
+                }
             }
         }
     }
@@ -478,6 +491,7 @@ function getPlayerTurn() {
 
     return {
         name: name,
+        place: playerPlace,
         color: playerColor
     };
 }
@@ -490,7 +504,9 @@ function setPlayerTurn(playerPlace) {
     if (playerPlace === 1 || playerPlace === 2) {
         //clearing the 'player-active' class from the previous turn
         let previousTurnDiv = document.getElementsByClassName('player-active');
-        previousTurnDiv[0].removeAttribute('class');
+        if (previousTurnDiv.length > 0) {
+            previousTurnDiv[0].removeAttribute('class');
+        }
 
         //finding the player ui div with the id that contains the playerPlace number
         let newTurnDiv = document.getElementById(`player${playerPlace}-ui`);
