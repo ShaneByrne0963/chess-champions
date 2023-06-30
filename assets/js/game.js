@@ -114,7 +114,7 @@ let chessPieces = {
             if (typeof moveY === 'string' && moveY.includes('forward')) {
                 //getting the last character of the forward move, which specifies the number of moves forward it can take
                 let forwardAmount = parseInt(moveY[moveY.length - 1]);
-                
+
                 //determines which direction is forward
                 let yDirection;
                 if (color === 'white') {
@@ -146,7 +146,7 @@ let chessPieces = {
                 //the tile element that is being checked
                 let checkTile = document.getElementById(`tile-${newX}-${newY}`);
                 let checkInfo = getTileInfo(checkTile);
-                
+
                 //if the array has 3 values, then the first one is a rule. see chessPieces object for move rules
                 if (currentMove.length >= 3) {
                     switch (currentMove[0]) {
@@ -324,6 +324,16 @@ function moveTile(tileFrom, tileTo) {
 }
 
 /**
+ * Gets an HTML element in a given location
+ * @param {*} x The x position of the tile on the board
+ * @param {*} y The y position of the tile on the board
+ * @returns The tile HTML element
+ */
+function getTile(x, y) {
+    return document.getElementById(`tile-${x}-${y}`);
+}
+
+/**
  * Gets the coordinates, piece type and color of a tile
  * @param {*} tile The tile you wish to retrieve the information from
  * @returns The information of the tile in object form
@@ -413,7 +423,7 @@ function tileClick(x, y) {
         //checking if the tile that's been clicked on is a possible move
         let clickedTile = document.getElementById(`tile-${x}-${y}`);
         let clickedChildren = clickedTile.children;
-        
+
         //if the tile has any children
         if (clickedChildren.length > 0) {
             //loop through all the children until a child with class name 'possible-move' is found.
@@ -425,13 +435,14 @@ function tileClick(x, y) {
                     moveTile(selectedTile, clickedTile);
 
                     //moving onto the next player's turn
-                    setPlayerTurn(3 - playerTurn.place) //if place = 2, 3 - 2 = 1. if place = 1, 3 - 1 = 2.
+                    setPlayerTurn(3 - playerTurn.place); //if place = 2, 3 - 2 = 1. if place = 1, 3 - 1 = 2.
+                    makeMove();
                     break;
                 }
             }
             deselectTiles();
         }
-        
+
         else {
             //clear all selected tiles
             deselectTiles();
@@ -453,7 +464,7 @@ function tileClick(x, y) {
 
                 //show all the available moves the selected piece can take
                 let possibleMoves = chessPieces.getAllMoveTiles(x, y, clickedPiece, 'white');
-                
+
                 for (let i of possibleMoves) {
                     let moveOption = document.createElement('div');
                     moveOption.className = "possible-move";
@@ -474,7 +485,7 @@ function deselectTiles() {
     }
     //removing the possible move divs
     let movesExisting = document.getElementsByClassName('possible-move');
-    
+
     while (movesExisting.length > 0) {
         movesExisting[0].remove();
     }
