@@ -313,9 +313,9 @@ function moveTile(tileFrom, tileTo) {
     let tileFromInfo = getTileInfo(tileFrom);
     let tileToInfo = getTileInfo(tileTo);
 
-    //if the piece has a class of 'pawn-new', then it will be converted to 'pawn' after it's first move
+    //if the piece is "pawnNew", then it will be converted to 'pawn' after it's first move
     let tilePiece = tileFromInfo.piece;
-    if (tilePiece === 'pawn-new') {
+    if (tilePiece === 'pawnNew') {
         tilePiece = 'pawn';
     }
 
