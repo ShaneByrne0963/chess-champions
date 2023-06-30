@@ -231,7 +231,11 @@ function startGame() {
     //player1 always starts first
     setPlayerTurn(1);
 
-    //removing any piece imag
+    //removing any piece images from the graveyard
+    let graveyardPieces = document.getElementsByClassName('piece-dead');
+    while (graveyardPieces.length > 0) {
+        graveyardPieces[0].remove();
+    }
 
     for (let i = 0; i < boardSize; i++) {
         for (let j = 0; j < boardSize; j++) {
