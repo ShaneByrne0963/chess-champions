@@ -456,5 +456,6 @@ function deselectTiles() {
 }
 
 function getPlayerTurn() {
-
+    let currentPlayerDiv = document.getElementsByClassName('player-active')[0];
+    
 }

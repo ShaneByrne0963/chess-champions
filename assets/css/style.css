@@ -65,6 +65,22 @@ body {
     border: 1px solid black;
 }
 
+#players-ui h3 {
+    font-size: 1.5em;
+}
+
+#players-ui span {
+    float: right;
+}
+
+#ui-piece-white {
+    color: white;
+}
+
+#ui-piece-black {
+    color: black;
+}
+
 .player-active {
     background-color: #555555;
 }
