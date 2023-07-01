@@ -120,7 +120,7 @@ let tile = {
     /**
      * Evaluates the surrounding tiles of a certain tile and returns other tile data
      * @param {*} tileData An object {x, y, piece, color} of the tile that is to be evaluated
-     * @param {*} evaluatingTile An object {x, y, piece, color} of the tile that is evaluating the tile
+     * @param {*} evaluatingTile The object {x, y, piece, color} of the tile that is evaluating the tile
      * @returns An object {enemyThreat} containing the relationships between the surrounding pieces
      */
     evaluate: (tileData, evaluatingTile) => {
@@ -146,17 +146,21 @@ let tile = {
 
             //keep moving in the direction of the vector until it goes out of bounds, or it hits a piece (evaluated inside the loop)
             while (tile.inBounds(x, y)) {
-                let secondTile = tile.get(x, y);
-                if (secondTile.color === evaluatingTile.color) { //if the evaluation runs into a friendly piece
-                    if (chessPieces.canBeAttacked(secondTile, move, firstMove)) {
-                        allyGuarded.push(secondTile);
+                //stop the vector if it comes into contact with itself
+                if (!(x === evaluatingTile.x && y === evaluatingTile.y)) {
+                    let secondTile = tile.get(x, y);
+                    
+                    if (secondTile.color === evaluatingTile.color) { //if the evaluation runs into a friendly piece
+                        if (chessPieces.canBeAttacked(secondTile, move, firstMove)) {
+                            allyGuarded.push(secondTile);
+                        }
+                        break;
+                    } else if (secondTile.color === enemyColor) { //if the evaluation runs into an enemy piece
+                        if (chessPieces.canBeAttacked(secondTile, move, firstMove)) {
+                            enemyThreat.push(secondTile);
+                        }
+                        break;
                     }
-                    break;
-                } else if (secondTile.color === enemyColor) { //if the evaluation runs into an enemy piece
-                    if (chessPieces.canBeAttacked(secondTile, move, firstMove)) {
-                        enemyThreat.push(secondTile);
-                    }
-                    break;
                 }
                 x += vector1;
                 y += vector2;
@@ -167,10 +171,12 @@ let tile = {
             let x = tileData.x + move[1]; //because move[0] is 'normal'
             let y = tileData.y + move[2];
             if (tile.inBounds(x, y)) {
-                let secondTile = tile.get(x, y);
-                if (secondTile.color === enemyColor) {
-                    if (secondTile.piece === 'knight') {
-                        enemyThreat.push(secondTile);
+                if (!(x === evaluatingTile.x && y === evaluatingTile.y)) {
+                    let secondTile = tile.get(x, y);
+                    if (secondTile.color === enemyColor) {
+                        if (secondTile.piece === 'knight') {
+                            enemyThreat.push(secondTile);
+                        }
                     }
                 }
             }
