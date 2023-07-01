@@ -114,18 +114,23 @@ let tile = {
 
     /**
      * Evaluates the surrounding tiles of a certain tile and returns other tile data
-     * @param {*} tileData 
-     * @returns an object {enemyThreat}
+     * @param {*} tileData An object {x, y, piece, color} of the tile that is to be evaluated
+     * @param {*} evaluatingTile An object {x, y, piece, color} of the tile that is evaluating the tile
+     * @returns An object {enemyThreat}
      */
-    evaluate: (tileData) => {
+    evaluate: (tileData, evaluatingTile) => {
         //if there are any enemies that can attack the piece if it moves to that tile, it will be kept in this array
         let enemyThreat = [];
 
+        //for debugging
+        let debugList = [];
+
         //finds the color of the opponent
-        enemyColor = (tileData.color === 'white') ? 'black' : 'white';
+        enemyColor = (evaluatingTile.color === 'white') ? 'black' : 'white';
 
         //the tile will be evaluated using the moves of the queen and the knight, as that will cover all the possible move types
         for (let move of chessPieces['queen'].moves) {
+            let debugSecondList = [];
             //the coordinates the loop will be manipulating
             let x = tileData.x;
             let y = tileData.y;
@@ -137,7 +142,9 @@ let tile = {
             y += vector2;
             while (tile.inBounds(x, y)) {
                 let secondTile = tile.get(x, y);
-                if (secondTile.color === tileData.color) {
+                debugSecondList.push(`(${x}, ${y})`);
+                if (secondTile.color === evaluatingTile.color) {
+                    debugSecondList.push(`Found Ally Piece`);
                     break;
                 } else if (secondTile.color === enemyColor) {
                     if (secondTile.piece === 'queen'
@@ -145,14 +152,17 @@ let tile = {
                         || (!isDiagonal && secondTile.piece === 'rook')) {
                         enemyThreat.push(secondTile);
                     }
+                    debugSecondList.push(`Found Enemy Piece`);
                     break;
                 }
                 x += vector1;
                 y += vector2;
             }
+            debugList.push(debugSecondList);
         }
         return {
-            enemyThreat: enemyThreat
+            enemyThreat: enemyThreat,
+            debug: debugList
         };
     },
 
@@ -220,8 +230,8 @@ let chessPieces = {
     },
     queen: {
         //moves in the four cardinal directions and to tiles diagonal to it
-        moves: [['vector', 1, 0], ['vector', 1, 1], ['vector', 0, -1], ['vector', -1, 1],
-        ['vector', -1, 0], ['vector', -1, -1], ['vector', 0, 1], ['vector', 1, -1]],
+        moves: [['vector', 1, 0], ['vector', 1, -1], ['vector', 0, -1], ['vector', -1, -1],
+        ['vector', -1, 0], ['vector', -1, 1], ['vector', 0, 1], ['vector', 1, 1]],
         value: 900
     },
     king: {

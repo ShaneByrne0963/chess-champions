@@ -1,4 +1,5 @@
 function makeMove() {
+    console.clear();
     //all tiles will be given an individual score based on a number of parameters. the tile with the highest score will be chosen
     let highestScore = 0;
     //highestScore will be set to the first checked tile. after that any tile will have to beat the score to be set
@@ -30,13 +31,18 @@ function makeMove() {
             }
 
             //monitoring all the tiles around it for information
-            let tileEval = tile.evaluate(move);
+            let tileEval = tile.evaluate(move, currentInfo);
+            console.log(`${currentInfo.piece} [${currentInfo.x},${currentInfo.y}] =?=> [${move.x}, ${move.y}]`);
+            console.log(tileEval.debug);
 
             //if there is an enemy that can attack the piece at this tile, then subtract the current piece's value from the score
             if (tileEval.enemyThreat.length > 0) {
-                console.log(currentInfo, move, tileEval.enemyThreat);
+                for (let threat of tileEval.enemyThreat) {
+                    console.log(`${currentInfo.piece} [${currentInfo.x},${currentInfo.y}] =X=> [${move.x}, ${move.y}] /< ${threat.piece} [${threat.x}, ${threat.y}]`);
+                }
                 moveScore -= chessPieces[currentInfo.piece].value;
             }
+            console.log('');
 
             //score evaluation ends here
 
@@ -71,6 +77,8 @@ function makeMove() {
     let movePiece = highestScorePieces[Math.floor(Math.random() * highestScorePieces.length)];
     //then, that piece will pick one of it's best moves at random
     let finalTile = movePiece.highestMoves[Math.floor(Math.random() * movePiece.highestMoves.length)];
+
+    console.log(`Final Move: ${movePiece.piece} => [${finalTile.x}, ${finalTile.y}]`);
 
     tile.move(movePiece, finalTile);
     nextTurn();
