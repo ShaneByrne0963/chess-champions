@@ -65,6 +65,8 @@ function makeMove() {
                     currentInfo.highestMoves.push(move);
                 }
             }
+
+            console.log(`${currentInfo.piece} [${currentInfo.x}, ${currentInfo.y}] => [${move.x}, ${move.y}] final score: ${moveScore}`);
         }
     }
 

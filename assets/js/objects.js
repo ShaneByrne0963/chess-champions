@@ -124,8 +124,10 @@ let tile = {
      * @returns An object {enemyThreat} containing the relationships between the surrounding pieces
      */
     evaluate: (tileData, evaluatingTile) => {
-        //if there are any enemies that can attack the piece if it moves to that tile, it will be kept in this array
+        //if there are any enemies that can attack the piece if it moves to that tile, it will be stored in this array
         let enemyThreat = [];
+        //if there are any allies that can attack this tile if an enemy attacks it, it will be stored in this array
+        let allyGuarded = [];
 
         //finds the color of the opponent
         enemyColor = (evaluatingTile.color === 'white') ? 'black' : 'white';
@@ -146,7 +148,9 @@ let tile = {
             while (tile.inBounds(x, y)) {
                 let secondTile = tile.get(x, y);
                 if (secondTile.color === evaluatingTile.color) { //if the evaluation runs into a friendly piece
-
+                    if (chessPieces.canBeAttacked(secondTile, move, firstMove)) {
+                        allyGuarded.push(secondTile);
+                    }
                     break;
                 } else if (secondTile.color === enemyColor) { //if the evaluation runs into an enemy piece
                     if (chessPieces.canBeAttacked(secondTile, move, firstMove)) {
@@ -172,7 +176,8 @@ let tile = {
             }
         }
         return {
-            enemyThreat: enemyThreat
+            enemyThreat: enemyThreat,
+            allyGuarded: allyGuarded
         };
     },
 
@@ -186,6 +191,32 @@ let tile = {
         //if there is an enemy that can attack the piece at this tile, then subtract the current piece's value from the score
         if (tileEval.enemyThreat.length > 0) {
             moveScore -= chessPieces[currentTile.piece].value;
+
+            //if there is an ally (or allies) guarding this tile, then a "battle" will take place.
+            // 1 - the ally with the smallest value will move to this tile and destroy the enemy piece.
+            //      we will assume the enemy attacked with their lowest value piece so we will add the
+            //      smallest value to the total score
+            // 2 - if there is another enemy that can attack this tile, the smallest value of allyGuarded
+            //      will be taken from the total score
+            // 3 - this loop will continue until there is no more moves on this tile from either side
+            let infiniteLoopBlocker = 0;
+            while (tileEval.enemyThreat.length > 0 && tileEval.allyGuarded.length > 0 && infiniteLoopBlocker < 1000) {
+                infiniteLoopBlocker++;
+                
+                let lowestEnemy = chessPieces.findLowestValue(tileEval.enemyThreat);
+                let lowestAlly = chessPieces.findLowestValue(tileEval.allyGuarded);
+
+                moveScore += lowestEnemy[0];
+                tileEval.enemyThreat.splice(lowestEnemy[1], 1);
+
+                if (tileEval.enemyThreat.length > 0) {
+                    moveScore -= lowestAlly[0];
+                    tileEval.allyGuarded.splice(lowestAlly[1], 1);
+                }
+            }
+            if (infiniteLoopBlocker >= 1000) {
+                throw `Error: Infinite loop when simulating the battle. Aborting!`
+            }
         }
 
         return moveScore;
@@ -475,5 +506,26 @@ let chessPieces = {
                     && attackingTile.piece.includes('pawn')))));
                 break;
         }
+    },
+
+    /**
+     * Finds the piece with the lowest value in an array
+     * @param {object} pieces The tile data of all the pieces to be checked
+     * @returns An array containing the lowest value and the position the piece with that value on the array
+     */
+    findLowestValue: (pieces) => {
+        let lowestValue = chessPieces[pieces[0].piece].value
+        let lowestPosition = 0;
+
+        for (let i = 1; i < pieces.length; i++) {
+            let currentPiece = pieces[i];
+            let pieceValue = chessPieces[currentPiece.piece].value;
+            if (pieceValue < lowestValue) {
+                lowestValue = pieceValue;
+                lowestPosition = i;
+            }
+        }
+
+        return [lowestValue, lowestPosition];
     }
 };
