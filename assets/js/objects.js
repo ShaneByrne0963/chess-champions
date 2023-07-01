@@ -152,7 +152,9 @@ let tile = {
                     if (secondTile.piece === 'queen'
                         || (isDiagonal && secondTile.piece === 'bishop')
                         || (!isDiagonal && secondTile.piece === 'rook')
-                        || (firstMove && secondTile.piece === 'king')) {
+                        || (firstMove && (secondTile.piece === 'king'
+                        || (vector1 !== 0 && vector2 === -chessPieces.getForwardDirection(enemyColor)
+                        && secondTile.piece.includes('pawn'))))) {
                         enemyThreat.push(secondTile);
                     }
                     break;
