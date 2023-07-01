@@ -7,9 +7,18 @@ function makeMove() {
     //in case there are multiple pieces with the highest score, their info will all be stored in this array and chosen at random
     let highestScorePieces = [];
 
+    //getting all the pieces on the board that belong to the ai
     let pieces = document.getElementsByClassName('black');
 
+    //before checking all the moves, the scores of all the pieces in their current positions will be calculated and stored
+    let currentScores = [];
     for (let currentPiece of pieces) {
+        let pieceData = tile.getData(currentPiece);
+        currentScores.push(tile.getScore(pieceData, pieceData));
+    }
+
+    for (let i = 0; i < pieces.length; i++) {
+        let currentPiece = pieces[i];
         //if the piece has not yet been added to the high score array
         let added = false;
         let currentInfo = tile.getData(currentPiece);
@@ -28,6 +37,9 @@ function makeMove() {
             if (move.piece !== '') {
                 moveScore += chessPieces[move.piece].value;
             }
+
+            //finally, subtracting the current score from the new score
+            moveScore -= currentScores[i];
 
             //if this is the first move of the first tile, then set the highest score to the score of this move
             if (isFirstCheck) {
