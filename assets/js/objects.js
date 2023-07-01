@@ -48,7 +48,7 @@ let tile = {
     },
 
     /**
-     * Sets a chess piece at a certain tile
+     * Sets a chess piece at a certain position
      * @param {*} x The x position of the tile (from 0 to boardSize - 1)
      * @param {*} y The y position of the tile (from 0 to boardSize - 1) 
      * @param {*} piece The type of piece you wish to set the tile to 
@@ -74,7 +74,12 @@ let tile = {
         currentTile.style.backgroundImage = `url(assets/images/chess-pieces/${color}-${piece}.png)`;
     },
 
-    
+    /**
+     * Sets a chess piece at a certain position to a given tile object
+     * @param {*} x The x position of the tile (from 0 to boardSize - 1)
+     * @param {*} y The y position of the tile (from 0 to boardSize - 1) 
+     * @param {*} tileData The object {x, y, piece, color} to set the tile to
+     */
     setData: (x, y, tileData) => {
         tile.set(x, y, tileData.piece, tileData.color);
     },
@@ -116,7 +121,7 @@ let tile = {
      * Evaluates the surrounding tiles of a certain tile and returns other tile data
      * @param {*} tileData An object {x, y, piece, color} of the tile that is to be evaluated
      * @param {*} evaluatingTile An object {x, y, piece, color} of the tile that is evaluating the tile
-     * @returns An object {enemyThreat}
+     * @returns An object {enemyThreat} containing the relationships between the surrounding pieces
      */
     evaluate: (tileData, evaluatingTile) => {
         //if there are any enemies that can attack the piece if it moves to that tile, it will be kept in this array
@@ -320,12 +325,7 @@ let chessPieces = {
                 let forwardAmount = parseInt(moveY[moveY.length - 1]);
 
                 //determines which direction is forward
-                let yDirection;
-                if (color === 'white') {
-                    yDirection = -1;
-                } else {
-                    yDirection = 1;
-                }
+                let yDirection = chessPieces.getForwardDirection(color);
 
                 //if the forward value is greater than 1, then all tiles in between will be checked to see if they are blank
                 let blockMove = false;
@@ -415,5 +415,20 @@ let chessPieces = {
             graveyardDiv = document.getElementById('player2-graveyard');
         }
         graveyardDiv.appendChild(deadPiece);
+    },
+
+    /**
+     * Gets the forward direction of a tile based on the color of the piece
+     * @param {*} color The color of the piece
+     * @returns The forward direction
+     */
+    getForwardDirection: (color) => {
+        if (color === 'white') {
+            return -1;
+        } else if (color === 'black') {
+            return 1;
+        } else {
+            return null;
+        }
     }
 };
