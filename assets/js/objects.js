@@ -122,47 +122,43 @@ let tile = {
         //if there are any enemies that can attack the piece if it moves to that tile, it will be kept in this array
         let enemyThreat = [];
 
-        //for debugging
-        let debugList = [];
-
         //finds the color of the opponent
         enemyColor = (evaluatingTile.color === 'white') ? 'black' : 'white';
 
         //the tile will be evaluated using the moves of the queen and the knight, as that will cover all the possible move types
         for (let move of chessPieces['queen'].moves) {
-            let debugSecondList = [];
             //the coordinates the loop will be manipulating
             let x = tileData.x;
             let y = tileData.y;
             let vector1 = move[1]; //because move[0] is 'vector'
             let vector2 = move[2];
             let isDiagonal = (Math.abs(vector1) === Math.abs(vector2)); //diagonal vectors have all values either 1 or -1
+            let firstMove = true;
 
             x += vector1;
             y += vector2;
+
+            //keep moving in the direction of the vector until it goes out of bounds, or it hits a piece (evaluated inside the loop)
             while (tile.inBounds(x, y)) {
                 let secondTile = tile.get(x, y);
-                debugSecondList.push(`(${x}, ${y})`);
-                if (secondTile.color === evaluatingTile.color) {
-                    debugSecondList.push(`Found Ally Piece`);
+                if (secondTile.color === evaluatingTile.color) { //if the evaluation runs into a friendly piece
                     break;
-                } else if (secondTile.color === enemyColor) {
+                } else if (secondTile.color === enemyColor) { //if the evaluation runs into an enemy piece
                     if (secondTile.piece === 'queen'
                         || (isDiagonal && secondTile.piece === 'bishop')
-                        || (!isDiagonal && secondTile.piece === 'rook')) {
+                        || (!isDiagonal && secondTile.piece === 'rook')
+                        || (firstMove && secondTile.piece === 'king')) {
                         enemyThreat.push(secondTile);
                     }
-                    debugSecondList.push(`Found Enemy Piece`);
                     break;
                 }
                 x += vector1;
                 y += vector2;
+                firstMove = false;
             }
-            debugList.push(debugSecondList);
         }
         return {
-            enemyThreat: enemyThreat,
-            debug: debugList
+            enemyThreat: enemyThreat
         };
     },
 
