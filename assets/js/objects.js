@@ -157,6 +157,18 @@ let tile = {
                 firstMove = false;
             }
         }
+        for (let move of chessPieces['knight'].moves) {
+            let x = tileData.x + move[0];
+            let y = tileData.y + move[1];
+            if (tile.inBounds(x, y)) {
+                let secondTile = tile.get(x, y);
+                if (secondTile.color === enemyColor) {
+                    if (secondTile.piece === 'knight') {
+                        enemyThreat.push(secondTile);
+                    }
+                }
+            }
+        }
         return {
             enemyThreat: enemyThreat
         };
