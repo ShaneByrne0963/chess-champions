@@ -135,9 +135,8 @@ let tile = {
             //the coordinates the loop will be manipulating
             let x = tileData.x;
             let y = tileData.y;
-            let vector1 = move[1]; //because move[0] is 'vector'
+            let vector1 = move[1]; //because move[0] is the rule 'vector'
             let vector2 = move[2];
-            let isDiagonal = (Math.abs(vector1) === Math.abs(vector2)); //diagonal vectors have all values either 1 or -1
             let firstMove = true;
 
             x += vector1;
@@ -149,12 +148,7 @@ let tile = {
                 if (secondTile.color === evaluatingTile.color) { //if the evaluation runs into a friendly piece
                     break;
                 } else if (secondTile.color === enemyColor) { //if the evaluation runs into an enemy piece
-                    if (secondTile.piece === 'queen'
-                        || (isDiagonal && secondTile.piece === 'bishop')
-                        || (!isDiagonal && secondTile.piece === 'rook')
-                        || (firstMove && (secondTile.piece === 'king'
-                        || (vector1 !== 0 && vector2 === -chessPieces.getForwardDirection(enemyColor)
-                        && secondTile.piece.includes('pawn'))))) {
+                    if (chessPieces.canBeAttacked(secondTile, move, firstMove)) {
                         enemyThreat.push(secondTile);
                     }
                     break;
@@ -431,6 +425,40 @@ let chessPieces = {
             return 1;
         } else {
             return null;
+        }
+    },
+
+    canAttack: () => {
+
+    },
+
+    /**
+     * Checks if an enemy (or friendly) piece can move to the tile
+     * @param {object} attackingTile The tile where the piece that could attack is
+     * @param {['rule', x, y]} move The type of move that was made to get to the attacking tile. If the move can be reversed the tile can be attacked.
+     * @param {boolean} isBeside If the attacking tile is beside the current tile
+     */
+    canBeAttacked: (attackingTile, move, isBeside) => {
+        //checking the rule of the move
+        switch (move[0]) {
+            //checks if the attacker is a knight
+            case 'normal':
+                return (attackingTile.piece === 'knight');
+                break;
+            //checks for all the other pieces
+            case 'vector':
+                let vector1 = move[1];
+                let vector2 = move[2];
+                let isDiagonal = (Math.abs(vector1) === Math.abs(vector2));
+                console.log(chessPieces.getForwardDirection(attackingTile.color));
+
+                return (attackingTile.piece === 'queen'
+                    || (isDiagonal && attackingTile.piece === 'bishop')
+                    || (!isDiagonal && attackingTile.piece === 'rook')
+                    || (isBeside && (attackingTile.piece === 'king'
+                    || (vector1 !== 0 && vector2 === -chessPieces.getForwardDirection(attackingTile.color)
+                    && attackingTile.piece.includes('pawn')))));
+                break;
         }
     }
 };
