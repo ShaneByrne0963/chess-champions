@@ -146,6 +146,7 @@ let tile = {
             while (tile.inBounds(x, y)) {
                 let secondTile = tile.get(x, y);
                 if (secondTile.color === evaluatingTile.color) { //if the evaluation runs into a friendly piece
+
                     break;
                 } else if (secondTile.color === enemyColor) { //if the evaluation runs into an enemy piece
                     if (chessPieces.canBeAttacked(secondTile, move, firstMove)) {
@@ -173,6 +174,21 @@ let tile = {
         return {
             enemyThreat: enemyThreat
         };
+    },
+
+    getScore: (currentTile, moveTile) => {
+        //each move will have a score
+        let moveScore = 0;
+
+        //monitoring all the tiles around it for information
+        let tileEval = tile.evaluate(moveTile, currentTile);
+
+        //if there is an enemy that can attack the piece at this tile, then subtract the current piece's value from the score
+        if (tileEval.enemyThreat.length > 0) {
+            moveScore -= chessPieces[currentTile.piece].value;
+        }
+
+        return moveScore;
     },
 
     /**
@@ -450,7 +466,6 @@ let chessPieces = {
                 let vector1 = move[1];
                 let vector2 = move[2];
                 let isDiagonal = (Math.abs(vector1) === Math.abs(vector2));
-                console.log(chessPieces.getForwardDirection(attackingTile.color));
 
                 return (attackingTile.piece === 'queen'
                     || (isDiagonal && attackingTile.piece === 'bishop')

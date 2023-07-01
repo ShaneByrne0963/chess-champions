@@ -20,29 +20,14 @@ function makeMove() {
 
         //looping through the moves
         for (let move of tileMoves) {
-            //each move will have a score
-            let moveScore = 0;
-
-            //score evaluation begins here
+            //calculates the score of the tile based on several parameters
+            let moveScore = tile.getScore(currentInfo, move);
 
             //if there is an enemy on the tile the piece can destroy, then the value of that piece will be added to the score
+            //the color of the piece doesn't have to be checked 
             if (move.piece !== '') {
-                moveScore = chessPieces[move.piece].value;
+                moveScore += chessPieces[move.piece].value;
             }
-
-            //monitoring all the tiles around it for information
-            let tileEval = tile.evaluate(move, currentInfo);
-            console.log(`${currentInfo.piece} [${currentInfo.x},${currentInfo.y}] =?=> [${move.x}, ${move.y}]`);
-
-            //if there is an enemy that can attack the piece at this tile, then subtract the current piece's value from the score
-            if (tileEval.enemyThreat.length > 0) {
-                for (let threat of tileEval.enemyThreat) {
-                    console.log(`${currentInfo.piece} [${currentInfo.x},${currentInfo.y}] =X=> [${move.x}, ${move.y}] /< ${threat.piece} [${threat.x}, ${threat.y}]`);
-                }
-                moveScore -= chessPieces[currentInfo.piece].value;
-            }
-
-            //score evaluation ends here
 
             //if this is the first move of the first tile, then set the highest score to the score of this move
             if (isFirstCheck) {

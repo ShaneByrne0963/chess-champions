@@ -108,7 +108,7 @@ function tileClick(x, y) {
     //only allow for interaction if it is player 1's turn
     if (playerTurn.place === 1) {
         //checking if the tile that's been clicked on is a possible move
-        let clickedTile = document.getElementById(`tile-${x}-${y}`);
+        let clickedTile = tile.getElement(x, y);
         let clickedChildren = clickedTile.children;
 
         //if the tile has any children
