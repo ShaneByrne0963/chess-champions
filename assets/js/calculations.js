@@ -75,7 +75,7 @@ function makeMove() {
     //then, that piece will pick one of it's best moves at random
     let finalTile = movePiece.highestMoves[Math.floor(Math.random() * movePiece.highestMoves.length)];
 
-    console.log(`Final Move: ${movePiece.piece} => [${finalTile.x}, ${finalTile.y}]`);
+    console.log(`Final Move: ${movePiece.piece} [${movePiece.x}, ${movePiece.y}] => [${finalTile.x}, ${finalTile.y}] Score: ${highestScore}`);
 
     tile.move(movePiece, finalTile);
     nextTurn();

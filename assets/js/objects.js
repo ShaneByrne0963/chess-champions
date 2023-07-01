@@ -191,6 +191,14 @@ let tile = {
         //if there is an enemy that can attack the piece at this tile, then subtract the current piece's value from the score
         if (tileEval.enemyThreat.length > 0) {
             moveScore -= chessPieces[currentTile.piece].value;
+            let battleEvents = [];
+            
+            if (tileEval.allyGuarded.length > 0) {
+                console.log('Simulating Battle!');
+                let lowestEnemy = chessPieces.findLowestValue(tileEval.enemyThreat);
+                let newEnemy = tileEval.enemyThreat[lowestEnemy[1]];
+                battleEvents.push(`Enemy ${newEnemy.piece} [${newEnemy.x}, ${newEnemy.y}] attacks Ally ${currentTile.piece} [${currentTile.x}, ${currentTile.y}], -${chessPieces[currentTile.piece].value}`);
+            }
 
             //if there is an ally (or allies) guarding this tile, then a "battle" will take place.
             // 1 - the ally with the smallest value will move to this tile and destroy the enemy piece.
@@ -200,22 +208,35 @@ let tile = {
             //      will be taken from the total score
             // 3 - this loop will continue until there is no more moves on this tile from either side
             let infiniteLoopBlocker = 0;
-            while (tileEval.enemyThreat.length > 0 && tileEval.allyGuarded.length > 0 && infiniteLoopBlocker < 1000) {
-                infiniteLoopBlocker++;
-                
-                let lowestEnemy = chessPieces.findLowestValue(tileEval.enemyThreat);
-                let lowestAlly = chessPieces.findLowestValue(tileEval.allyGuarded);
+            if (tileEval.allyGuarded.length > 0) {
+                while (tileEval.enemyThreat.length > 0 && tileEval.allyGuarded.length > 0 && infiniteLoopBlocker < 1000) {
+                    infiniteLoopBlocker++;
+                    
+                    //finding the piece with the lowest value in each of the tiles
+                    let lowestEnemy = chessPieces.findLowestValue(tileEval.enemyThreat);
+                    let lowestAlly = chessPieces.findLowestValue(tileEval.allyGuarded);
 
-                moveScore += lowestEnemy[0];
-                tileEval.enemyThreat.splice(lowestEnemy[1], 1);
+                    let allyTile = tileEval.allyGuarded[lowestAlly[1]];
+                    let enemyTile = tileEval.enemyThreat[lowestEnemy[1]];
+                    battleEvents.push(`Ally ${allyTile.piece} [${allyTile.x}, ${allyTile.y}] attacks Enemy ${enemyTile.piece} [${enemyTile.x}, ${enemyTile.y}], +${lowestEnemy[0]}`);
 
-                if (tileEval.enemyThreat.length > 0) {
-                    moveScore -= lowestAlly[0];
-                    tileEval.allyGuarded.splice(lowestAlly[1], 1);
+                    moveScore += lowestEnemy[0];
+                    tileEval.enemyThreat.splice(lowestEnemy[1], 1);
+
+                    if (tileEval.enemyThreat.length > 0) {
+                        lowestEnemy = chessPieces.findLowestValue(tileEval.enemyThreat);
+                        enemyTile = tileEval.enemyThreat[lowestEnemy[1]];
+                        battleEvents.push(`Enemy ${enemyTile.piece} [${enemyTile.x}, ${enemyTile.y}] attacks Ally ${allyTile.piece} [${allyTile.x}, ${allyTile.y}], -${lowestAlly[0]}`);
+
+                        moveScore -= lowestAlly[0];
+                        tileEval.allyGuarded.splice(lowestAlly[1], 1);
+                    }
                 }
-            }
-            if (infiniteLoopBlocker >= 1000) {
-                throw `Error: Infinite loop when simulating the battle. Aborting!`
+                if (infiniteLoopBlocker >= 1000) {
+                    throw `Error: Infinite loop when simulating the battle. Aborting!`
+                }
+                battleEvents.push(`Final Score: ${moveScore}`);
+                console.log(battleEvents);
             }
         }
 
