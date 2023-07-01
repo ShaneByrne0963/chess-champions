@@ -158,8 +158,8 @@ let tile = {
             }
         }
         for (let move of chessPieces['knight'].moves) {
-            let x = tileData.x + move[0];
-            let y = tileData.y + move[1];
+            let x = tileData.x + move[1]; //because move[0] is 'normal'
+            let y = tileData.y + move[2];
             if (tile.inBounds(x, y)) {
                 let secondTile = tile.get(x, y);
                 if (secondTile.color === enemyColor) {
@@ -208,6 +208,7 @@ let tile = {
 //object that stores the information of different pieces
 let chessPieces = {
     //chess move rules:
+    // 'normal' means add the following coordinates to the current tile
     // 'attack' means the piece can only move to the tile if an enemy is on it
     // 'disarmed' means the piece cannot move to the tile if an enemy is on it
     // 'vector' means continue in that direction until an obstacle is reached
@@ -223,7 +224,8 @@ let chessPieces = {
     },
     knight: {
         //can only move in an "L"-shaped pattern
-        moves: [[-1, -2], [1, -2], [-2, -1], [2, -1], [-2, 1], [2, 1], [-1, 2], [1, 2]],
+        moves: [['normal', -1, -2], ['normal', 1, -2], ['normal', -2, -1], ['normal', 2, -1],
+            ['normal', -2, 1], ['normal', 2, 1], ['normal', -1, 2], ['normal', 1, 2]],
         value: 300
     },
     bishop: {
@@ -239,11 +241,12 @@ let chessPieces = {
     queen: {
         //moves in the four cardinal directions and to tiles diagonal to it
         moves: [['vector', 1, 0], ['vector', 1, -1], ['vector', 0, -1], ['vector', -1, -1],
-        ['vector', -1, 0], ['vector', -1, 1], ['vector', 0, 1], ['vector', 1, 1]],
+            ['vector', -1, 0], ['vector', -1, 1], ['vector', 0, 1], ['vector', 1, 1]],
         value: 900
     },
     king: {
-        moves: [[1, 0], [1, -1], [0, -1], [-1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1]],
+        moves: [['normal', 1, 0], ['normal', 1, -1], ['normal', 0, -1], ['normal', -1, -1],
+            ['normal', -1, 0], ['normal', -1, 1], ['normal', 0, 1], ['normal', 1, 1]],
         value: 2000
     },
 
@@ -347,41 +350,43 @@ let chessPieces = {
                 //the tile element that is being checked
                 let checkTile = tile.get(newX, newY);
 
-                //if the array has 3 values, then the first one is a rule. see chessPieces object for move rules
-                if (currentMove.length >= 3) {
-                    switch (currentMove[0]) {
-                        case 'attack':
-                            if (checkTile.color === enemyColor) {
+                //checking the different rules for the piece. see chessPieces object for move rules
+                switch (currentMove[0]) {
+                    //for moves that add the coordinates to its tile position
+                    case 'normal':
+                        //cannot move to a tile that has a friendly piece
+                        if (checkTile.color !== color) {
+                            moveTiles.push(checkTile);
+                        }
+                        break;
+                    //for moves that loop in a certain direction until an obstacle is found
+                    case 'vector':
+                        do {
+                            if (checkTile.color !== color) {
                                 moveTiles.push(checkTile);
                             }
-                            break;
-                        case 'disarmed':
-                            if (checkTile.color === '') {
-                                moveTiles.push(checkTile);
+                            if (checkTile.color !== '') {
+                                break;
                             }
-                            break;
-                        case 'vector':
-                            do {
-                                if (checkTile.color !== color) {
-                                    moveTiles.push(checkTile);
-                                }
-                                if (checkTile.color !== '') {
-                                    break;
-                                }
-                                newX += currentMove[1];
-                                newY += currentMove[2];
-                                if (tile.inBounds(newX, newY)) {
-                                    checkTile = tile.get(newX, newY);
-                                }
-                            } while (tile.inBounds(newX, newY));
-                            break;
-                    }
-                }
-                else {
-                    //cannot move to a tile that has a friendly piece
-                    if (checkTile.color !== color) {
-                        moveTiles.push(checkTile);
-                    }
+                            newX += currentMove[1];
+                            newY += currentMove[2];
+                            if (tile.inBounds(newX, newY)) {
+                                checkTile = tile.get(newX, newY);
+                            }
+                        } while (tile.inBounds(newX, newY));
+                        break;
+                    //for moves that are only valid if there is an enemy on the tile
+                    case 'attack':
+                        if (checkTile.color === enemyColor) {
+                            moveTiles.push(checkTile);
+                        }
+                        break;
+                    //for moves that are only valid if the tile is clear
+                    case 'disarmed':
+                        if (checkTile.color === '') {
+                            moveTiles.push(checkTile);
+                        }
+                        break;
                 }
             }
         }

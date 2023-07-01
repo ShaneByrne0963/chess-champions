@@ -33,7 +33,6 @@ function makeMove() {
             //monitoring all the tiles around it for information
             let tileEval = tile.evaluate(move, currentInfo);
             console.log(`${currentInfo.piece} [${currentInfo.x},${currentInfo.y}] =?=> [${move.x}, ${move.y}]`);
-            console.log(tileEval.debug);
 
             //if there is an enemy that can attack the piece at this tile, then subtract the current piece's value from the score
             if (tileEval.enemyThreat.length > 0) {
@@ -42,7 +41,6 @@ function makeMove() {
                 }
                 moveScore -= chessPieces[currentInfo.piece].value;
             }
-            console.log('');
 
             //score evaluation ends here
 
