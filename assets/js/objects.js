@@ -205,21 +205,27 @@ let tile = {
                 battleEvents.push(`Enemy ${newEnemy.piece} [${newEnemy.x}, ${newEnemy.y}] attacks Ally ${currentTile.piece} [${currentTile.x}, ${currentTile.y}], -${chessPieces[currentTile.piece].value}`);
             }
 
-            //if there is an ally (or allies) guarding this tile, then a "battle" will take place.
-            // 1 - the ally with the smallest value will move to this tile and destroy the enemy piece.
-            //      we will assume the enemy attacked with their lowest value piece so we will add the
-            //      smallest value to the battle score
-            // 2 - if there is another enemy that can attack this tile, the smallest value of allyGuarded
-            //      will be taken from the battle score
-            // 3 - this loop will continue until there is no more moves on this tile from either side
-            let infiniteLoopBlocker = 0;
-            if (tileEval.allyGuarded.length > 0) {
+            //finding the values of the current piece and the piece with the lowest value that is threatening it
+            //stops high value pieces moving to tiles where they can be attacked by low value pieces
+            let pieceValue = chessPieces[currentTile.piece].value;
+            let lowestEnemy = chessPieces.findLowestValue(tileEval.enemyThreat);
+            //if all the enemyThreat values are greater than or equal to the lowest value in enemyThreat and there are ally tiles protecting the piece,
+            //then simulate a battle
+            if (pieceValue <= lowestEnemy[0] && tileEval.allyGuarded.length > 0) {
+                //if there is an ally (or allies) guarding this tile, then a "battle" will take place.
+                // 1 - the ally with the smallest value will move to this tile and destroy the enemy piece.
+                //      we will assume the enemy attacked with their lowest value piece so we will add the
+                //      smallest value to the battle score
+                // 2 - if there is another enemy that can attack this tile, the smallest value of allyGuarded
+                //      will be taken from the battle score
+                // 3 - this loop will continue until there is no more moves on this tile from either side
+                let infiniteLoopBlocker = 0;
                 let battleScore = moveScore - chessPieces[currentTile.piece].value;
                 while (tileEval.enemyThreat.length > 0 && tileEval.allyGuarded.length > 0 && infiniteLoopBlocker < 1000) {
                     infiniteLoopBlocker++;
                     
                     //finding the piece with the lowest value in each of the tiles
-                    let lowestEnemy = chessPieces.findLowestValue(tileEval.enemyThreat);
+                    lowestEnemy = chessPieces.findLowestValue(tileEval.enemyThreat);
                     let lowestAlly = chessPieces.findLowestValue(tileEval.allyGuarded);
 
                     let allyTile = tileEval.allyGuarded[lowestAlly[1]];
@@ -549,7 +555,7 @@ let chessPieces = {
     /**
      * Finds the piece with the lowest value in an array
      * @param {object} pieces The tile data of all the pieces to be checked
-     * @returns An array containing the lowest value and the position the piece with that value on the array
+     * @returns An array containing the lowest value and the position the piece with that value on the array [lowestValue, lowestPosition]
      */
     findLowestValue: (pieces) => {
         let lowestValue = chessPieces[pieces[0].piece].value
