@@ -173,7 +173,11 @@ let tile = {
             if (tile.inBounds(x, y)) {
                 if (!(x === evaluatingTile.x && y === evaluatingTile.y)) {
                     let secondTile = tile.get(x, y);
-                    if (secondTile.color === enemyColor) {
+                    if (secondTile.color === evaluatingTile.color) { //if the evaluation runs into a friendly piece
+                        if (secondTile.piece === 'knight') {
+                            allyGuarded.push(secondTile);
+                        }
+                    } else if (secondTile.color === enemyColor) { //if the evaluation runs into an enemy piece
                         if (secondTile.piece === 'knight') {
                             enemyThreat.push(secondTile);
                         }
