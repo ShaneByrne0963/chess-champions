@@ -256,6 +256,16 @@ function nextTurn() {
     //if place = 2, then 3 - 2 = 1. if place = 1, then 3 - 1 = 2.
     let newTurn = 3 - playerTurn.place;
     setPlayerTurn(newTurn);
+
+    //updating the playerTurn info to the other player
+    playerTurn = getPlayerTurn();
+
+    //alerting the player if there is a check this round
+    if (isCheck(playerTurn.color)) {
+        addAnnouncement("Check");
+    }
+
+    //the ai script running if it is it's turn
     if (newTurn == 2) {
         makeMove();
     }
@@ -290,4 +300,24 @@ function clearAnnouncements() {
     while (announceChildren.length > 0) {
         announceChildren[0].remove();
     }
+}
+
+/**
+ * Returns if the king is in check for this turn
+ * @param {string} color The color of the king that will be evaluated
+ * @returns {boolean} If the king is being threatened by an enemy piece
+ */
+function isCheck(color) {
+    let kings = document.getElementsByClassName('king');
+    let kingData;
+    for (let king of kings) {
+        kingData = tile.getData(king);
+        if (kingData.color === color) {
+            break;
+        }
+    }
+
+    let kingSurroundings = tile.evaluate(kingData, kingData);
+
+    return (kingSurroundings.enemyThreat.length > 0);
 }
