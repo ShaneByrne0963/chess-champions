@@ -526,11 +526,11 @@ let chessPieces = {
     },
 
     /**
-     * Checks if an enemy (or friendly) piece can move to the tile
-     * @param {object} attackingTile The tile information that is attempting to attack
-     * @param {['rule', x, y]} move The type of move that was made to get to the attacking tile. If the move can be reversed the tile can be attacked.
-     * @param {boolean} isBeside If the attacking tile is beside the attacked tile
-     * @returns {boolean} If the attackingTile can attack using its move set
+     * Checks if a piece can move to a certain tile
+     * @param {object} attackingTile The tile information that is attempting to move
+     * @param {['rule', x, y]} move The direction the piece has to take to move to the new tile
+     * @param {boolean} isBeside If there is only one space between the piece and the tile it wants to move to
+     * @returns {boolean} If the attacking tile can attack using its move set
      */
     canAttack: (attackingTile, move, isBeside) => {
         //checking the rule of the move
