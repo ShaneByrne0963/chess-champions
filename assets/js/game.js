@@ -167,7 +167,7 @@ function tileClick(x, y) {
 
 /**
  * Gets the information about the player making the next move
- * @returns an object containing the information of the player
+ * @returns an object containing the information of the player {name: place: color}
  */
 function getPlayerTurn() {
     let currentPlayerDiv = document.getElementsByClassName('player-active')[0];
@@ -191,6 +191,33 @@ function getPlayerTurn() {
         place: playerPlace,
         color: playerColor
     };
+}
+
+/**
+ * Gets the name of the player that owns a given color
+ * @param {*} playerColor The color of the player you wish to retrieve
+ * @returns {string} The name of the player with the specified color
+ */
+function getPlayerName(playerColor) {
+    //getting the place on the ui based on the color. 'white' always goes first so it will always be 1
+    let playerPlace;
+    switch (playerColor) {
+        case 'white':
+            playerPlace = 1;
+            break;
+        case 'black':
+            playerPlace = 2;
+            break;
+        default:
+            throw `Error at getPlayerName: Invalid color ${playerColor}. Aborting!`
+    }
+
+    //finding the ui element that contains the information of the player
+    let playerUi = document.getElementById(`player${playerPlace}-ui`);
+    let playerChildren = playerUi.children;
+
+    //the name of the player
+    return playerChildren[0].innerText;
 }
 
 /**
@@ -226,6 +253,7 @@ function nextTurn() {
     }
 }
 
+
 function addAnnouncement(text) {
     let announcement = document.getElementById('announcements').children[0];
     let newAnnouncement = document.createElement('div');
@@ -239,8 +267,4 @@ function addAnnouncement(text) {
     if (announceTexts.length > announcementLimit) {
         announceTexts[0].remove();
     }
-}
-
-for (let i = 0; i < 14; i++) {
-    addAnnouncement("Hello World! " + i);
 }
