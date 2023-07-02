@@ -1,5 +1,8 @@
 //constants
-const boardSize = 8;
+const boardSize = 8; //the width and height of the board in terms of tiles
+ //the maximum number of announcements that can be displayed
+ //when this limit is reached the oldest will be destroyed
+const announcementLimit = 10;
 
 //initializes game when the page loads
 document.onload = gameInit();
@@ -230,8 +233,14 @@ function addAnnouncement(text) {
     newAnnouncement.className = 'announcement';
 
     announcement.appendChild(newAnnouncement);
+
+    //if the amount of announcements have exceeded the limit, the oldest will be deleted
+    let announceTexts = announcement.children;
+    if (announceTexts.length > announcementLimit) {
+        announceTexts[0].remove();
+    }
 }
 
-for (let i = 0; i < 10; i++) {
+for (let i = 0; i < 14; i++) {
     addAnnouncement("Hello World! " + i);
 }
