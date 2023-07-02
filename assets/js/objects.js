@@ -325,7 +325,7 @@ let tile = {
     }
 };
 
-//object that stores the information of different pieces
+//object that stores piece functions and the information of different pieces
 let chessPiece = {
     //chess move rules:
     // 'normal' means add the following coordinates to the current tile

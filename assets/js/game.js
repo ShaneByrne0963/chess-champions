@@ -238,8 +238,13 @@ function setPlayerTurn(playerPlace) {
         //finding the player ui div with the id that contains the playerPlace number
         let newTurnDiv = document.getElementById(`player${playerPlace}-ui`);
         newTurnDiv.className = 'player-active';
+
+        //updating the player turn heading to display the correct player name
+        let turnHeading = document.getElementById('player-turn').children[0]; //the first child is the h2 element
+        let newHeading = newTurnDiv.children[0].innerText;
+        turnHeading.innerText = `It is ${newHeading}'s turn`;
     } else {
-        throw `Error in setPlayerTurn: Invalid input ${playerPlace} (Should be either 1 or 2)`;
+        throw `Error in setPlayerTurn: Invalid input ${playerPlace} (Should be either 1 or 2). Aborting..`;
     }
 }
 
