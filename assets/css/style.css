@@ -104,7 +104,8 @@ body {
 
 #announcements>div {
     position: absolute;
-    bottom: 16px;    
+    bottom: 16px;
+    font-size: 1.8rem;
 }
 
 /* game options for restarting and returning to the main menu */

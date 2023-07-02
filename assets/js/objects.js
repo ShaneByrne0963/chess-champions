@@ -521,6 +521,7 @@ let chessPiece = {
         if (tileData.piece === 'pawnNew') {
             tileData.piece = 'pawn';
         }
+        //creating the url to access the particular piece
         deadPiece.style.backgroundImage = `url(assets/images/chess-pieces/${tileData.color}-${tileData.piece}.png)`;
 
         let graveyardDiv;
@@ -530,6 +531,14 @@ let chessPiece = {
             graveyardDiv = document.getElementById('player2-graveyard');
         }
         graveyardDiv.appendChild(deadPiece);
+
+        //announcing the piece elimination in the ui
+        let enemyColor = (tileData.color === 'white') ? 'black' : 'white';
+
+        //converting the first letter of the destroyed piece to uppercase
+        let destroyedPiece = tileData.piece[0].toUpperCase() + tileData.piece.slice(1);
+
+        addAnnouncement(`${getPlayerName(enemyColor)} eliminated ${getPlayerName(tileData.color)}'s ${destroyedPiece}`);
     },
 
     /**
