@@ -207,6 +207,29 @@ let tile = {
         };
     },
 
+    evaluateWithMove (tileData, evaluatingTile, tileFrom, tileTo) {
+        //temporarily swap the classes of tileFrom and tileTo, evaluate the tile, and then swap them back
+        let elementFrom = tile.getElement(tileFrom.x, tileFrom.y);
+        let elementTo = tile.getElement(tileTo.x, tileTo.y);
+
+        //getting the classes of the tile movement
+        let classFrom = elementFrom.className;
+        let classTo = elementTo.className;
+
+        //and swapping them temporarily. elementFrom's class will be set to blank in case there are pieces on both tiles
+        elementFrom.className = '';
+        elementTo.className = classFrom;
+
+        //evaluating tileData after the move has been made
+        let evaluation = tile.evaluate(tileData, evaluatingTile);
+
+        //swapping the classes back
+        elementFrom.className = classTo;
+        elementTo.className = classFrom;
+
+        return evaluation;
+    },
+
     getScore: (currentTile, moveTile) => {
         //each move will have a score
         let moveScore = 0;
@@ -417,6 +440,7 @@ let chessPiece = {
         //the array that will store all the tiles the piece can move to
         let moveTiles = [];
 
+        //getting the move set of the piece
         let moves = chessPiece[piece].moves;
 
         //getting the enemy's color
