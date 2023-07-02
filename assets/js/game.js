@@ -47,6 +47,9 @@ function startGame() {
     //player1 always starts first
     setPlayerTurn(1);
 
+    //clears all the announcements from the ui
+    clearAnnouncements();
+
     //removing any piece images from the graveyard
     let graveyardPieces = document.getElementsByClassName('piece-dead');
     while (graveyardPieces.length > 0) {
@@ -253,7 +256,10 @@ function nextTurn() {
     }
 }
 
-
+/**
+ * Adds a new HTML element to the announcements section containing some text
+ * @param {string} text the test you wish to display in the announcements
+ */
 function addAnnouncement(text) {
     let announcement = document.getElementById('announcements').children[0];
     let newAnnouncement = document.createElement('div');
@@ -266,5 +272,17 @@ function addAnnouncement(text) {
     let announceTexts = announcement.children;
     if (announceTexts.length > announcementLimit) {
         announceTexts[0].remove();
+    }
+}
+
+/**
+ * Clears all announcements in the ui
+ */
+function clearAnnouncements() {
+    //getting the grandchildren of the announcement div
+    let announceChildren = document.getElementById('announcements').children[0].children;
+
+    while (announceChildren.length > 0) {
+        announceChildren[0].remove();
     }
 }
