@@ -196,7 +196,6 @@ let tile = {
 
         //if there is an enemy that can attack the piece at this tile, then subtract the current piece's value from the score
         if (tileEval.enemyThreat.length > 0) {
-            moveScore -= chessPieces[currentTile.piece].value;
             let battleEvents = [];
             
             if (tileEval.allyGuarded.length > 0) {
@@ -209,12 +208,13 @@ let tile = {
             //if there is an ally (or allies) guarding this tile, then a "battle" will take place.
             // 1 - the ally with the smallest value will move to this tile and destroy the enemy piece.
             //      we will assume the enemy attacked with their lowest value piece so we will add the
-            //      smallest value to the total score
+            //      smallest value to the battle score
             // 2 - if there is another enemy that can attack this tile, the smallest value of allyGuarded
-            //      will be taken from the total score
+            //      will be taken from the battle score
             // 3 - this loop will continue until there is no more moves on this tile from either side
             let infiniteLoopBlocker = 0;
             if (tileEval.allyGuarded.length > 0) {
+                let battleScore = moveScore - chessPieces[currentTile.piece].value;
                 while (tileEval.enemyThreat.length > 0 && tileEval.allyGuarded.length > 0 && infiniteLoopBlocker < 1000) {
                     infiniteLoopBlocker++;
                     
@@ -226,7 +226,7 @@ let tile = {
                     let enemyTile = tileEval.enemyThreat[lowestEnemy[1]];
                     battleEvents.push(`Ally ${allyTile.piece} [${allyTile.x}, ${allyTile.y}] attacks Enemy ${enemyTile.piece} [${enemyTile.x}, ${enemyTile.y}], +${lowestEnemy[0]}`);
 
-                    moveScore += lowestEnemy[0];
+                    battleScore += lowestEnemy[0];
                     tileEval.enemyThreat.splice(lowestEnemy[1], 1);
 
                     if (tileEval.enemyThreat.length > 0) {
@@ -234,15 +234,26 @@ let tile = {
                         enemyTile = tileEval.enemyThreat[lowestEnemy[1]];
                         battleEvents.push(`Enemy ${enemyTile.piece} [${enemyTile.x}, ${enemyTile.y}] attacks Ally ${allyTile.piece} [${allyTile.x}, ${allyTile.y}], -${lowestAlly[0]}`);
 
-                        moveScore -= lowestAlly[0];
+                        battleScore -= lowestAlly[0];
                         tileEval.allyGuarded.splice(lowestAlly[1], 1);
                     }
                 }
                 if (infiniteLoopBlocker >= 1000) {
                     throw `Error: Infinite loop when simulating the battle. Aborting!`
                 }
-                battleEvents.push(`Final Score: ${moveScore}`);
+                battleEvents.push(`Final Score: ${battleScore}`);
+
+                //if the battlescore is less than 0, then the enemy has the upper hand at this tile
+                if (battleScore < 0) {
+                    moveScore -= chessPieces[currentTile.piece].value;
+                    battleEvents.push(`The Enemy Wins!`);
+                } else {
+                    battleEvents.push(`AI Wins!`);
+                }
+
                 console.log(battleEvents);
+            } else {
+                moveScore -= chessPieces[currentTile.piece].value;
             }
         }
 
