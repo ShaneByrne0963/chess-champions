@@ -149,14 +149,16 @@ let tile = {
                 //stop the vector if it comes into contact with itself
                 if (!(x === evaluatingTile.x && y === evaluatingTile.y)) {
                     let secondTile = tile.get(x, y);
-                    
+
                     if (secondTile.color === evaluatingTile.color) { //if the evaluation runs into a friendly piece
-                        if (chessPieces.canBeAttacked(secondTile, move, firstMove)) {
+                        //if the friendly piece can attack the tile if an enemy moves to it
+                        if (chessPieces.canAttack(secondTile, move, firstMove)) {
                             allyGuarded.push(secondTile);
                         }
                         break;
                     } else if (secondTile.color === enemyColor) { //if the evaluation runs into an enemy piece
-                        if (chessPieces.canBeAttacked(secondTile, move, firstMove)) {
+                        //if the enemy piece can attack the piece at this tile
+                        if (chessPieces.canAttack(secondTile, move, firstMove)) {
                             enemyThreat.push(secondTile);
                         }
                         break;
@@ -201,7 +203,7 @@ let tile = {
         //if there is an enemy that can attack the piece at this tile, then subtract the current piece's value from the score
         if (tileEval.enemyThreat.length > 0) {
             let battleEvents = [];
-            
+
             if (tileEval.allyGuarded.length > 0) {
                 console.log('Simulating Battle!');
                 let lowestEnemy = chessPieces.findLowestValue(tileEval.enemyThreat);
@@ -227,7 +229,7 @@ let tile = {
                 let battleScore = moveScore - chessPieces[currentTile.piece].value;
                 while (tileEval.enemyThreat.length > 0 && tileEval.allyGuarded.length > 0 && infiniteLoopBlocker < 1000) {
                     infiniteLoopBlocker++;
-                    
+
                     //finding the piece with the lowest value in each of the tiles
                     lowestEnemy = chessPieces.findLowestValue(tileEval.enemyThreat);
                     let lowestAlly = chessPieces.findLowestValue(tileEval.allyGuarded);
@@ -249,7 +251,7 @@ let tile = {
                     }
                 }
                 if (infiniteLoopBlocker >= 1000) {
-                    throw `Error: Infinite loop when simulating the battle. Aborting!`
+                    throw `Error: Infinite loop when simulating the battle. Aborting!`;
                 }
                 battleEvents.push(`Final Score: ${battleScore}`);
 
@@ -321,7 +323,7 @@ let chessPieces = {
     knight: {
         //can only move in an "L"-shaped pattern
         moves: [['normal', -1, -2], ['normal', 1, -2], ['normal', -2, -1], ['normal', 2, -1],
-            ['normal', -2, 1], ['normal', 2, 1], ['normal', -1, 2], ['normal', 1, 2]],
+        ['normal', -2, 1], ['normal', 2, 1], ['normal', -1, 2], ['normal', 1, 2]],
         value: 300
     },
     bishop: {
@@ -337,12 +339,12 @@ let chessPieces = {
     queen: {
         //moves in the four cardinal directions and to tiles diagonal to it
         moves: [['vector', 1, 0], ['vector', 1, -1], ['vector', 0, -1], ['vector', -1, -1],
-            ['vector', -1, 0], ['vector', -1, 1], ['vector', 0, 1], ['vector', 1, 1]],
+        ['vector', -1, 0], ['vector', -1, 1], ['vector', 0, 1], ['vector', 1, 1]],
         value: 900
     },
     king: {
         moves: [['normal', 1, 0], ['normal', 1, -1], ['normal', 0, -1], ['normal', -1, -1],
-            ['normal', -1, 0], ['normal', -1, 1], ['normal', 0, 1], ['normal', 1, 1]],
+        ['normal', -1, 0], ['normal', -1, 1], ['normal', 0, 1], ['normal', 1, 1]],
         value: 2000
     },
 
@@ -523,17 +525,14 @@ let chessPieces = {
         }
     },
 
-    canAttack: () => {
-
-    },
-
     /**
      * Checks if an enemy (or friendly) piece can move to the tile
-     * @param {object} attackingTile The tile where the piece that could attack is
+     * @param {object} attackingTile The tile information that is attempting to attack
      * @param {['rule', x, y]} move The type of move that was made to get to the attacking tile. If the move can be reversed the tile can be attacked.
-     * @param {boolean} isBeside If the attacking tile is beside the current tile
+     * @param {boolean} isBeside If the attacking tile is beside the attacked tile
+     * @returns {boolean} If the attackingTile can attack using its move set
      */
-    canBeAttacked: (attackingTile, move, isBeside) => {
+    canAttack: (attackingTile, move, isBeside) => {
         //checking the rule of the move
         switch (move[0]) {
             //checks if the attacker is a knight
@@ -550,8 +549,8 @@ let chessPieces = {
                     || (isDiagonal && attackingTile.piece === 'bishop')
                     || (!isDiagonal && attackingTile.piece === 'rook')
                     || (isBeside && (attackingTile.piece === 'king'
-                    || (vector1 !== 0 && vector2 === -chessPieces.getForwardDirection(attackingTile.color)
-                    && attackingTile.piece.includes('pawn')))));
+                        || (vector1 !== 0 && vector2 === -chessPieces.getForwardDirection(attackingTile.color)
+                            && attackingTile.piece.includes('pawn')))));
                 break;
         }
     },
@@ -562,7 +561,7 @@ let chessPieces = {
      * @returns An array containing the lowest value and the position the piece with that value on the array [lowestValue, lowestPosition]
      */
     findLowestValue: (pieces) => {
-        let lowestValue = chessPieces[pieces[0].piece].value
+        let lowestValue = chessPieces[pieces[0].piece].value;
         let lowestPosition = 0;
 
         for (let i = 1; i < pieces.length; i++) {
