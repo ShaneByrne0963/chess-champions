@@ -142,6 +142,8 @@ let tile = {
             let vector1 = move[1]; //because move[0] is the rule 'vector'
             let vector2 = move[2];
             let firstMove = true;
+            //reversing the move to evaluate pieces that can attack the evaluating piece at this tile
+            let moveReverse = [move[0], -move[1], -move[2]];
 
             x += vector1;
             y += vector2;
@@ -154,17 +156,17 @@ let tile = {
 
                     if (secondTile.color === evaluatingTile.color) { //if the evaluation runs into a friendly piece
                         //if the friendly piece can attack the tile if an enemy moves to it
-                        if (chessPieces.canAttack(secondTile, move, firstMove)) {
+                        if (chessPieces.canAttack(secondTile, moveReverse, firstMove)) {
                             allyGuarded.push(secondTile);
                         }
                         break;
                     } else if (secondTile.color === enemyColor) { //if the evaluation runs into an enemy piece
                         //if the enemy piece can be attacked by the piece at this tile
-                        if (chessPieces.canAttack(tileData, move, firstMove)) {
+                        if (chessPieces.canAttack(evaluatingTile, move, firstMove)) {
                             enemyTarget.push(secondTile);
                         }
                         //if the enemy piece can attack the piece at this tile
-                        if (chessPieces.canAttack(secondTile, move, firstMove)) {
+                        if (chessPieces.canAttack(secondTile, moveReverse, firstMove)) {
                             enemyThreat.push(secondTile);
                         }
                         break;
@@ -187,7 +189,7 @@ let tile = {
                         }
                     } else if (secondTile.color === enemyColor) { //if the evaluation runs into an enemy piece
                         //if the current piece can attack the enemy piece at this tile, it is a target
-                        if (tileData.piece === 'knight') {
+                        if (evaluatingTile.piece === 'knight') {
                             enemyTarget.push(secondTile);
                         }
                         //if the enemy piece can attack the current piece at this tile, it is a threat
@@ -547,7 +549,7 @@ let chessPieces = {
 
     /**
      * Checks if a piece can move to a certain tile
-     * @param {object} attackingTile The tile information that is attempting to move
+     * @param {object} attackingTile The tile information that is checking if it can move
      * @param {['rule', x, y]} move The direction the piece has to take to move to the new tile
      * @param {boolean} isBeside If there is only one space between the piece and the tile it wants to move to
      * @returns {boolean} If the attacking tile can attack using its move set
@@ -569,7 +571,7 @@ let chessPieces = {
                     || (isDiagonal && attackingTile.piece === 'bishop')
                     || (!isDiagonal && attackingTile.piece === 'rook')
                     || (isBeside && (attackingTile.piece === 'king'
-                        || (vector1 !== 0 && vector2 === -chessPieces.getForwardDirection(attackingTile.color)
+                    || (vector1 !== 0 && vector2 === chessPieces.getForwardDirection(attackingTile.color)
                             && attackingTile.piece.includes('pawn')))));
                 break;
         }
