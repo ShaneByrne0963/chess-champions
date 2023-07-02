@@ -45,28 +45,26 @@ body {
 #ui-area {
     background-color: gray;
     height: 100vh;
-    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto 1fr 1fr auto;
+}
+
+#ui-area h3 {
+    font-size: 1.5em;
 }
 
 /* player turn display */
-#ui-area h2 {
+#player-turn {
     padding: 16px;
+    grid-column-start: 1;
+    grid-column-end: 3;
 }
 
-/* keeps track of each player's destroyed pieces and time remaining */
-#players-ui {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto;
-}
-
-#players-ui>div {
+#player1-ui,
+#player2-ui {
     padding: 16px;
     border: 1px solid black;
-}
-
-#players-ui h3 {
-    font-size: 1.5em;
 }
 
 #player1-ui span {
@@ -83,10 +81,6 @@ body {
     background-color: #555555;
 }
 
-.graveyard {
-    min-height: 240px;
-}
-
 .piece-dead {
     width: 64px;
     height: 64px;
@@ -100,25 +94,18 @@ body {
 
 #announcements {
     padding: 16px;
-    overflow: hidden; /* hides any text that escapes the div's bounds */
+    overflow: hidden;
+    /* hides any text that escapes the div's bounds */
     position: relative;
+    grid-column-start: 1;
+    grid-column-end: 3;
+    border-bottom: 1px solid black;
 }
 
 /* game options for restarting and returning to the main menu */
-#game-options {
-    width: 100%;
-    height: 64px;
-    padding: 16px 0;
-    position: absolute;
-    bottom: 0;
-    background-color: lightgray;
-    text-align: center;
-}
-
-#game-options>button {
-    margin: 0 10%;
-    height: 100%;
-    padding: 0 16px;
+#ui-area>button {
+    margin: 16px auto;
+    padding: 16px;
 }
 
 /* chess board */
