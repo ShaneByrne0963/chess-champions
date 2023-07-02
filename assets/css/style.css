@@ -96,6 +96,14 @@ body {
     background-size: cover;
 }
 
+/* announcements */
+
+#announcements {
+    padding: 16px;
+    overflow: hidden; /* hides any text that escapes the div's bounds */
+    position: relative;
+}
+
 /* game options for restarting and returning to the main menu */
 #game-options {
     width: 100%;

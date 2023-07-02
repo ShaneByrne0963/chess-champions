@@ -222,3 +222,16 @@ function nextTurn() {
         makeMove();
     }
 }
+
+function addAnnouncement(text) {
+    let announcement = document.getElementById('announcements').children[0];
+    let newAnnouncement = document.createElement('div');
+    newAnnouncement.innerText = text;
+    newAnnouncement.className = 'announcement';
+
+    announcement.appendChild(newAnnouncement);
+}
+
+for (let i = 0; i < 10; i++) {
+    addAnnouncement("Hello World! " + i);
+}
