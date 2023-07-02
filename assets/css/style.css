@@ -102,7 +102,13 @@ body {
     border-bottom: 1px solid black;
 }
 
+#announcements>div {
+    position: absolute;
+    bottom: 16px;    
+}
+
 /* game options for restarting and returning to the main menu */
+
 #ui-area>button {
     margin: 16px auto;
     padding: 16px;
