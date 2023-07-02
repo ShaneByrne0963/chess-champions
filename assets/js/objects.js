@@ -367,7 +367,7 @@ let chessPiece = {
     king: {
         moves: [['normal', 1, 0], ['normal', 1, -1], ['normal', 0, -1], ['normal', -1, -1],
         ['normal', -1, 0], ['normal', -1, 1], ['normal', 0, 1], ['normal', 1, 1]],
-        value: 2000
+        value: 1500
     },
 
     /**
