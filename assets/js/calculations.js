@@ -25,7 +25,7 @@ function makeMove() {
         //stores any moves that have the same score as the highest score
         currentInfo.highestMoves = [];
         //gets all of the tiles the current piece can move to
-        let tileMoves = chessPieces.getAllMoveTiles(currentInfo.x, currentInfo.y, currentInfo.piece, currentInfo.color);
+        let tileMoves = chessPiece.getAllMoveTiles(currentInfo.x, currentInfo.y, currentInfo.piece, currentInfo.color);
 
         //looping through the moves
         for (let move of tileMoves) {
@@ -35,7 +35,7 @@ function makeMove() {
             //if there is an enemy on the tile the piece can destroy, then the value of that piece will be added to the score
             //the color of the piece doesn't have to be checked 
             if (move.piece !== '') {
-                moveScore += chessPieces[move.piece].value;
+                moveScore += chessPiece[move.piece].value;
             }
 
             //finally, subtracting the current score from the new score

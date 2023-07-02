@@ -138,9 +138,9 @@ function tileClick(x, y) {
 
             //getting the tile that was clicked on
             let clickedClasses = clickedTile.classList;
-            let clickedPiece = chessPieces.getPieceFromClass(clickedClasses);
+            let clickedPiece = chessPiece.getPieceFromClass(clickedClasses);
 
-            //converting the class name for new pawns to the chessPieces object key to access it
+            //converting the class name for new pawns to the chessPiece object key to access it
             if (clickedPiece === 'pawn-new') {
                 clickedPiece = 'pawnNew';
             }
@@ -152,7 +152,7 @@ function tileClick(x, y) {
                 clickedTile.appendChild(selectDiv);
 
                 //show all the available moves the selected piece can take
-                let possibleMoves = chessPieces.getAllMoveTiles(x, y, clickedPiece, 'white');
+                let possibleMoves = chessPiece.getAllMoveTiles(x, y, clickedPiece, 'white');
 
                 for (let move of possibleMoves) {
                     let moveOption = document.createElement('div');
@@ -246,7 +246,7 @@ function setPlayerTurn(playerPlace) {
 function nextTurn() {
     let playerTurn = getPlayerTurn();
     //if place = 2, then 3 - 2 = 1. if place = 1, then 3 - 1 = 2.
-    let newTurn = 3 - playerTurn.place
+    let newTurn = 3 - playerTurn.place;
     setPlayerTurn(newTurn);
     if (newTurn == 2) {
         makeMove();
