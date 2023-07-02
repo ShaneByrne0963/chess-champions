@@ -124,6 +124,8 @@ let tile = {
      * @returns An object {enemyThreat} containing the relationships between the surrounding pieces
      */
     evaluate: (tileData, evaluatingTile) => {
+        //if there are any enemies that can be attacked attack the piece if it moves to that tile, it will be stored in this array
+        let enemyTarget = [];
         //if there are any enemies that can attack the piece if it moves to that tile, it will be stored in this array
         let enemyThreat = [];
         //if there are any allies that can attack this tile if an enemy attacks it, it will be stored in this array
@@ -157,6 +159,10 @@ let tile = {
                         }
                         break;
                     } else if (secondTile.color === enemyColor) { //if the evaluation runs into an enemy piece
+                        //if the enemy piece can be attacked by the piece at this tile
+                        if (chessPieces.canAttack(tileData, move, firstMove)) {
+                            enemyTarget.push(secondTile);
+                        }
                         //if the enemy piece can attack the piece at this tile
                         if (chessPieces.canAttack(secondTile, move, firstMove)) {
                             enemyThreat.push(secondTile);
@@ -180,6 +186,11 @@ let tile = {
                             allyGuarded.push(secondTile);
                         }
                     } else if (secondTile.color === enemyColor) { //if the evaluation runs into an enemy piece
+                        //if the current piece can attack the enemy piece at this tile, it is a target
+                        if (tileData.piece === 'knight') {
+                            enemyTarget.push(secondTile);
+                        }
+                        //if the enemy piece can attack the current piece at this tile, it is a threat
                         if (secondTile.piece === 'knight') {
                             enemyThreat.push(secondTile);
                         }
@@ -188,6 +199,7 @@ let tile = {
             }
         }
         return {
+            enemyTarget: enemyTarget,
             enemyThreat: enemyThreat,
             allyGuarded: allyGuarded
         };
@@ -199,6 +211,12 @@ let tile = {
 
         //monitoring all the tiles around it for information
         let tileEval = tile.evaluate(moveTile, currentTile);
+
+        //adding 10% of the values of every target on this tile
+        for (let target of tileEval.enemyTarget) {
+            moveScore += chessPieces[target.piece].value / 10;
+            console.log(`Ally ${currentTile.piece} [${currentTile.x}, ${currentTile.y}] Sees ${target.piece} [${target.x}, ${target.y}], + ${chessPieces[target.piece].value / 10}`);
+        }
 
         //if there is an enemy that can attack the piece at this tile, then subtract the current piece's value from the score
         if (tileEval.enemyThreat.length > 0) {
@@ -215,6 +233,7 @@ let tile = {
             //stops high value pieces moving to tiles where they can be attacked by low value pieces
             let pieceValue = chessPieces[currentTile.piece].value;
             let lowestEnemy = chessPieces.findLowestValue(tileEval.enemyThreat);
+
             //if all the enemyThreat values are greater than or equal to the lowest value in enemyThreat and there are ally tiles protecting the piece,
             //then simulate a battle
             if (pieceValue <= lowestEnemy[0] && tileEval.allyGuarded.length > 0) {
@@ -226,7 +245,8 @@ let tile = {
                 //      will be taken from the battle score
                 // 3 - this loop will continue until there is no more moves on this tile from either side
                 let infiniteLoopBlocker = 0;
-                let battleScore = moveScore - chessPieces[currentTile.piece].value;
+                //because the battle starts with the enemy attacking the current piece, we will start by taking away the piece's value
+                let battleScore = -chessPieces[currentTile.piece].value;
                 while (tileEval.enemyThreat.length > 0 && tileEval.allyGuarded.length > 0 && infiniteLoopBlocker < 1000) {
                     infiniteLoopBlocker++;
 
