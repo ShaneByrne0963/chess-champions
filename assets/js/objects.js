@@ -739,15 +739,13 @@ let chessPiece = {
         if (pawnData.color === 'white') {
             for (let grave of graves) {
                 //setting the pawn position and color in the session storage to be accessed again when the player clicks on a graveyard icon
-                sessionStorage.setItem('pawn-position', `${pawnData.x}-${pawnData.y}`);
-                sessionStorage.setItem('pawn-color', pawnData.color);
+                sessionStorage.setItem('pawnPosition', `${pawnData.x}-${pawnData.y}`);
+                sessionStorage.setItem('pawnColor', pawnData.color);
 
                 grave.addEventListener('click', revivePlayer);
 
                 //adding the reviving class to the graveyard pieces to change the mouse cursor when you hover over it
-                let graveClass = grave.className;
-                graveClass += ' reviving';
-                grave.className = graveClass;
+                grave.classList.add('reviving');
             }
         } else {
 

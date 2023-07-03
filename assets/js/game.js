@@ -336,7 +336,29 @@ function revivePlayer(event) {
             typeClass = myClass;
         }
     }
-
     //remove the 'dead-' part and you have the the piece name
-    typeClass.replace('dead-', '');
+    typeClass = typeClass.replace('dead-', '');
+
+    //getting the information saved to session storage and changing the pawn position to the new piece
+    let pawnLocation = sessionStorage.getItem('pawnPosition');
+    let pawnX = parseInt(pawnLocation[0]);
+    let pawnY = parseInt(pawnLocation[2]);
+    let pawnColor = sessionStorage.getItem('pawnColor');
+
+    //setting the tile where the pawn moved to the selected grave piece
+    tile.set(pawnX, pawnY, typeClass, pawnColor);
+
+    //clearing the session storage data
+    sessionStorage.removeItem('pawnPosition');
+    sessionStorage.removeItem('pawnColor');
+
+    //removing the grave piece from the graveyard
+    this.remove();
+
+    //removing the revive class and event listeners from the graveyard pieces once a piece has been picked
+    let reviveButtons = document.getElementsByClassName('reviving');
+    for (let reviveButton of reviveButtons) {
+        reviveButton.classList.remove('reviving');
+        reviveButton.removeEventListener('click', revivePlayer);
+    }
 }
