@@ -111,8 +111,8 @@ function startGame() {
 function tileClick(x, y) {
     let playerTurn = getPlayerTurn();
 
-    //only allow for interaction if it is player 1's turn
-    if (playerTurn.place === 1) {
+    //only allow for interaction if it is player 1's turn and the game hasn't ended
+    if (playerTurn.place === 1 && !isCheckmate(playerTurn.color)) {
         //checking if the tile that's been clicked on is a possible move
         let clickedTile = tile.getElement(x, y);
         let clickedChildren = clickedTile.children;
@@ -229,36 +229,25 @@ function setPlayerTurn(playerPlace) {
  */
 function nextTurn() {
     let playerTurn = getPlayerTurn();
+    //for display if the other player is in checkmate
+    let lastPlayerName = playerTurn.name;
     //if place = 2, then 3 - 2 = 1. if place = 1, then 3 - 1 = 2.
     let newTurn = 3 - playerTurn.place;
     setPlayerTurn(newTurn);
 
     //updating the playerTurn info to the other player
     playerTurn = getPlayerTurn();
-    let checkmate = false;
+    let checkmate = isCheckmate(playerTurn.color);
 
     //alerting the player if there is a check this round
     if (isCheck(playerTurn.color)) {
         //looking for a checkmate
-        let hasMove = false;
-        //getting all of the pieces to check if there is a move that will save the king
-        let playerPieces = chessPiece.getAll(playerTurn.color);
-
-        for (let playerPiece of playerPieces) {
-            let pieceMoves = chessPiece.getAllMoveTiles(playerPiece);
-
-            //if there is a valid move, then it is not checkmate
-            if (pieceMoves.length > 0) {
-                hasMove = true;
-                break;
-            }
-        }
-
-        if (hasMove) {
-            addAnnouncement("Check");
-        } else {
+        
+        if (checkmate) {
             checkmate = true;
-            addAnnouncement(`Checkmate! ${playerTurn.name} wins!`);
+            addAnnouncement(`Checkmate! ${lastPlayerName} wins!`);
+        } else {
+            addAnnouncement("Check");
         }
     }
 
@@ -312,4 +301,27 @@ function isCheck(color) {
     let kingSurroundings = tile.evaluate(kingData, kingData);
 
     return (kingSurroundings.enemyThreat.length > 0);
+}
+
+/**
+ * Gets if a player is in checkmate
+ * @param {string} color The color of the player that could be in checkmate
+ * @returns {boolean} If the player is in checkmate
+ */
+function isCheckmate(color) {
+    let hasMove = false;
+    //getting all of the pieces to check if there is a move that will save the king
+    let playerPieces = chessPiece.getAll(color);
+
+    for (let playerPiece of playerPieces) {
+        let pieceMoves = chessPiece.getAllMoveTiles(playerPiece);
+
+        //if there is a valid move, then it is not checkmate
+        if (pieceMoves.length > 0) {
+            hasMove = true;
+            break;
+        }
+    }
+
+    return !hasMove;
 }
