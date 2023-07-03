@@ -235,17 +235,38 @@ function nextTurn() {
 
     //updating the playerTurn info to the other player
     playerTurn = getPlayerTurn();
+    let checkmate = false;
 
     //alerting the player if there is a check this round
     if (isCheck(playerTurn.color)) {
         //looking for a checkmate
-        
-        addAnnouncement("Check");
+        let hasMove = false;
+        //getting all of the pieces to check if there is a move that will save the king
+        let playerPieces = chessPiece.getAll(playerTurn.color);
+
+        for (let playerPiece of playerPieces) {
+            let pieceMoves = chessPiece.getAllMoveTiles(playerPiece);
+
+            //if there is a valid move, then it is not checkmate
+            if (pieceMoves.length > 0) {
+                hasMove = true;
+                break;
+            }
+        }
+
+        if (hasMove) {
+            addAnnouncement("Check");
+        } else {
+            checkmate = true;
+            addAnnouncement(`Checkmate! ${playerTurn.name} wins!`);
+        }
     }
 
     //the ai script running if it is it's turn
-    if (newTurn == 2) {
-        makeMove();
+    if (!checkmate) {
+        if (newTurn == 2) {
+            makeMove();
+        }
     }
 }
 
