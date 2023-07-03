@@ -238,6 +238,8 @@ function nextTurn() {
 
     //alerting the player if there is a check this round
     if (isCheck(playerTurn.color)) {
+        //looking for a checkmate
+        
         addAnnouncement("Check");
     }
 

@@ -702,5 +702,21 @@ let chessPiece = {
         }
 
         return [lowestValue, lowestPosition];
+    },
+
+    /**
+     * Gets all the pieces on the board of a certain color
+     * @param {string} color The color of the pieces
+     * @returns {object} An array of all the pieces
+     */
+    getAll: (color) => {
+        let pieceElements = document.getElementsByClassName(color);
+        let pieces = [];
+
+        for (let element of pieceElements) {
+            pieces.push(tile.getData(element));
+        }
+
+        return pieces;
     }
 };
