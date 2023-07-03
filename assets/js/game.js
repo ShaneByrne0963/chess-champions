@@ -284,14 +284,7 @@ function clearAnnouncements() {
  * @returns {boolean} If the king is being threatened by an enemy piece
  */
 function isCheck(color) {
-    let kings = document.getElementsByClassName('king');
-    let kingData;
-    for (let king of kings) {
-        kingData = tile.getData(king);
-        if (kingData.color === color) {
-            break;
-        }
-    }
+    let kingData = tile.findKing(color);
 
     let kingSurroundings = tile.evaluate(kingData, kingData);
 

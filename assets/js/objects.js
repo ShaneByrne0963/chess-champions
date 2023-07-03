@@ -48,6 +48,23 @@ let tile = {
     },
 
     /**
+     * Finds the tile data of the king with the specified color
+     * @param {string} color The color of the king
+     * @returns {object} The tile data of the king
+     */
+    findKing: (color) => {
+        let kings = document.getElementsByClassName('king');
+        let kingData;
+        for (let king of kings) {
+            kingData = tile.getData(king);
+            if (kingData.color === color) {
+                break;
+            }
+        }
+        return kingData;
+    },
+
+    /**
      * Sets a chess piece at a certain position
      * @param {*} x The x position of the tile (from 0 to boardSize - 1)
      * @param {*} y The y position of the tile (from 0 to boardSize - 1) 
@@ -482,6 +499,8 @@ let chessPiece = {
             let availableTiles = chessPiece.getTilesFromMove(tileData, currentMove);
 
             for (let currentTile of availableTiles) {
+                //only add the tile if moving there doesn't result in a check
+
                 moveTiles.push(currentTile);
             }
         }
