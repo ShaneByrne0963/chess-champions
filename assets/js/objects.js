@@ -357,7 +357,7 @@ let tile = {
             selectTile.appendChild(selectDiv);
 
             //show all the available moves the selected piece can take
-            let possibleMoves = chessPiece.getAllMoveTiles(selectData.x, selectData.y, selectData.piece, selectData.color);
+            let possibleMoves = chessPiece.getAllMoveTiles(selectData);
 
             for (let move of possibleMoves) {
                 let moveOption = document.createElement('div');
@@ -467,58 +467,51 @@ let chessPiece = {
 
     /**
      * Will return all the tiles a piece can move to within it's move set
-     * @param {*} x The x position of the piece on the board
-     * @param {*} y The y position of the piece on the board
-     * @param {*} piece The piece that will be making the move
-     * @param {*} color The color of the selected piece
+     * @param {object} tileData The data in object form {x, y, piece, color} of the piece
      * @returns An array of all the tiles the piece can move to
      */
-    getAllMoveTiles: (x, y, piece, color) => {
+    getAllMoveTiles: (tileData) => {
         //the array that will store all the tiles the piece can move to
         let moveTiles = [];
 
         //getting the move set of the piece
-        let moves = chessPiece[piece].moves;
+        let moves = chessPiece[tileData.piece].moves;
 
         //getting the enemy's color
-        let enemyColor;
-        if (color === 'white') {
-            enemyColor = 'black';
-        } else {
-            enemyColor = 'white';
-        }
+        let enemyColor = (tileData.color === 'white') ? 'black' : 'white';
 
         for (let currentMove of moves) {
             //declaring the variables storing the coordinates of the tiles to check
-            let newX = x + currentMove[currentMove.length - 2]; //the x coordinate is always the second last element in a moves array
+            let newX = tileData.x + currentMove[1]; //the x coordinate is always the second element in a moves array
             let newY;
 
             //adding forward movement only support for pawns
-            let moveY = currentMove[currentMove.length - 1]; //the y coordinate is always the last element in a moves array
+            let moveY = currentMove[2]; //the y coordinate is always the third element in a moves array
 
             if (typeof moveY === 'string' && moveY.includes('forward')) {
                 //getting the last character of the forward move, which specifies the number of moves forward it can take
                 let forwardAmount = parseInt(moveY[moveY.length - 1]);
 
                 //determines which direction is forward
-                let yDirection = chessPiece.getForwardDirection(color);
+                let yDirection = chessPiece.getForwardDirection(tileData.color);
 
                 //if the forward value is greater than 1, then all tiles in between will be checked to see if they are blank
                 let blockMove = false;
                 for (let i = 1; i < forwardAmount && !blockMove; i++) {
-                    let tileInfo = tile.get(newX, y + (i * yDirection));
+                    let tileInfo = tile.get(newX, tileData.y + (i * yDirection));
                     //if there is a friendly piece, or any piece at all if the rule 'disarmed' applies, the tile will be considered blocked
-                    if (tileInfo.color === color || (currentMove[0] === 'disarmed' && tileInfo.color !== '')) {
+                    if (tileInfo.color === tileData.color || (currentMove[0] === 'disarmed' && tileInfo.color !== '')) {
                         blockMove = true;
+                        break;
                     }
                 }
                 //continue onto the next move if this move is blocked by a tile
                 if (blockMove) {
                     continue;
                 }
-                newY = y + (forwardAmount * yDirection);
+                newY = tileData.y + (forwardAmount * yDirection);
             } else {
-                newY = y + moveY;
+                newY = tileData.y + moveY;
             }
 
             //checking if the move is within the bounding box of the chess board
@@ -531,24 +524,24 @@ let chessPiece = {
                     //for moves that add the coordinates to its tile position
                     case 'normal':
                         //cannot move to a tile that has a friendly piece
-                        if (checkTile.color !== color) {
+                        if (checkTile.color !== tileData.color) {
                             moveTiles.push(checkTile);
                         }
                         break;
                     //for moves that loop in a certain direction until an obstacle is found
                     case 'vector':
                         do {
-                            if (checkTile.color !== color) {
+                            checkTile = tile.get(newX, newY);
+                            //adding the move to the array if the tile is not occupied by a friendly piece
+                            if (checkTile.color !== tileData.color) {
                                 moveTiles.push(checkTile);
                             }
+                            //stopping the loop if there is any piece on the tile
                             if (checkTile.color !== '') {
                                 break;
                             }
                             newX += currentMove[1];
                             newY += currentMove[2];
-                            if (tile.inBounds(newX, newY)) {
-                                checkTile = tile.get(newX, newY);
-                            }
                         } while (tile.inBounds(newX, newY));
                         break;
                     //for moves that are only valid if there is an enemy on the tile

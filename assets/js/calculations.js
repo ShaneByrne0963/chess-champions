@@ -25,7 +25,7 @@ function makeMove() {
         //stores any moves that have the same score as the highest score
         currentInfo.highestMoves = [];
         //gets all of the tiles the current piece can move to
-        let tileMoves = chessPiece.getAllMoveTiles(currentInfo.x, currentInfo.y, currentInfo.piece, currentInfo.color);
+        let tileMoves = chessPiece.getAllMoveTiles(currentInfo);
 
         //looping through the moves
         for (let move of tileMoves) {
