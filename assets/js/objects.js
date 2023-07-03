@@ -249,8 +249,8 @@ let tile = {
         let evaluation = tile.evaluate(tileData, evaluatingTile);
 
         //swapping the classes back
-        elementFrom.className = classTo;
-        elementTo.className = classFrom;
+        elementFrom.className = classFrom;
+        elementTo.className = classTo;
 
         return evaluation;
     },
@@ -492,6 +492,9 @@ let chessPiece = {
         //the array that will store all the tiles the piece can move to
         let moveTiles = [];
 
+        //for preventing moves that can cause self check
+        let kingData = tile.findKing(tileData.color);
+
         //getting the move set of the piece
         let moves = chessPiece[tileData.piece].moves;
 
@@ -499,9 +502,19 @@ let chessPiece = {
             let availableTiles = chessPiece.getTilesFromMove(tileData, currentMove);
 
             for (let currentTile of availableTiles) {
-                //only add the tile if moving there doesn't result in a check
+                //only add the tile if moving there doesn't result in a self-check
+                let tileEval;
 
-                moveTiles.push(currentTile);
+                if (tileData.piece !== 'king') {
+                    tileEval = tile.evaluateWithMove(kingData, kingData, tileData, currentTile);
+                    
+                } else {
+                    tileEval = tile.evaluate(currentTile, tileData);
+                }
+                //if there are no threats at this tile, then it is a valid move
+                if (tileEval.enemyThreat.length <= 0) {
+                    moveTiles.push(currentTile);
+                }
             }
         }
 
