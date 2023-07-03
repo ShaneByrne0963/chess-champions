@@ -237,14 +237,10 @@ let tile = {
         //monitoring all the tiles around it for information
         let tileEval = tile.evaluate(moveTile, currentTile);
 
-        //adding 10% of the values of every target on this tile
-        for (let target of tileEval.enemyTarget) {
-            moveScore += chessPiece[target.piece].value / 10;
-            console.log(`Ally ${currentTile.piece} [${currentTile.x}, ${currentTile.y}] Sees ${target.piece} [${target.x}, ${target.y}], + ${chessPiece[target.piece].value / 10}`);
-        }
-
         //if there is an enemy that can attack the piece at this tile, then subtract the current piece's value from the score
+        let isThreatened = false;
         if (tileEval.enemyThreat.length > 0) {
+            isThreatened = true;
             let battleEvents = [];
 
             if (tileEval.allyGuarded.length > 0) {
@@ -301,16 +297,25 @@ let tile = {
                 battleEvents.push(`Final Score: ${battleScore}`);
 
                 //if the battlescore is less than 0, then the enemy has the upper hand at this tile
-                if (battleScore < 0) {
-                    moveScore -= chessPiece[currentTile.piece].value;
-                    battleEvents.push(`The Enemy Wins!`);
-                } else {
+                if (battleScore >= 0) {
+                    isThreatened = false;
                     battleEvents.push(`AI Wins!`);
+                } else {
+                    battleEvents.push(`The Enemy Wins!`);
                 }
 
                 console.log(battleEvents);
             } else {
                 moveScore -= chessPiece[currentTile.piece].value;
+            }
+        }
+
+        //if the risk of the piece being eliminated in the next move is low
+        if (!isThreatened) {
+            //add 10% of the values of every target on this tile
+            for (let target of tileEval.enemyTarget) {
+                moveScore += chessPiece[target.piece].value / 10;
+                console.log(`Ally ${currentTile.piece} [${currentTile.x}, ${currentTile.y}] Sees ${target.piece} [${target.x}, ${target.y}], + ${chessPiece[target.piece].value / 10}`);
             }
         }
 
@@ -390,7 +395,7 @@ let chessPiece = {
     king: {
         moves: [['normal', 1, 0], ['normal', 1, -1], ['normal', 0, -1], ['normal', -1, -1],
         ['normal', -1, 0], ['normal', -1, 1], ['normal', 0, 1], ['normal', 1, 1]],
-        value: 1500
+        value: 2000
     },
 
     /**
