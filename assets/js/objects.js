@@ -346,8 +346,26 @@ let tile = {
         return (x >= 0 && x < boardSize && y >= 0 && y < boardSize);
     },
 
-    select: (x, y) => {
+    select: (selectTile) => {
+        //getting the tile data
+        let selectData = tile.getData(selectTile);
 
+        if (selectData.color === 'white') {
+            //creates another div as a child of the selected tile
+            let selectDiv = document.createElement('div');
+            selectDiv.id = 'tile-selected';
+            selectTile.appendChild(selectDiv);
+
+            //show all the available moves the selected piece can take
+            let possibleMoves = chessPiece.getAllMoveTiles(selectData.x, selectData.y, selectData.piece, selectData.color);
+
+            for (let move of possibleMoves) {
+                let moveOption = document.createElement('div');
+                moveOption.className = "possible-move";
+                let moveElement = tile.getElement(move.x, move.y);
+                moveElement.appendChild(moveOption);
+            }
+        }
     },
 
     /**

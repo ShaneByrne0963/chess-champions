@@ -139,31 +139,7 @@ function tileClick(x, y) {
             //clear all selected tiles
             tile.deselectAll();
 
-            //getting the tile that was clicked on
-            let clickedClasses = clickedTile.classList;
-            let clickedPiece = chessPiece.getPieceFromClass(clickedClasses);
-
-            //converting the class name for new pawns to the chessPiece object key to access it
-            if (clickedPiece === 'pawn-new') {
-                clickedPiece = 'pawnNew';
-            }
-
-            if (clickedClasses.contains('white')) {
-                //creates another div as a child of the selected tile
-                let selectDiv = document.createElement('div');
-                selectDiv.id = 'tile-selected';
-                clickedTile.appendChild(selectDiv);
-
-                //show all the available moves the selected piece can take
-                let possibleMoves = chessPiece.getAllMoveTiles(x, y, clickedPiece, 'white');
-
-                for (let move of possibleMoves) {
-                    let moveOption = document.createElement('div');
-                    moveOption.className = "possible-move";
-                    let moveElement = tile.getElement(move.x, move.y);
-                    moveElement.appendChild(moveOption);
-                }
-            }
+            tile.select(clickedTile);
         }
     }
 }
