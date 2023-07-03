@@ -119,9 +119,9 @@ let tile = {
 
     /**
      * Evaluates the surrounding tiles of a certain tile and returns other tile data
-     * @param {*} tileData An object {x, y, piece, color} of the tile that is to be evaluated
-     * @param {*} evaluatingTile The object {x, y, piece, color} of the tile that is evaluating the tile
-     * @returns An object {enemyThreat} containing the relationships between the surrounding pieces
+     * @param {object} tileData An object {x, y, piece, color} of the tile that is to be evaluated
+     * @param {object} evaluatingTile The object {x, y, piece, color} of the tile that is evaluating the tile
+     * @returns An object {enemyTarget, enemyThreat, allyGuarded} containing the relationships between the surrounding pieces
      */
     evaluate: (tileData, evaluatingTile) => {
         //if there are any enemies that can be attacked attack the piece if it moves to that tile, it will be stored in this array
@@ -207,6 +207,14 @@ let tile = {
         };
     },
 
+    /**
+     * Evaluates the surrounding tiles of a certain tile after a potential move and returns other tile data
+     * @param {object} tileData An object {x, y, piece, color} of the tile that is to be evaluated
+     * @param {object} evaluatingTile The object {x, y, piece, color} of the tile that is evaluating the tile
+     * @param {object} tileFrom The data of the potentially moving piece
+     * @param {*} tileTo  The data of the potential tile the piece is moving to
+     * @returns An object {enemyTarget, enemyThreat, allyGuarded} containing the relationships between the surrounding pieces
+     */
     evaluateWithMove (tileData, evaluatingTile, tileFrom, tileTo) {
         //temporarily swap the classes of tileFrom and tileTo, evaluate the tile, and then swap them back
         let elementFrom = tile.getElement(tileFrom.x, tileFrom.y);
@@ -230,6 +238,12 @@ let tile = {
         return evaluation;
     },
 
+    /**
+     * Returns a calculation of how good of a move it would be for a piece to move to a tile
+     * @param {object} currentTile The data of the piece that wishes to move
+     * @param {object} moveTile The data of the tile the piece wishes to move to
+     * @returns {integer} The total score of that tile
+     */
     getScore: (currentTile, moveTile) => {
         //each move will have a score
         let moveScore = 0;
@@ -299,14 +313,12 @@ let tile = {
                 //if the battlescore is less than 0, then the enemy has the upper hand at this tile
                 if (battleScore >= 0) {
                     isThreatened = false;
-                    battleEvents.push(`AI Wins!`);
+                    battleEvents.push(`The AI Wins!`);
                 } else {
                     battleEvents.push(`The Enemy Wins!`);
                 }
 
                 console.log(battleEvents);
-            } else {
-                moveScore -= chessPiece[currentTile.piece].value;
             }
         }
 
@@ -317,6 +329,8 @@ let tile = {
                 moveScore += chessPiece[target.piece].value / 10;
                 console.log(`Ally ${currentTile.piece} [${currentTile.x}, ${currentTile.y}] Sees ${target.piece} [${target.x}, ${target.y}], + ${chessPiece[target.piece].value / 10}`);
             }
+        } else {
+            moveScore -= chessPiece[currentTile.piece].value;
         }
 
         return moveScore;
