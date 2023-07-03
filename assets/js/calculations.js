@@ -32,6 +32,11 @@ function makeMove() {
             //calculates the score of the tile based on several parameters
             let moveScore = tile.getScore(currentInfo, move);
 
+            //add 15 points for pawns to encourage movement
+            if (currentInfo.piece === 'pawn' || currentInfo.piece === 'pawnNew') {
+                moveScore += 15;
+            }
+
             //if there is an enemy on the tile the piece can destroy, then the value of that piece will be added to the score
             //the color of the piece doesn't have to be checked 
             if (move.piece !== '') {

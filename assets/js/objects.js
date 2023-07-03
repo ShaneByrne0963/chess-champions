@@ -138,9 +138,11 @@ let tile = {
      * Evaluates the surrounding tiles of a certain tile and returns other tile data
      * @param {object} tileData An object {x, y, piece, color} of the tile that is to be evaluated
      * @param {object} evaluatingTile The object {x, y, piece, color} of the tile that is evaluating the tile
-     * @returns An object {enemyTarget, enemyThreat, allyGuarded} containing the relationships between the surrounding pieces
+     * @returns An object {availableSpaces, enemyTarget, enemyThreat, allyGuarded} containing the relationships between the surrounding pieces
      */
     evaluate: (tileData, evaluatingTile) => {
+        //getting the total number of spaces the piece can move if it moves to this tile
+        let availableSpaces = 0;
         //if there are any enemies that can be attacked attack the piece if it moves to that tile, it will be stored in this array
         let enemyTarget = [];
         //if there are any enemies that can attack the piece if it moves to that tile, it will be stored in this array
@@ -161,7 +163,10 @@ let tile = {
             let firstMove = true;
             //reversing the move to evaluate pieces that can attack the evaluating piece at this tile
             let moveReverse = [move[0], -move[1], -move[2]];
+            //if neither of the vectors are 0 then the piece is moving diagonally
+            let isDiagonal = (Math.abs(vector1) === Math.abs(vector2));
 
+            //adding the vector to the coordinates
             x += vector1;
             y += vector2;
 
@@ -177,17 +182,25 @@ let tile = {
                             allyGuarded.push(secondTile);
                         }
                         break;
-                    } else if (secondTile.color === enemyColor) { //if the evaluation runs into an enemy piece
-                        //if the enemy piece can be attacked by the piece at this tile
-                        if (chessPiece.canAttack(evaluatingTile, move, firstMove)) {
-                            enemyTarget.push(secondTile);
+                    } else {
+                        if (secondTile.color === enemyColor) { //if the evaluation runs into an enemy piece
+                            //if the enemy piece can be attacked by the piece at this tile
+                            if (chessPiece.canAttack(evaluatingTile, move, firstMove)) {
+                                enemyTarget.push(secondTile);
+                            }
+                            //if the enemy piece can attack the piece at this tile
+                            if (chessPiece.canAttack(secondTile, moveReverse, firstMove)) {
+                                enemyThreat.push(secondTile);
+                            }
+                            break;
                         }
-                        //if the enemy piece can attack the piece at this tile
-                        if (chessPiece.canAttack(secondTile, moveReverse, firstMove)) {
-                            enemyThreat.push(secondTile);
-                        }
-                        break;
                     }
+                }
+                //if the tile can be moved to in the move after this one, it will increase availableSpaces
+                if (evaluatingTile.piece === 'queen'
+                    || (isDiagonal && evaluatingTile.piece === 'bishop')
+                    || (!isDiagonal && evaluatingTile.piece === 'rook')) {
+                    availableSpaces++;
                 }
                 x += vector1;
                 y += vector2;
@@ -215,9 +228,13 @@ let tile = {
                         }
                     }
                 }
+                if (evaluatingTile.piece === 'knight') {
+                    availableSpaces++;
+                }
             }
         }
         return {
+            availableSpaces: availableSpaces,
             enemyTarget: enemyTarget,
             enemyThreat: enemyThreat,
             allyGuarded: allyGuarded
@@ -230,7 +247,7 @@ let tile = {
      * @param {object} evaluatingTile The object {x, y, piece, color} of the tile that is evaluating the tile
      * @param {object} tileFrom The data of the potentially moving piece
      * @param {*} tileTo  The data of the potential tile the piece is moving to
-     * @returns An object {enemyTarget, enemyThreat, allyGuarded} containing the relationships between the surrounding pieces
+     * @returns An object {availableSpaces, enemyTarget, enemyThreat, allyGuarded} containing the relationships between the surrounding pieces
      */
     evaluateWithMove(tileData, evaluatingTile, tileFrom, tileTo) {
         //temporarily swap the classes of tileFrom and tileTo, evaluate the tile, and then swap them back
@@ -267,6 +284,9 @@ let tile = {
 
         //monitoring all the tiles around it for information
         let tileEval = tile.evaluate(moveTile, currentTile);
+
+        //adding the total number of moves the piece could make on this tile multiplied by 1% of it's value to the score
+        moveScore += tileEval.availableSpaces * (chessPiece[currentTile.piece].value / 100);
 
         //if there is an enemy that can attack the piece at this tile, then subtract the current piece's value from the score
         let isThreatened = false;
@@ -349,7 +369,6 @@ let tile = {
         } else {
             moveScore -= chessPiece[currentTile.piece].value;
         }
-
         return moveScore;
     },
 
