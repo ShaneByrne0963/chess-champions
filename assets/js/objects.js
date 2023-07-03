@@ -120,6 +120,20 @@ let tile = {
 
         tile.set(tileDataTo.x, tileDataTo.y, tilePiece, tileDataFrom.color);
         tile.clear(tileDataFrom.x, tileDataFrom.y);
+
+        //reviving pieces if the pawn reaches the other side of the board
+        if (tilePiece === 'pawn') {
+            console.log(tileDataFrom);
+            if ((tileDataFrom.color === 'white' && tileDataTo.y === 0)
+                || (tileDataFrom.color === 'black' && tileDataTo.y === boardSize - 1)) {
+                chessPiece.revive({
+                    x: tileDataTo.x,
+                    y: tileDataTo.y,
+                    piece: tileDataFrom.piece,
+                    color: tileDataFrom.color
+                });
+            }
+        }
     },
 
     /**
@@ -292,22 +306,14 @@ let tile = {
         let isThreatened = false;
         if (tileEval.enemyThreat.length > 0) {
             isThreatened = true;
-            let battleEvents = [];
-
-            if (tileEval.allyGuarded.length > 0) {
-                console.log('Simulating Battle!');
-                let lowestEnemy = chessPiece.findLowestValue(tileEval.enemyThreat);
-                let newEnemy = tileEval.enemyThreat[lowestEnemy[1]];
-                battleEvents.push(`Enemy ${newEnemy.piece} [${newEnemy.x}, ${newEnemy.y}] attacks Ally ${currentTile.piece} [${currentTile.x}, ${currentTile.y}], -${chessPiece[currentTile.piece].value}`);
-            }
 
             //finding the values of the current piece and the piece with the lowest value that is threatening it
             //stops high value pieces moving to tiles where they can be attacked by low value pieces
             let pieceValue = chessPiece[currentTile.piece].value;
             let lowestEnemy = chessPiece.findLowestValue(tileEval.enemyThreat);
 
-            //if all the enemyThreat values are greater than or equal to the lowest value in enemyThreat and there are ally tiles protecting the piece,
-            //then simulate a battle
+            //if all the enemyThreat values are greater than or equal to the lowest value in enemyThreat and
+            //there are ally tiles protecting the piece, then simulate a battle
             if (pieceValue <= lowestEnemy[0] && tileEval.allyGuarded.length > 0) {
                 //if there is an ally (or allies) guarding this tile, then a "battle" will take place.
                 // 1 - the ally with the smallest value will move to this tile and destroy the enemy piece.
@@ -328,7 +334,6 @@ let tile = {
 
                     let allyTile = tileEval.allyGuarded[lowestAlly[1]];
                     let enemyTile = tileEval.enemyThreat[lowestEnemy[1]];
-                    battleEvents.push(`Ally ${allyTile.piece} [${allyTile.x}, ${allyTile.y}] attacks Enemy ${enemyTile.piece} [${enemyTile.x}, ${enemyTile.y}], +${lowestEnemy[0]}`);
 
                     battleScore += lowestEnemy[0];
                     tileEval.enemyThreat.splice(lowestEnemy[1], 1);
@@ -336,7 +341,6 @@ let tile = {
                     if (tileEval.enemyThreat.length > 0) {
                         lowestEnemy = chessPiece.findLowestValue(tileEval.enemyThreat);
                         enemyTile = tileEval.enemyThreat[lowestEnemy[1]];
-                        battleEvents.push(`Enemy ${enemyTile.piece} [${enemyTile.x}, ${enemyTile.y}] attacks Ally ${allyTile.piece} [${allyTile.x}, ${allyTile.y}], -${lowestAlly[0]}`);
 
                         battleScore -= lowestAlly[0];
                         tileEval.allyGuarded.splice(lowestAlly[1], 1);
@@ -345,17 +349,11 @@ let tile = {
                 if (infiniteLoopBlocker >= 1000) {
                     throw `Error: Infinite loop when simulating the battle. Aborting!`;
                 }
-                battleEvents.push(`Final Score: ${battleScore}`);
 
                 //if the battlescore is less than 0, then the enemy has the upper hand at this tile
                 if (battleScore >= 0) {
                     isThreatened = false;
-                    battleEvents.push(`The AI Wins!`);
-                } else {
-                    battleEvents.push(`The Enemy Wins!`);
                 }
-
-                console.log(battleEvents);
             }
         }
 
@@ -364,7 +362,6 @@ let tile = {
             //add 10% of the values of every target on this tile
             for (let target of tileEval.enemyTarget) {
                 moveScore += chessPiece[target.piece].value / 10;
-                console.log(`Ally ${currentTile.piece} [${currentTile.x}, ${currentTile.y}] Sees ${target.piece} [${target.x}, ${target.y}], + ${chessPiece[target.piece].value / 10}`);
             }
         } else {
             moveScore -= chessPiece[currentTile.piece].value;
@@ -526,7 +523,7 @@ let chessPiece = {
 
                 if (tileData.piece !== 'king') {
                     tileEval = tile.evaluateWithMove(kingData, kingData, tileData, currentTile);
-                    
+
                 } else {
                     tileEval = tile.evaluate(currentTile, tileData);
                 }
@@ -631,21 +628,18 @@ let chessPiece = {
      */
     destroy: (tileData) => {
         let deadPiece = document.createElement('div');
-        deadPiece.className = 'piece-dead';
 
         //making pawns and new pawns the same for the image address
         if (tileData.piece === 'pawnNew') {
             tileData.piece = 'pawn';
         }
+
+        //creating the classes to style and access the piece
+        deadPiece.className = `piece-dead dead-${tileData.piece}`;
         //creating the url to access the particular piece
         deadPiece.style.backgroundImage = `url(assets/images/chess-pieces/${tileData.color}-${tileData.piece}.png)`;
 
-        let graveyardDiv;
-        if (tileData.color === 'black') {
-            graveyardDiv = document.getElementById('player1-graveyard');
-        } else {
-            graveyardDiv = document.getElementById('player2-graveyard');
-        }
+        let graveyardDiv = (tileData.color === 'black') ? document.getElementById('player1-graveyard') : document.getElementById('player2-graveyard');
         graveyardDiv.appendChild(deadPiece);
 
         //announcing the piece elimination in the ui
@@ -737,5 +731,30 @@ let chessPiece = {
         }
 
         return pieces;
+    },
+
+    revive: (pawnData) => {
+        let graveyardDiv = (pawnData.color === 'black') ? document.getElementById('player1-graveyard') : document.getElementById('player2-graveyard');
+        let graves = graveyardDiv.children;
+        if (pawnData.color === 'white') {
+            for (let grave of graves) {
+                //setting the pawn position and color in the session storage to be accessed again when the player clicks on a graveyard icon
+                sessionStorage.setItem('pawn-position', `${pawnData.x}-${pawnData.y}`);
+                sessionStorage.setItem('pawn-color', pawnData.color);
+
+                grave.addEventListener('click', revivePlayer);
+
+                //adding the reviving class to the graveyard pieces to change the mouse cursor when you hover over it
+                let graveClass = grave.className;
+                graveClass += ' reviving';
+                grave.className = graveClass;
+            }
+        } else {
+
+        }
+    },
+
+    getDestroyed: () => {
+
     }
 };

@@ -90,6 +90,10 @@ body {
     background-size: cover;
 }
 
+.reviving:hover {
+    cursor: pointer;
+}
+
 /* announcements */
 
 #announcements {

@@ -325,3 +325,18 @@ function isCheckmate(color) {
 
     return !hasMove;
 }
+
+function revivePlayer(event) {
+    let classes = this.classList;
+    let typeClass;
+
+    //finds the class which contains the piece information: 'dead-pawn', 'dead-bishop' etc.
+    for (let myClass of classes) {
+        if (myClass.includes('dead-')) {
+            typeClass = myClass;
+        }
+    }
+
+    //remove the 'dead-' part and you have the the piece name
+    typeClass.replace('dead-', '');
+}

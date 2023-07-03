@@ -1,5 +1,4 @@
 function makeMove() {
-    console.clear();
     //all tiles will be given an individual score based on a number of parameters. the tile with the highest score will be chosen
     let highestScore = 0;
     //highestScore will be set to the first checked tile. after that any tile will have to beat the score to be set
@@ -46,6 +45,9 @@ function makeMove() {
             //finally, subtracting the current score from the new score
             moveScore -= currentScores[i];
 
+            //disabling the ai. for debugging only
+            moveScore = 0;
+
             //if this is the first move of the first tile, then set the highest score to the score of this move
             if (isFirstCheck) {
                 highestScore = moveScore;
@@ -70,8 +72,6 @@ function makeMove() {
                     currentInfo.highestMoves.push(move);
                 }
             }
-
-            console.log(`${currentInfo.piece} [${currentInfo.x}, ${currentInfo.y}] => [${move.x}, ${move.y}] final score: ${moveScore}`);
         }
     }
 
@@ -79,8 +79,6 @@ function makeMove() {
     let movePiece = highestScorePieces[Math.floor(Math.random() * highestScorePieces.length)];
     //then, that piece will pick one of it's best moves at random
     let finalTile = movePiece.highestMoves[Math.floor(Math.random() * movePiece.highestMoves.length)];
-
-    console.log(`Final Move: ${movePiece.piece} [${movePiece.x}, ${movePiece.y}] => [${finalTile.x}, ${finalTile.y}] Score: ${highestScore}`);
 
     tile.move(movePiece, finalTile);
     nextTurn();
