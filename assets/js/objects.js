@@ -123,9 +123,10 @@ let tile = {
 
         //reviving pieces if the pawn reaches the other side of the board
         if (tilePiece === 'pawn') {
-            console.log(tileDataFrom);
-            if ((tileDataFrom.color === 'white' && tileDataTo.y === 0)
-                || (tileDataFrom.color === 'black' && tileDataTo.y === boardSize - 1)) {
+            //getting which color started at the top of the board
+            let topPosition = localStorage.getItem('topPosition');
+            if ((tileDataFrom.color === topPosition && tileDataTo.y === boardSize - 1)
+                || (tileDataFrom.color !== topPosition && tileDataTo.y === 0)) {
                 chessPiece.revive({
                     x: tileDataTo.x,
                     y: tileDataTo.y,
@@ -391,7 +392,6 @@ let tile = {
 
             //show all the available moves the selected piece can take
             let possibleMoves = chessPiece.getAllMoveTiles(selectData);
-            console.log(possibleMoves);
 
             for (let move of possibleMoves) {
                 let moveOption = document.createElement('div');
@@ -735,7 +735,8 @@ let chessPiece = {
     revive: (pawnData) => {
         let graveyardDiv = (pawnData.color === 'black') ? document.getElementById('player1-graveyard') : document.getElementById('player2-graveyard');
         let graves = graveyardDiv.children;
-        if (pawnData.color === 'white') {
+        //if the pawn that moved to the other side belongs to a player, then initiate the ui for reviving a piece
+        if (localStorage.getItem(pawnData.color) === 'player') {
             for (let grave of graves) {
                 //setting the pawn position and color in the session storage to be accessed again when the player clicks on a graveyard icon
                 sessionStorage.setItem('pawnPosition', `${pawnData.x}-${pawnData.y}`);
