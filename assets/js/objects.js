@@ -657,12 +657,11 @@ let chessPiece = {
      * @returns The forward direction
      */
     getForwardDirection: (color) => {
-        if (color === 'white') {
-            return -1;
-        } else if (color === 'black') {
+        let topPosition = localStorage.getItem('topPosition');
+        if (color === topPosition) {
             return 1;
         } else {
-            return null;
+            return -1;
         }
     },
 

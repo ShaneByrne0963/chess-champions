@@ -8,6 +8,9 @@ const announcementLimit = 10;
 localStorage.setItem('white', 'computer');
 localStorage.setItem('black', 'player');
 
+//dictates which color will start on top of the board
+localStorage.setItem('topPosition', 'white');
+
 //initializes game when the page loads
 document.onload = gameInit();
 
@@ -64,6 +67,8 @@ function startGame() {
         for (let j = 0; j < boardSize; j++) {
             let piece = '';
             let color = '';
+            let topColor = localStorage.getItem('topPosition');
+            let bottomColor = (topColor === 'white') ? 'black' : 'white';
 
             //creating the back row of chess pieces for each side
             if (j === 0 || j === boardSize - 1) {
@@ -82,9 +87,9 @@ function startGame() {
 
                 //setting the color
                 if (j === 0) {
-                    color = 'black';
+                    color = topColor;
                 } else {
-                    color = 'white';
+                    color = bottomColor;
                 }
                 tile.set(i, j, piece, color);
             }
@@ -92,9 +97,9 @@ function startGame() {
             else if (j === 1 || j === boardSize - 2) {
                 piece = 'pawnNew';
                 if (j === 1) {
-                    color = 'black';
+                    color = topColor;
                 } else {
-                    color = 'white';
+                    color = bottomColor;
                 }
                 tile.set(i, j, piece, color);
             }
