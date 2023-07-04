@@ -136,11 +136,11 @@ function tileClick(x, y) {
                 if (child.classList.contains('possible-move')) {
                     //gets the div of the selected piece
                     let selectedTile = document.getElementById('tile-selected').parentNode;
+                    tile.deselectAll();
                     tile.move(tile.getData(selectedTile), tile.getData(clickedTile));
                     break;
                 }
             }
-            tile.deselectAll();
         }
 
         else {
