@@ -6,10 +6,10 @@ const announcementLimit = 10;
 
 //setting the types of players for each color
 localStorage.setItem('white', 'player');
-localStorage.setItem('black', 'computer');
+localStorage.setItem('black', 'player');
 
 //dictates which color will start on top of the board
-localStorage.setItem('topPosition', 'white');
+localStorage.setItem('topPosition', 'black');
 
 //initializes game when the page loads
 document.onload = gameInit();
@@ -349,24 +349,8 @@ function isCheckmate(color) {
  * the other side of the board. Brings the piece back to life in place of the pawn
  */
 function revivePlayer() {
-    //finds the piece name of the clicked on element
-    let pieceName = chessPiece.getDeadPiece(this);
-
-    //getting the information saved to session storage and changing the pawn position to the new piece
-    let pawnLocation = sessionStorage.getItem('pawnPosition');
-    let pawnX = parseInt(pawnLocation[0]);
-    let pawnY = parseInt(pawnLocation[2]);
-    let pawnColor = sessionStorage.getItem('pawnColor');
-
-    //setting the tile where the pawn moved to the selected grave piece
-    tile.set(pawnX, pawnY, pieceName, pawnColor);
-
-    //clearing the session storage data
-    sessionStorage.removeItem('pawnPosition');
-    sessionStorage.removeItem('pawnColor');
-
-    //removing the grave piece from the graveyard
-    this.remove();
+    //replaces the pawn with the piece that was clicked on
+    chessPiece.replaceWithDead(this);
 
     //removing the clickable class and event listeners from the graveyard pieces once a piece has been picked
     let reviveButtons = document.getElementsByClassName('piece-dead');

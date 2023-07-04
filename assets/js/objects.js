@@ -840,5 +840,30 @@ let chessPiece = {
         //removes the 'dead-' part of the class to get the piece name
         typeClass = typeClass.replace('dead-', '');
         return typeClass;
+    },
+
+    /**
+     * Replaces the pawn that has reached the other side of the board with a piece from the graveyard
+     * @param {object} deadPiece The element of the dead piece you wish to replace the pawn with
+     */
+    replaceWithDead: (deadPiece) => {
+        //finds the piece name of the clicked on element
+        let pieceName = chessPiece.getDeadPiece(deadPiece);
+
+        //getting the information saved to session storage and changing the pawn position to the new piece
+        let pawnLocation = sessionStorage.getItem('pawnPosition');
+        let pawnX = parseInt(pawnLocation[0]);
+        let pawnY = parseInt(pawnLocation[2]);
+        let pawnColor = sessionStorage.getItem('pawnColor');
+
+        //setting the tile where the pawn moved to the selected grave piece
+        tile.set(pawnX, pawnY, pieceName, pawnColor);
+
+        //clearing the session storage data
+        sessionStorage.removeItem('pawnPosition');
+        sessionStorage.removeItem('pawnColor');
+
+        //removing the grave piece from the graveyard
+        deadPiece.remove();
     }
 };
