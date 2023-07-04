@@ -110,10 +110,8 @@ function startGame() {
         }
     }
 
-    //if the computer is first then they will start immediately
-    if (localStorage.getItem('white') === 'computer') {
-        makeMove('white');
-    }
+    //allow the player to make it's move, whether it is a player or computer
+    allowTurn('white');
 }
 
 /**
@@ -237,6 +235,12 @@ function setPlayerTurn(playerPlace) {
  * Switches to the next turn
  */
 function nextTurn() {
+    //first removing the 'clickable' class from all of the pieces
+    let clickablePieces = document.getElementsByClassName('tile clickable');
+    for (let clickPiece of clickablePieces) {
+        clickPiece.classList.remove('clickable');
+    }
+
     let playerTurn = getPlayerTurn();
     //for display if the other player is in checkmate
     let lastPlayerName = playerTurn.name;
@@ -260,11 +264,26 @@ function nextTurn() {
         }
     }
 
-    //the ai script running if it is it's turn
+    //if there isn't a checkmate, then continue the game
     if (!checkmate) {
-        if (localStorage.getItem(playerTurn.color) === 'computer') {
-            makeMove(playerTurn.color);
+        allowTurn(playerTurn.color);
+    }
+}
+
+function allowTurn(color) {
+    //if the player has the next turn
+    if (localStorage.getItem(color) === 'player') {
+        //adding the 'clickable' class to the player pieces
+        let playerElements = document.getElementsByClassName(color);
+        for (let playerPiece of playerElements) {
+            let playerClass = playerPiece.className;
+            console.log(playerClass);
+            playerClass += ' clickable';
+            playerPiece.className = playerClass;
         }
+    } else {
+        //the ai script running if it is the computer's turn
+        makeMove(color);
     }
 }
 

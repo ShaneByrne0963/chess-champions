@@ -756,8 +756,4 @@ let chessPiece = {
 
         }
     },
-
-    getDestroyed: () => {
-
-    }
 };
