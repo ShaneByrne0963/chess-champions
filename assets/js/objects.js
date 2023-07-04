@@ -460,7 +460,7 @@ let tile = {
         for (let clickPiece of clickablePieces) {
             //only remove the 'clickable' class from tile elements
             if (clickPiece.classList.contains('tile')) {
-                removeInteraction(clickPiece);
+                tile.removeInteraction(clickPiece);
             }
         }
     }
