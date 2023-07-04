@@ -742,11 +742,15 @@ let chessPiece = {
                 sessionStorage.setItem('pawnPosition', `${pawnData.x}-${pawnData.y}`);
                 sessionStorage.setItem('pawnColor', pawnData.color);
 
-                //adding the function to bring the selected piece back when the player clicks on the graveyard element
-                grave.addEventListener('click', revivePlayer);
+                //the player can only revive pieces that are not pawns
+                let graveClass = grave.className;
+                if (!graveClass.includes('dead-pawn')) {
+                    //adding the function to bring the selected piece back when the player clicks on the graveyard element
+                    grave.addEventListener('click', revivePlayer);
 
-                //adding the clickable class to the graveyard pieces to change the mouse cursor when you hover over it
-                grave.classList.add('clickable');
+                    //adding the clickable class to the graveyard pieces to change the mouse cursor when you hover over it
+                    grave.classList.add('clickable');
+                }
             }
         } else {
 
