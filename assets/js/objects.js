@@ -107,6 +107,9 @@ let tile = {
      * @param {*} tileDataTo The data {x, y, piece, color} of the tile you are looking to move tileDataFrom to
      */
     move: (tileDataFrom, tileDataTo) => {
+        //first removing the 'clickable' class from all of the pieces
+        tile.removeAllInteraction();
+
         //if the piece is "pawnNew", then it will be converted to 'pawn' after it's first move
         let tilePiece = tileDataFrom.piece;
         if (tilePiece === 'pawnNew') {
@@ -122,11 +125,13 @@ let tile = {
         tile.clear(tileDataFrom.x, tileDataFrom.y);
 
         //reviving pieces if the pawn reaches the other side of the board
+        let isRevive = false;
         if (tilePiece === 'pawn') {
             //getting which color started at the top of the board
             let topPosition = localStorage.getItem('topPosition');
             if ((tileDataFrom.color === topPosition && tileDataTo.y === boardSize - 1)
                 || (tileDataFrom.color !== topPosition && tileDataTo.y === 0)) {
+                isRevive = true;
                 chessPiece.revive({
                     x: tileDataTo.x,
                     y: tileDataTo.y,
@@ -134,6 +139,10 @@ let tile = {
                     color: tileDataFrom.color
                 });
             }
+        }
+        //if a pawn has moved to the other side of the board, stop the game until a piece to revive has been selected
+        if (!isRevive) {
+            nextTurn();
         }
     },
 
@@ -394,10 +403,14 @@ let tile = {
             let possibleMoves = chessPiece.getAllMoveTiles(selectData);
 
             for (let move of possibleMoves) {
+                //creating a div displaying an image on every possible move
                 let moveOption = document.createElement('div');
-                moveOption.className = "possible-move clickable";
+                moveOption.className = "possible-move";
                 let moveElement = tile.getElement(move.x, move.y);
                 moveElement.appendChild(moveOption);
+
+                //adding the 'clickable' class to the tile
+                tile.addInteraction(moveElement);
             }
         }
     },
@@ -414,7 +427,41 @@ let tile = {
         let movesExisting = document.getElementsByClassName('possible-move');
 
         while (movesExisting.length > 0) {
+            //remove the 'clickable' class from the parent element
+            let moveParent = movesExisting[0].parentNode;
+            tile.removeInteraction(moveParent);
+
+            //removing the possible move div
             movesExisting[0].remove();
+        }
+    },
+
+    /**
+     * Adds the 'clickable' class name to the specified element
+     * @param {object} tileElement The element you wish to add interaction to
+     */
+    addInteraction: (tileElement) => {
+        tileElement.className += ' clickable';
+    },
+
+    /**
+     * Removes the 'clickable' class name to the specified element
+     * @param {object} tileElement The element you wish to remove interaction from
+     */
+    removeInteraction: (tileElement) => {
+        tileElement.classList.remove('clickable');
+    },
+
+    /**
+     * Removes interaction from all tiles
+     */
+    removeAllInteraction: () => {
+        let clickablePieces = document.getElementsByClassName('clickable');
+        for (let clickPiece of clickablePieces) {
+            //only remove the 'clickable' class from tile elements
+            if (clickPiece.classList.contains('tile')) {
+                removeInteraction(clickPiece);
+            }
         }
     }
 };

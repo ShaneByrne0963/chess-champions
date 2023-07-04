@@ -5,8 +5,8 @@ const boardSize = 8; //the width and height of the board in terms of tiles
 const announcementLimit = 10;
 
 //setting the types of players for each color
-localStorage.setItem('white', 'computer');
-localStorage.setItem('black', 'player');
+localStorage.setItem('white', 'player');
+localStorage.setItem('black', 'computer');
 
 //dictates which color will start on top of the board
 localStorage.setItem('topPosition', 'white');
@@ -121,12 +121,11 @@ function startGame() {
  * @param {*} x The y position of the clicked tile
  */
 function tileClick(x, y) {
-    let playerTurn = getPlayerTurn();
-
-    //only allow for interaction if it is a player's turn and the game hasn't ended
-    if (localStorage.getItem(playerTurn.color) === 'player' && !isCheckmate(playerTurn.color)) {
+    //only select the tile if it has a clickable class attached to it
+    let clickedTile = tile.getElement(x, y);
+    let clickedClass = clickedTile.className;
+    if (clickedClass.includes('clickable')) {
         //checking if the tile that's been clicked on is a possible move
-        let clickedTile = tile.getElement(x, y);
         let clickedChildren = clickedTile.children;
 
         //if the tile has any children
@@ -138,9 +137,6 @@ function tileClick(x, y) {
                     //gets the div of the selected piece
                     let selectedTile = document.getElementById('tile-selected').parentNode;
                     tile.move(tile.getData(selectedTile), tile.getData(clickedTile));
-
-                    //moving onto the next player's turn
-                    nextTurn();
                     break;
                 }
             }
@@ -153,6 +149,9 @@ function tileClick(x, y) {
 
             tile.select(clickedTile);
         }
+    } else {
+        //clear all selected tiles
+        tile.deselectAll();
     }
 }
 
@@ -235,12 +234,6 @@ function setPlayerTurn(playerPlace) {
  * Switches to the next turn
  */
 function nextTurn() {
-    //first removing the 'clickable' class from all of the pieces
-    let clickablePieces = document.getElementsByClassName('tile clickable');
-    for (let clickPiece of clickablePieces) {
-        clickPiece.classList.remove('clickable');
-    }
-
     let playerTurn = getPlayerTurn();
     //for display if the other player is in checkmate
     let lastPlayerName = playerTurn.name;
@@ -276,10 +269,7 @@ function allowTurn(color) {
         //adding the 'clickable' class to the player pieces
         let playerElements = document.getElementsByClassName(color);
         for (let playerPiece of playerElements) {
-            let playerClass = playerPiece.className;
-            console.log(playerClass);
-            playerClass += ' clickable';
-            playerPiece.className = playerClass;
+            playerPiece.className += ' clickable';
         }
     } else {
         //the ai script running if it is the computer's turn
@@ -354,7 +344,11 @@ function isCheckmate(color) {
     return !hasMove;
 }
 
-function revivePlayer(event) {
+/**
+ * Is called when a player clicks on a piece in the graveyard when a pawn reaches
+ * the other side of the board. Brings the piece back to life in place of the pawn
+ */
+function revivePlayer() {
     let classes = this.classList;
     let typeClass;
 
@@ -391,4 +385,7 @@ function revivePlayer(event) {
             reviveButton.removeEventListener('click', revivePlayer);
         }
     }
+
+    //continuing the game
+    nextTurn();
 }

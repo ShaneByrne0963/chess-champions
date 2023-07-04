@@ -44,6 +44,7 @@ body {
 
 .clickable:hover {
     cursor: pointer;
+    color: red;
 }
 
 #ui-area {

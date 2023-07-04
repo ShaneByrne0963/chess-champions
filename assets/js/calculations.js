@@ -81,5 +81,4 @@ function makeMove(color) {
     let finalTile = movePiece.highestMoves[Math.floor(Math.random() * movePiece.highestMoves.length)];
 
     tile.move(movePiece, finalTile);
-    nextTurn();
 }
