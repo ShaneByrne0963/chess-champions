@@ -788,15 +788,17 @@ let chessPiece = {
     },
 
     revive: (pawnData) => {
+        //setting the pawn position and color in the session storage to be accessed again when the player clicks on a graveyard icon
+        sessionStorage.setItem('pawnPosition', `${pawnData.x}-${pawnData.y}`);
+        sessionStorage.setItem('pawnColor', pawnData.color);
+
+        //getting the appropriate graveyard for the player
         let graveyardDiv = (pawnData.color === 'black') ? document.getElementById('player1-graveyard') : document.getElementById('player2-graveyard');
         let graves = graveyardDiv.children;
+
         //if the pawn that moved to the other side belongs to a player, then initiate the ui for reviving a piece
         if (localStorage.getItem(pawnData.color) === 'player') {
             for (let grave of graves) {
-                //setting the pawn position and color in the session storage to be accessed again when the player clicks on a graveyard icon
-                sessionStorage.setItem('pawnPosition', `${pawnData.x}-${pawnData.y}`);
-                sessionStorage.setItem('pawnColor', pawnData.color);
-
                 //the player can only revive pieces that are not pawns
                 let graveClass = grave.className;
                 if (!graveClass.includes('dead-pawn')) {
@@ -808,7 +810,35 @@ let chessPiece = {
                 }
             }
         } else {
+            for (let grave of graves) {
+                let classes = grave.classList;
 
+                for (let myClass of classes) {
+                    if (myClass.includes('dead-')) {
+                        typeClass = myClass;
+                    }
+                }
+            }
         }
     },
+
+    /**
+     * Gets the piece name of an element in the graveyard
+     * @param {object} deadPiece The element of the dead piece
+     * @returns {string} The piece name in string form
+     */
+    getDeadPiece: (deadPiece) => {
+        let classes = deadPiece.classList;
+        let typeClass = '';
+        for (let myClass of classes) {
+            //pieces in the graveyard have a class of 'dead-' followed by their piece name
+            if (myClass.includes('dead-')) {
+                typeClass = myClass;
+                break;
+            }
+        }
+        //removes the 'dead-' part of the class to get the piece name
+        typeClass = typeClass.replace('dead-', '');
+        return typeClass;
+    }
 };

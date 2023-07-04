@@ -349,17 +349,8 @@ function isCheckmate(color) {
  * the other side of the board. Brings the piece back to life in place of the pawn
  */
 function revivePlayer() {
-    let classes = this.classList;
-    let typeClass;
-
-    //finds the class which contains the piece information: 'dead-pawn', 'dead-bishop' etc.
-    for (let myClass of classes) {
-        if (myClass.includes('dead-')) {
-            typeClass = myClass;
-        }
-    }
-    //remove the 'dead-' part and you have the the piece name
-    typeClass = typeClass.replace('dead-', '');
+    //finds the piece name of the clicked on element
+    let pieceName = chessPiece.getDeadPiece(this);
 
     //getting the information saved to session storage and changing the pawn position to the new piece
     let pawnLocation = sessionStorage.getItem('pawnPosition');
@@ -368,7 +359,7 @@ function revivePlayer() {
     let pawnColor = sessionStorage.getItem('pawnColor');
 
     //setting the tile where the pawn moved to the selected grave piece
-    tile.set(pawnX, pawnY, typeClass, pawnColor);
+    tile.set(pawnX, pawnY, pieceName, pawnColor);
 
     //clearing the session storage data
     sessionStorage.removeItem('pawnPosition');
