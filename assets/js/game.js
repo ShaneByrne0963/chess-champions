@@ -4,6 +4,10 @@ const boardSize = 8; //the width and height of the board in terms of tiles
  //when this limit is reached the oldest will be destroyed
 const announcementLimit = 10;
 
+//setting the types of players for each color
+localStorage.setItem('white', 'computer');
+localStorage.setItem('black', 'player');
+
 //initializes game when the page loads
 document.onload = gameInit();
 
@@ -100,6 +104,11 @@ function startGame() {
             }
         }
     }
+
+    //if the computer is first then they will start immediately
+    if (localStorage.getItem('white') === 'computer') {
+        makeMove('white');
+    }
 }
 
 /**
@@ -111,8 +120,8 @@ function startGame() {
 function tileClick(x, y) {
     let playerTurn = getPlayerTurn();
 
-    //only allow for interaction if it is player 1's turn and the game hasn't ended
-    if (playerTurn.place === 1 && !isCheckmate(playerTurn.color)) {
+    //only allow for interaction if it is a player's turn and the game hasn't ended
+    if (localStorage.getItem(playerTurn.color) === 'player' && !isCheckmate(playerTurn.color)) {
         //checking if the tile that's been clicked on is a possible move
         let clickedTile = tile.getElement(x, y);
         let clickedChildren = clickedTile.children;
@@ -158,12 +167,7 @@ function getPlayerTurn() {
     //gets the place of the current player on the ui. the 7th character of the player ui divs is either 1 or 2.
     //can be used to get the color. white is always first so if the value is 1 then the color is white
     let playerPlace = parseInt(currentPlayerDiv.id[6]);
-    let playerColor = '';
-    if (playerPlace === 1) {
-        playerColor = 'white';
-    } else {
-        playerColor = 'black';
-    }
+    let playerColor = (playerPlace === 1) ? 'white' : 'black';
 
     return {
         name: name,
@@ -253,8 +257,8 @@ function nextTurn() {
 
     //the ai script running if it is it's turn
     if (!checkmate) {
-        if (newTurn == 2) {
-            makeMove();
+        if (localStorage.getItem(playerTurn.color) === 'computer') {
+            makeMove(playerTurn.color);
         }
     }
 }

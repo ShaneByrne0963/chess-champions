@@ -383,7 +383,7 @@ let tile = {
         //getting the tile data
         let selectData = tile.getData(selectTile);
 
-        if (selectData.color === 'white') {
+        if (localStorage.getItem(selectData.color) === 'player') {
             //creates another div as a child of the selected tile
             let selectDiv = document.createElement('div');
             selectDiv.id = 'tile-selected';

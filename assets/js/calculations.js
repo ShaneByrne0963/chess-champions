@@ -1,4 +1,4 @@
-function makeMove() {
+function makeMove(color) {
     //all tiles will be given an individual score based on a number of parameters. the tile with the highest score will be chosen
     let highestScore = 0;
     //highestScore will be set to the first checked tile. after that any tile will have to beat the score to be set
@@ -7,7 +7,7 @@ function makeMove() {
     let highestScorePieces = [];
 
     //getting all the pieces on the board that belong to the ai
-    let pieces = document.getElementsByClassName('black');
+    let pieces = document.getElementsByClassName(color);
 
     //before checking all the moves, the scores of all the pieces in their current positions will be calculated and stored
     let currentScores = [];
