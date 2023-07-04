@@ -441,7 +441,9 @@ let tile = {
      * @param {object} tileElement The element you wish to add interaction to
      */
     addInteraction: (tileElement) => {
-        tileElement.className += ' clickable';
+        if (!tileElement.className.includes('clickable')) {
+            tileElement.className += ' clickable';
+        }
     },
 
     /**
@@ -457,10 +459,16 @@ let tile = {
      */
     removeAllInteraction: () => {
         let clickablePieces = document.getElementsByClassName('clickable');
-        for (let clickPiece of clickablePieces) {
+
+        let i = 0;
+        while (i < clickablePieces.length) {
+            let clickPiece = clickablePieces[i];
             //only remove the 'clickable' class from tile elements
             if (clickPiece.classList.contains('tile')) {
                 tile.removeInteraction(clickPiece);
+            } else {
+                //only increment the loop if the 'clickable' element is not a tile
+                i++;
             }
         }
     }

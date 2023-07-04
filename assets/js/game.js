@@ -269,7 +269,7 @@ function allowTurn(color) {
         //adding the 'clickable' class to the player pieces
         let playerElements = document.getElementsByClassName(color);
         for (let playerPiece of playerElements) {
-            playerPiece.className += ' clickable';
+            tile.addInteraction(playerPiece);
         }
     } else {
         //the ai script running if it is the computer's turn
