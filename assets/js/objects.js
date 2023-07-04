@@ -395,7 +395,7 @@ let tile = {
 
             for (let move of possibleMoves) {
                 let moveOption = document.createElement('div');
-                moveOption.className = "possible-move";
+                moveOption.className = "possible-move clickable";
                 let moveElement = tile.getElement(move.x, move.y);
                 moveElement.appendChild(moveOption);
             }
