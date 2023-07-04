@@ -355,10 +355,12 @@ function revivePlayer(event) {
     //removing the grave piece from the graveyard
     this.remove();
 
-    //removing the revive class and event listeners from the graveyard pieces once a piece has been picked
-    let reviveButtons = document.getElementsByClassName('reviving');
+    //removing the clickable class and event listeners from the graveyard pieces once a piece has been picked
+    let reviveButtons = document.getElementsByClassName('piece-dead');
     for (let reviveButton of reviveButtons) {
-        reviveButton.classList.remove('reviving');
-        reviveButton.removeEventListener('click', revivePlayer);
+        if (reviveButton.classList.contains('clickable')) {
+            reviveButton.classList.remove('clickable');
+            reviveButton.removeEventListener('click', revivePlayer);
+        }
     }
 }

@@ -42,6 +42,10 @@ body {
 
 /* user interface */
 
+.clickable:hover {
+    cursor: pointer;
+}
+
 #ui-area {
     background-color: gray;
     height: 100vh;
@@ -88,10 +92,6 @@ body {
     background-repeat: no-repeat;
     background-position: center center;
     background-size: cover;
-}
-
-.reviving:hover {
-    cursor: pointer;
 }
 
 /* announcements */
