@@ -6,7 +6,7 @@ const announcementLimit = 10;
 
 //setting the types of players for each color
 localStorage.setItem('white', 'player');
-localStorage.setItem('black', 'player');
+localStorage.setItem('black', 'computer');
 
 //dictates which color will start on top of the board
 localStorage.setItem('topPosition', 'black');

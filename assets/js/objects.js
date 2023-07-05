@@ -810,15 +810,33 @@ let chessPiece = {
                 }
             }
         } else {
+            //finding the piece with the highest value
+            let highestValue = 0;
+            //getting a list of pieces with the highest value and picking one at random
+            let highestPieces = [];
             for (let grave of graves) {
-                let classes = grave.classList;
+                //getting the name of the current piece in the graveyard
+                let gravePiece = chessPiece.getDeadPiece(grave);
 
-                for (let myClass of classes) {
-                    if (myClass.includes('dead-')) {
-                        typeClass = myClass;
+                if (gravePiece !== 'pawn' && chessPiece[gravePiece].value >= highestValue) {
+                    if (chessPiece[gravePiece].value > highestValue) {
+                        //resetting the pieces to select from if there is a piece with a higher value
+                        highestPieces = [];
+                        highestValue = chessPiece[gravePiece].value;
+                    }
+                    highestPieces.push(grave);
+                    //stopping the loop if the piece is a queen because it has the best value
+                    if (gravePiece === 'queen') {
+                        break;
                     }
                 }
             }
+
+            let finalDecision = Math.floor(Math.random() * highestPieces.length);
+            chessPiece.replaceWithDead(highestPieces[finalDecision]);
+
+            //continuing on with the game after a decision has been made
+            nextTurn();
         }
     },
 
