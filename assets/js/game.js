@@ -27,10 +27,10 @@ function gameInit() {
         for (let j = 0; j < boardSize; j++) {
             let tileClass;
             if (isWhite) {
-                tileClass = 'tile-white';
+                tileClass = 'tile-light';
             }
             else {
-                tileClass = 'tile-black';
+                tileClass = 'tile-dark';
             }
 
             chessGrid += `
