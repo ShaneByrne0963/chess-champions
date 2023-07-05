@@ -847,9 +847,21 @@ let chessPiece = {
     /**
      * Checks if there is a piece in the graveyard that the player can revive
      * @param {string} color The color of the player that is running the function
+     * @returns {boolean} If there are pieces in the graveyard the player can revive
      */
     canRevive: (color) => {
+        let hasDeadPieces = false;
+        let graves = getGraveyardElements(color);
 
+        for (let grave of graves) {
+            let gravePiece = chessPiece.getDeadPiece(grave);
+            //pawns don't count as they cannot be revived
+            if (gravePiece !== 'pawn') {
+                hasDeadPieces = true;
+                break;
+            }
+        }
+        return hasDeadPieces;
     },
 
     /**
