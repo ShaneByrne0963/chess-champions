@@ -46,7 +46,7 @@ function makeMove(color) {
             moveScore -= currentScores[i];
 
             //disabling the ai. for debugging only
-            moveScore = 0;
+            //moveScore = 0;
 
             //if this is the first move of the first tile, then set the highest score to the score of this move
             if (isFirstCheck) {

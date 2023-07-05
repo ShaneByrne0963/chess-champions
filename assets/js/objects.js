@@ -569,6 +569,9 @@ let chessPiece = {
 
         for (let currentMove of moves) {
             let availableTiles = chessPiece.getTilesFromMove(tileData, currentMove);
+            //the move is not valid if it results in a self-check or if a pawn reaches the end of the board
+            //without a revivable piece in the graveyard
+            let isValidMove = true;
 
             for (let currentTile of availableTiles) {
                 //only add the tile if moving there doesn't result in a self-check
@@ -576,12 +579,18 @@ let chessPiece = {
 
                 if (tileData.piece !== 'king') {
                     tileEval = tile.evaluateWithMove(kingData, kingData, tileData, currentTile);
+                    //not a valid move if it is a pawn moving to the end of the board with no pieces to revive
+                    if (tileData.piece === 'pawn') {
+                        if (chessPiece.isAtBoardEnd(tileData.color, currentTile.y) && !chessPiece.canRevive(tileData.color)) {
+                            isValidMove = false;
+                        }
+                    }
 
                 } else {
                     tileEval = tile.evaluate(currentTile, tileData);
                 }
                 //if there are no threats at this tile, then it is a valid move
-                if (tileEval.enemyThreat.length <= 0) {
+                if (isValidMove && tileEval.enemyThreat.length <= 0) {
                     moveTiles.push(currentTile);
                 }
             }
@@ -727,7 +736,7 @@ let chessPiece = {
     isAtBoardEnd: (color, y) => {
         //getting which color started at the top
         let topColor = localStorage.getItem('topPosition');
-        //if the player started on the top, then the end of the board is at the bottom of the board. if not then the end is at the top
+        //if the player started on the top, then the end of the board is at the bottom. if not then the end is at the top
         let endPosition = (color === topColor) ? boardSize - 1 : 0;
 
         //return true if the y value of the tile is at the end position
