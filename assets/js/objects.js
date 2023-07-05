@@ -127,10 +127,8 @@ let tile = {
         //reviving pieces if the pawn reaches the other side of the board
         let isRevive = false;
         if (tilePiece === 'pawn') {
-            //getting which color started at the top of the board
-            let topPosition = localStorage.getItem('topPosition');
-            if ((tileDataFrom.color === topPosition && tileDataTo.y === boardSize - 1)
-                || (tileDataFrom.color !== topPosition && tileDataTo.y === 0)) {
+            //checking if the pawn is at the end of the board to initite to initiate the piece revive sequence
+            if (chessPiece.isAtBoardEnd(tileDataFrom.color, tileDataTo.y)) {
                 isRevive = true;
                 chessPiece.revive({
                     x: tileDataTo.x,
@@ -718,6 +716,22 @@ let chessPiece = {
         } else {
             return -1;
         }
+    },
+
+    /**
+     * Gets if a certain tile is at the end of the board
+     * @param {string} color The color of the piece
+     * @param {integer} y The y position of the piece
+     * @returns {boolean} if the given tile has reached the end of the board
+     */
+    isAtBoardEnd: (color, y) => {
+        //getting which color started at the top
+        let topColor = localStorage.getItem('topPosition');
+        //if the player started on the top, then the end of the board is at the bottom of the board. if not then the end is at the top
+        let endPosition = (color === topColor) ? boardSize - 1 : 0;
+
+        //return true if the y value of the tile is at the end position
+        return (y === endPosition);
     },
 
     /**
