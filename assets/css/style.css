@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,500&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&display=swap');
 
 /* global styles */
 
@@ -11,11 +11,11 @@ body {
     background-color: #7D3B27;
     text-align: center;
     font-size: 1.4rem;
-    font-family: 'EB Garamond', serif;
+    font-family: 'Playfair Display', serif;
     color: white;
 }
 
-h1,h2,h3 {
+h1 {
     font-style: italic;
 }
 
@@ -132,7 +132,7 @@ h1,h2,h3 {
     background-color: #A66333;
     color: white;
     text-decoration: none;
-    font-family: 'EB Garamond', serif;
+    font-family: 'Playfair Display', serif;
     font-size: 1.4rem;
 }
 
