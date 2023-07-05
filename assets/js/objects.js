@@ -569,11 +569,11 @@ let chessPiece = {
 
         for (let currentMove of moves) {
             let availableTiles = chessPiece.getTilesFromMove(tileData, currentMove);
-            //the move is not valid if it results in a self-check or if a pawn reaches the end of the board
-            //without a revivable piece in the graveyard
-            let isValidMove = true;
-
             for (let currentTile of availableTiles) {
+                //the move is not valid if it results in a self-check or if a pawn reaches the end of the board
+                //without a revivable piece in the graveyard
+                let isValidMove = true;
+
                 //only add the tile if moving there doesn't result in a self-check
                 let tileEval;
                 //the king's y position at the end of the move
