@@ -589,8 +589,16 @@ let chessPiece = {
                 } else {
                     tileEval = tile.evaluate(currentTile, tileData);
                 }
-                //if there are no threats at this tile, then it is a valid move
-                if (isValidMove && tileEval.enemyThreat.length <= 0) {
+                //not a valid move if the king is under threat
+                for (let threat of tileEval.enemyThreat) {
+                    //pawns cannot reach the end of the board without a graveyard piece to revive,
+                    //so if the king is at the end of the board with these conditions it is safe from pawns
+                    if (!(threat.piece === 'pawn' && chessPiece.isAtBoardEnd(threat.color, tileData.y) && !chessPiece.canRevive(threat.color))) {
+                        isValidMove = false;
+                        break;
+                    }
+                }
+                if (isValidMove) {
                     moveTiles.push(currentTile);
                 }
             }

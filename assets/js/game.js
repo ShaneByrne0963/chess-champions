@@ -263,6 +263,10 @@ function nextTurn() {
     }
 }
 
+/**
+ * Gives the go ahead to let the next player make their move
+ * @param {string} color The color of the player making the next move
+ */
 function allowTurn(color) {
     //if the player has the next turn
     if (localStorage.getItem(color) === 'player') {
@@ -317,8 +321,18 @@ function isCheck(color) {
     let kingData = tile.findKing(color);
 
     let kingSurroundings = tile.evaluate(kingData, kingData);
+    let isThreatened = false;
 
-    return (kingSurroundings.enemyThreat.length > 0);
+    //if the king is at their end of the board, only pawns will count as a threat if there are
+    //pieces in the graveyard to revive
+    for (let threat of kingSurroundings.enemyThreat) {
+        if (!(threat.piece === 'pawn' && chessPiece.isAtBoardEnd(threat.color, kingData.y) && !chessPiece.canRevive(threat.color))) {
+            isThreatened = true;
+            break;
+        }
+    }
+
+    return isThreatened;
 }
 
 /**
