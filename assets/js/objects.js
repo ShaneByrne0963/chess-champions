@@ -576,8 +576,12 @@ let chessPiece = {
             for (let currentTile of availableTiles) {
                 //only add the tile if moving there doesn't result in a self-check
                 let tileEval;
+                //the king's y position at the end of the move
+                let kingY;
 
                 if (tileData.piece !== 'king') {
+                    //if the piece that is looking to move is not the king, that means the king's position won't change
+                    kingY = kingData.y;
                     tileEval = tile.evaluateWithMove(kingData, kingData, tileData, currentTile);
                     //not a valid move if it is a pawn moving to the end of the board with no pieces to revive
                     if (tileData.piece === 'pawn') {
@@ -587,6 +591,8 @@ let chessPiece = {
                     }
 
                 } else {
+                    //if the piece that is looking to move is the king, that means the king's position will change to currentTile's position
+                    kingY = currentTile.y
                     tileEval = tile.evaluate(currentTile, tileData);
                 }
                 //not a valid move if the king is under threat
