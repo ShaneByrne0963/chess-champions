@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Carlito&family=Lato:wght@300&display=swap');
-
 /* global styles */
 
 * {
@@ -8,9 +6,16 @@
 }
 
 body {
-    /* background-color: #6f189e; */
-    color: white;
+    background-color: rgb(62, 55, 80);
+    color: #dbca72;
     text-align: center;
+}
+
+/* making anchors within buttons take up 100% of the button size */
+button>a {
+    display: inline-block;
+    width: 100%;
+    height: 100%;
 }
 
 /* game settings page */
@@ -18,7 +23,6 @@ body {
 #title-homepage {
     font-size: 2.5rem;
     line-height: 80px;
-    color: #dbca72;
     margin: 32px 0;
 }
 
@@ -48,7 +52,7 @@ body {
 }
 
 #ui-area {
-    background-color: gray;
+    background-color: rgb(55, 32, 68);
     height: 100vh;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -83,7 +87,7 @@ body {
 }
 
 .player-active {
-    background-color: #555555;
+    background-color: rgb(62, 62, 88);
 }
 
 .piece-dead {
