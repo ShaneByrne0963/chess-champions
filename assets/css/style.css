@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;1,500&display=swap');
+
 /* global styles */
 
 * {
@@ -6,9 +8,13 @@
 }
 
 body {
-    background-color: rgb(62, 55, 80);
-    color: #dbca72;
+    background-color: rgb(192, 192, 192);
     text-align: center;
+    font-family: 'EB Garamond', serif;
+}
+
+h1,h2,h3 {
+    font-style: italic;
 }
 
 /* making anchors within buttons take up 100% of the button size */
@@ -52,7 +58,8 @@ button>a {
 }
 
 #ui-area {
-    background-color: rgb(55, 32, 68);
+    background-color: rgb(96, 96, 96);
+    color: white;
     height: 100vh;
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -74,6 +81,8 @@ button>a {
 #player2-ui {
     padding: 16px;
     border: 1px solid black;
+    color: black;
+    background-color: rgb(128, 128, 128);
 }
 
 #player1-ui span {
@@ -86,8 +95,9 @@ button>a {
     color: black;
 }
 
-.player-active {
-    background-color: rgb(62, 62, 88);
+#ui-area>.player-active {
+    color: white;
+    border: 1px solid white;
 }
 
 .piece-dead {
