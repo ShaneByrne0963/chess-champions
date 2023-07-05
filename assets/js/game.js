@@ -364,3 +364,15 @@ function revivePlayer() {
     //continuing the game
     nextTurn();
 }
+
+/**
+ * Gets the graveyard elements of a certain player
+ * @param {string} color The color of the player
+ * @returns {object} an array of graveyard piece elements
+ */
+function getGraveyardElements(color) {
+    let graveyardDiv = (color === 'black') ? document.getElementById('player1-graveyard') : document.getElementById('player2-graveyard');
+    let graves = graveyardDiv.children;
+
+    return graves;
+}

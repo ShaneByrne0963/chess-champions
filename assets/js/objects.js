@@ -787,14 +787,18 @@ let chessPiece = {
         return pieces;
     },
 
+    /**
+     * Initialises the revival of another chess piece when a player's pawn reaches the
+     * other side of the chess board
+     * @param {object} pawnData The data of the pawn that has reached the end of the board
+     */
     revive: (pawnData) => {
         //setting the pawn position and color in the session storage to be accessed again when the player clicks on a graveyard icon
         sessionStorage.setItem('pawnPosition', `${pawnData.x}-${pawnData.y}`);
         sessionStorage.setItem('pawnColor', pawnData.color);
 
         //getting the appropriate graveyard for the player
-        let graveyardDiv = (pawnData.color === 'black') ? document.getElementById('player1-graveyard') : document.getElementById('player2-graveyard');
-        let graves = graveyardDiv.children;
+        let graves = getGraveyardElements(pawnData.color);
 
         //if the pawn that moved to the other side belongs to a player, then initiate the ui for reviving a piece
         if (localStorage.getItem(pawnData.color) === 'player') {
@@ -838,6 +842,14 @@ let chessPiece = {
             //continuing on with the game after a decision has been made
             nextTurn();
         }
+    },
+
+    /**
+     * Checks if there is a piece in the graveyard that the player can revive
+     * @param {string} color The color of the player that is running the function
+     */
+    canRevive: (color) => {
+
     },
 
     /**
