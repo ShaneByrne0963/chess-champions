@@ -277,7 +277,7 @@ function allowTurn(color) {
         }
     } else {
         //the ai script running if it is the computer's turn
-        makeMove(color);
+        setTimeout(makeMove, 1000, color);
     }
 }
 
