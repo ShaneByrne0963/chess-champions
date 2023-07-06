@@ -952,6 +952,11 @@ const pieceAnimation = {
     //will be used to store the animation function in order to stop it once it's done
     animationId: undefined,
 
+    /**
+     * Starts an animation
+     * @param {object} tileStart The tile the animation will start on
+     * @param {object} tileEnd The tile the animation will finish on
+     */
     start: (tileDataStart, tileDataEnd) => {
         //getting the id of the animation element
         let animatePiece = document.getElementById('piece-moving');
@@ -975,6 +980,11 @@ const pieceAnimation = {
         pieceAnimation.animationId = setInterval(pieceAnimation.nextFrame, 1, startElement, endElement);
     },
 
+    /**
+     * Progresses through the animation
+     * @param {object} tileStart The tile the animation started on
+     * @param {object} tileEnd The tile the animation will finish on
+     */
     nextFrame: (tileStart, tileEnd) => {
         let frame = parseInt(sessionStorage.getItem('animFrame'));
 
@@ -994,6 +1004,12 @@ const pieceAnimation = {
         }
     },
 
+    /**
+     * Sets the size and position of the animation piece, based on the frame
+     * @param {object} tileStart The tile the animation started on
+     * @param {object} tileEnd The tile the animation will finish on
+     * @param {integer} frame The frame the animation is currently on
+     */
     set: (tileStart, tileEnd, frame) => {
         //changing the width and height
         pieceAnimation.setSize(tileStart);
@@ -1002,6 +1018,10 @@ const pieceAnimation = {
         pieceAnimation.setPosition(tileStart, tileEnd, frame);
     },
 
+    /**
+     * Sets the size of the animation piece to match it's starting tile
+     * @param {object} tileStart The tile the animation started on
+     */
     setSize: (tileStart) => {
         //getting the id of the animation element
         let animatePiece = document.getElementById('piece-moving');
@@ -1011,6 +1031,12 @@ const pieceAnimation = {
         animatePiece.style.height = `${tileStart.offsetHeight}px`;
     },
 
+    /**
+     * Sets the position of the animation piece, based on the frame
+     * @param {object} tileStart The tile the animation started on
+     * @param {object} tileEnd The tile the animation will finish on
+     * @param {integer} frame The frame the animation is currently on
+     */
     setPosition: (tileStart, tileEnd, frame) => {
         //getting the id of the animation element
         let animatePiece = document.getElementById('piece-moving');
@@ -1045,6 +1071,10 @@ const pieceAnimation = {
         animatePiece.style.left = `${x}px`;
     },
 
+    /**
+     * Calls the end of the piece animation
+     * @param {object} tileEnd The element of the tile the animation finishes on
+     */
     end: (tileEnd) => {
         //getting the id of the animation element
         let animatePiece = document.getElementById('piece-moving');
