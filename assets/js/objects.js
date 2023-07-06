@@ -953,24 +953,24 @@ const pieceAnimation = {
     animationId: undefined,
 
     start: (tileDataFrom, tileDataTo) => {
+        //getting the id of the animation element
         let animatePiece = document.getElementById('piece-moving');
+        //getting the elements of the start and end tiles
+        let startElement = tile.getElement(tileDataFrom.x, tileDataFrom.y);
+        let endElement = tile.getElement(tileDataTo.x, tileDataTo.y);
+
+        //getting the position and size of the animation element ready before making it visible
+        pieceAnimation.set(startElement, endElement, 0);
 
         //changing the 'piece-moving' element to match the moving piece
-        animatePiece.style.visibility = 'visible';
         animatePiece.style.backgroundImage = `url(./assets/images//chess-pieces/${tileDataFrom.color}-${tileDataFrom.piece}.png)`;
+        animatePiece.style.visibility = 'visible';
 
         //storing the animation position in the session storage
         sessionStorage.setItem('animFrame', '0');
         //storing information of the piece that is moving to update the tile after the animation
         sessionStorage.setItem('animPiece', tileDataFrom.piece);
         sessionStorage.setItem('animColor', tileDataFrom.color);
-
-        //then clearing the tile when it moves
-        tile.clear(tileDataFrom.x, tileDataFrom.y);
-
-        //getting the elements of the start and end tiles
-        let startElement = tile.getElement(tileDataFrom.x, tileDataFrom.y);
-        let endElement = tile.getElement(tileDataTo.x, tileDataTo.y);
 
         pieceAnimation.animationId = setInterval(pieceAnimation.nextFrame, 1, startElement, endElement);
     },
@@ -985,10 +985,17 @@ const pieceAnimation = {
             pieceAnimation.end(tileTo);
         } else {
             sessionStorage.setItem('animFrame', frame);
+
+            //clearing the start tile after the animation has begun to remove the flicker
+            if (frame === 1) {
+                let tileData = tile.getData(tileFrom);
+                tile.clear(tileData.x, tileData.y);
+            }
         }
     },
 
     set: (tileFrom, tileTo, frame) => {
+        //getting the id of the animation element
         let animatePiece = document.getElementById('piece-moving');
 
         //changing the size of the moving element every frame in case the screen size changes
@@ -1009,6 +1016,7 @@ const pieceAnimation = {
     },
 
     end: (tileEnd) => {
+        //getting the id of the animation element
         let animatePiece = document.getElementById('piece-moving');
 
         animatePiece.style.visibility = 'hidden';
