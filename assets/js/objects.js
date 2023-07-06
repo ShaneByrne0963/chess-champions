@@ -952,61 +952,73 @@ const pieceAnimation = {
     //will be used to store the animation function in order to stop it once it's done
     animationId: undefined,
 
-    start: (tileDataFrom, tileDataTo) => {
+    start: (tileDataStart, tileDataEnd) => {
         //getting the id of the animation element
         let animatePiece = document.getElementById('piece-moving');
         //getting the elements of the start and end tiles
-        let startElement = tile.getElement(tileDataFrom.x, tileDataFrom.y);
-        let endElement = tile.getElement(tileDataTo.x, tileDataTo.y);
+        let startElement = tile.getElement(tileDataStart.x, tileDataStart.y);
+        let endElement = tile.getElement(tileDataEnd.x, tileDataEnd.y);
 
         //getting the position and size of the animation element ready before making it visible
         pieceAnimation.set(startElement, endElement, 0);
 
         //changing the 'piece-moving' element to match the moving piece
-        animatePiece.style.backgroundImage = `url(./assets/images//chess-pieces/${tileDataFrom.color}-${tileDataFrom.piece}.png)`;
+        animatePiece.style.backgroundImage = `url(./assets/images//chess-pieces/${tileDataStart.color}-${tileDataStart.piece}.png)`;
         animatePiece.style.visibility = 'visible';
 
         //storing the animation position in the session storage
         sessionStorage.setItem('animFrame', '0');
         //storing information of the piece that is moving to update the tile after the animation
-        sessionStorage.setItem('animPiece', tileDataFrom.piece);
-        sessionStorage.setItem('animColor', tileDataFrom.color);
+        sessionStorage.setItem('animPiece', tileDataStart.piece);
+        sessionStorage.setItem('animColor', tileDataStart.color);
 
         pieceAnimation.animationId = setInterval(pieceAnimation.nextFrame, 1, startElement, endElement);
     },
 
-    nextFrame: (tileFrom, tileTo) => {
+    nextFrame: (tileStart, tileEnd) => {
         let frame = parseInt(sessionStorage.getItem('animFrame'));
 
-        pieceAnimation.set(tileFrom, tileTo, frame);
+        pieceAnimation.set(tileStart, tileEnd, frame);
 
         frame++;
         if (frame >= animationTime) {
-            pieceAnimation.end(tileTo);
+            pieceAnimation.end(tileEnd);
         } else {
             sessionStorage.setItem('animFrame', frame);
 
             //clearing the start tile after the animation has begun to remove the flicker
             if (frame === 1) {
-                let tileData = tile.getData(tileFrom);
+                let tileData = tile.getData(tileStart);
                 tile.clear(tileData.x, tileData.y);
             }
         }
     },
 
-    set: (tileFrom, tileTo, frame) => {
+    set: (tileStart, tileEnd, frame) => {
+        //changing the width and height
+        pieceAnimation.setSize(tileStart);
+
+        //changing the position
+        pieceAnimation.setPosition(tileStart, tileEnd, frame);
+    },
+
+    setSize: (tileStart) => {
         //getting the id of the animation element
         let animatePiece = document.getElementById('piece-moving');
 
-        //changing the size of the moving element every frame in case the screen size changes
         //element.offsetWidth source: https://softauthor.com/javascript-get-width-of-an-html-element/#using-innerwidth
-        animatePiece.style.width = `${tileFrom.offsetWidth}px`;
-        animatePiece.style.height = `${tileFrom.offsetHeight}px`;
+        animatePiece.style.width = `${tileStart.offsetWidth}px`;
+        animatePiece.style.height = `${tileStart.offsetHeight}px`;
+    },
+
+    setPosition: (tileStart, tileEnd, frame) => {
+        //getting the id of the animation element
+        let animatePiece = document.getElementById('piece-moving');
 
         //getting the position of both the start and end elements
         //source: https://stackoverflow.com/questions/442404/retrieve-the-position-x-y-of-an-html-element
-        let startPosition = tileFrom.getBoundingClientRect();
-        let endPosition = tileTo.getBoundingClientRect();
+        let startPosition = tileStart.getBoundingClientRect();
+        let endPosition = tileEnd.getBoundingClientRect();
 
         let x = startPosition.left + (((endPosition.left - startPosition.left) / animationTime) * frame);
         let y = startPosition.top + (((endPosition.top - startPosition.top) / animationTime) * frame);
