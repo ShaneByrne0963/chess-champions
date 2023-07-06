@@ -947,22 +947,41 @@ const chessPiece = {
         deadPiece.remove();
     },
 
+    //will be used to store the animation function in order to stop it once it's done
+    animationId: undefined,
+
     setAnimation: (tileDataFrom, tileDataTo) => {
         let animatePiece = document.getElementById('piece-moving');
 
         //changing the 'piece-moving' element to match the moving piece
-        let startingElement = tile.getElement(tileDataFrom.x, tileDataFrom.y);
         animatePiece.style.visibility = 'visible';
         animatePiece.style.backgroundImage = `url(./assets/images//chess-pieces/${tileDataFrom.color}-${tileDataFrom.piece}.png)`;
+
+        //storing the animation position in the session storage
+        sessionStorage.setItem('animFrame', '0');
+
+        //getting the elements of the start and end tiles
+        let startElement = tile.getElement(tileDataFrom.x, tileDataFrom.y);
+        let endElement = tile.getElement(tileDataFrom.x, tileDataFrom.y);
+
+        chessPiece.animationId = setInterval(chessPiece.animateFrame, 1, startElement, endElement);        
+    },
+
+    animateFrame: (tileFrom, tileTo) => {
+        let animatePiece = document.getElementById('piece-moving');
+        let frame = sessionStorage.getItem('animFrame');
+
+        //changing the size of the moving element every frame in case the screen size changes
         animatePiece.style.width = '100px';
         animatePiece.style.height = '100px';
 
-
-        //storing the animation position in the session storage
-        sessionStorage.setItem('animFrame', '0');        
-    },
-
-    animateFrame: () => {
-
+        frame++;
+        if (frame >= animationTime) {
+            animatePiece.style.visibility = 'hidden';
+            clearInterval(chessPiece.animationId);
+            sessionStorage.removeItem('animFrame');
+        } else {
+            sessionStorage.setItem('animFrame', frame);
+        }
     }
 };

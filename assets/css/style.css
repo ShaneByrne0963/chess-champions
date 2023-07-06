@@ -181,6 +181,7 @@ h1 {
     position: absolute;
     background-repeat: no-repeat;
     background-size: cover;
+    top: 0;
 }
 
 .possible-move {
