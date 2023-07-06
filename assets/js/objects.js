@@ -125,24 +125,24 @@ const tile = {
 
         chessPiece.setAnimation(tileDataFrom, tileDataTo);
 
-        //reviving pieces if the pawn reaches the other side of the board
-        let isRevive = false;
-        if (tileDataFrom.piece === 'pawn') {
-            //checking if the pawn is at the end of the board to initite to initiate the piece revive sequence
-            if (chessPiece.isAtBoardEnd(tileDataFrom.color, tileDataTo.y)) {
-                isRevive = true;
-                chessPiece.revive({
-                    x: tileDataTo.x,
-                    y: tileDataTo.y,
-                    piece: tileDataFrom.piece,
-                    color: tileDataFrom.color
-                });
-            }
-        }
-        //if a pawn has moved to the other side of the board, stop the game until a piece to revive has been selected
-        if (!isRevive) {
-            nextTurn();
-        }
+        // //reviving pieces if the pawn reaches the other side of the board
+        // let isRevive = false;
+        // if (tileDataFrom.piece === 'pawn') {
+        //     //checking if the pawn is at the end of the board to initite to initiate the piece revive sequence
+        //     if (chessPiece.isAtBoardEnd(tileDataFrom.color, tileDataTo.y)) {
+        //         isRevive = true;
+        //         chessPiece.revive({
+        //             x: tileDataTo.x,
+        //             y: tileDataTo.y,
+        //             piece: tileDataFrom.piece,
+        //             color: tileDataFrom.color
+        //         });
+        //     }
+        // }
+        // //if a pawn has moved to the other side of the board, stop the game until a piece to revive has been selected
+        // if (!isRevive) {
+        //     nextTurn();
+        // }
     },
 
     /**
@@ -980,6 +980,9 @@ const chessPiece = {
             animatePiece.style.visibility = 'hidden';
             clearInterval(chessPiece.animationId);
             sessionStorage.removeItem('animFrame');
+
+            //moving on to the next turn once the animation is done
+            nextTurn();
         } else {
             sessionStorage.setItem('animFrame', frame);
         }
