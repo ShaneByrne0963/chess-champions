@@ -111,9 +111,8 @@ const tile = {
         tile.removeAllInteraction();
 
         //if the piece is "pawnNew", then it will be converted to 'pawn' after it's first move
-        let tilePiece = tileDataFrom.piece;
-        if (tilePiece === 'pawnNew') {
-            tilePiece = 'pawn';
+        if (tileDataFrom.piece === 'pawnNew') {
+            tileDataFrom.piece = 'pawn';
         }
 
         //if a piece is destroyed, add it to one of the graveyards
@@ -121,12 +120,14 @@ const tile = {
             chessPiece.destroy(tileDataTo);
         }
 
-        tile.set(tileDataTo.x, tileDataTo.y, tilePiece, tileDataFrom.color);
+        tile.set(tileDataTo.x, tileDataTo.y, tileDataFrom.piece, tileDataFrom.color);
         tile.clear(tileDataFrom.x, tileDataFrom.y);
+
+        chessPiece.setAnimation(tileDataFrom, tileDataTo);
 
         //reviving pieces if the pawn reaches the other side of the board
         let isRevive = false;
-        if (tilePiece === 'pawn') {
+        if (tileDataFrom.piece === 'pawn') {
             //checking if the pawn is at the end of the board to initite to initiate the piece revive sequence
             if (chessPiece.isAtBoardEnd(tileDataFrom.color, tileDataTo.y)) {
                 isRevive = true;
@@ -946,8 +947,19 @@ const chessPiece = {
         deadPiece.remove();
     },
 
-    animate: (tileDataFrom, tileDataTo) => {
+    setAnimation: (tileDataFrom, tileDataTo) => {
+        let animatePiece = document.getElementById('piece-moving');
 
+        //changing the 'piece-moving' element to match the moving piece
+        let startingElement = tile.getElement(tileDataFrom.x, tileDataFrom.y);
+        animatePiece.style.visibility = 'visible';
+        animatePiece.style.backgroundImage = `url(./assets/images//chess-pieces/${tileDataFrom.color}-${tileDataFrom.piece}.png)`;
+        animatePiece.style.width = '100px';
+        animatePiece.style.height = '100px';
+
+
+        //storing the animation position in the session storage
+        sessionStorage.setItem('animFrame', '0');        
     },
 
     animateFrame: () => {

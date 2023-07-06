@@ -179,6 +179,8 @@ h1 {
 
 #piece-moving {
     position: absolute;
+    background-repeat: no-repeat;
+    background-size: cover;
 }
 
 .possible-move {
