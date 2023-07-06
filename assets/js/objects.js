@@ -123,7 +123,7 @@ const tile = {
         // tile.set(tileDataTo.x, tileDataTo.y, tileDataFrom.piece, tileDataFrom.color);
         // tile.clear(tileDataFrom.x, tileDataFrom.y);
 
-        chessPiece.setAnimation(tileDataFrom, tileDataTo);
+        pieceAnimation.start(tileDataFrom, tileDataTo);
 
         // //reviving pieces if the pawn reaches the other side of the board
         // let isRevive = false;
@@ -946,12 +946,13 @@ const chessPiece = {
         //removing the grave piece from the graveyard
         deadPiece.remove();
     },
+};
 
+const pieceAnimation = {
     //will be used to store the animation function in order to stop it once it's done
     animationId: undefined,
 
-    setAnimation: (tileDataFrom, tileDataTo) => {
-        console.clear();
+    start: (tileDataFrom, tileDataTo) => {
         let animatePiece = document.getElementById('piece-moving');
 
         //changing the 'piece-moving' element to match the moving piece
@@ -971,51 +972,30 @@ const chessPiece = {
         let startElement = tile.getElement(tileDataFrom.x, tileDataFrom.y);
         let endElement = tile.getElement(tileDataTo.x, tileDataTo.y);
 
-        chessPiece.animationId = setInterval(chessPiece.animateFrame, 1, startElement, endElement);        
+        pieceAnimation.animationId = setInterval(pieceAnimation.nextFrame, 1, startElement, endElement);
     },
 
-    animateFrame: (tileFrom, tileTo) => {
-        let animatePiece = document.getElementById('piece-moving');
+    nextFrame: (tileFrom, tileTo) => {
         let frame = parseInt(sessionStorage.getItem('animFrame'));
+
+        pieceAnimation.set(tileFrom, tileTo, frame);
+
+        frame++;
+        if (frame >= animationTime) {
+            pieceAnimation.end(tileTo);
+        } else {
+            sessionStorage.setItem('animFrame', frame);
+        }
+    },
+
+    set: (tileFrom, tileTo, frame) => {
+        let animatePiece = document.getElementById('piece-moving');
 
         //changing the size of the moving element every frame in case the screen size changes
         //element.offsetWidth source: https://softauthor.com/javascript-get-width-of-an-html-element/#using-innerwidth
         animatePiece.style.width = `${tileFrom.offsetWidth}px`;
         animatePiece.style.height = `${tileFrom.offsetHeight}px`;
 
-        let animatePosition = chessPiece.getAnimationPosition(tileFrom, tileTo, frame);
-
-        animatePiece.style.top = `${animatePosition.y}px`;
-        animatePiece.style.left = `${animatePosition.x}px`;
-
-        frame++;
-        if (frame >= animationTime) {
-            animatePiece.style.visibility = 'hidden';
-            clearInterval(chessPiece.animationId);
-            sessionStorage.removeItem('animFrame');
-
-            //getting the tile data of the end position
-            let tileData = tile.getData(tileTo);
-
-            //getting the piece information
-            let animPiece = sessionStorage.getItem('animPiece');
-            let animColor = sessionStorage.getItem('animColor');
-
-            //removing the piece information from the session storage
-            sessionStorage.removeItem('animPiece');
-            sessionStorage.removeItem('animColor');
-
-            //setting the tile information of the moving piece in the new position
-            tile.set(tileData.x, tileData.y, animPiece, animColor);
-
-            //moving on to the next turn once the animation is done
-            nextTurn();
-        } else {
-            sessionStorage.setItem('animFrame', frame);
-        }
-    },
-
-    getAnimationPosition: (tileFrom, tileTo, frame) => {
         //getting the position of both the start and end elements
         //source: https://stackoverflow.com/questions/442404/retrieve-the-position-x-y-of-an-html-element
         let startPosition = tileFrom.getBoundingClientRect();
@@ -1024,10 +1004,32 @@ const chessPiece = {
         let x = startPosition.left + (((endPosition.left - startPosition.left) / animationTime) * frame);
         let y = startPosition.top + (((endPosition.top - startPosition.top) / animationTime) * frame);
 
-        //returns an object of the coordinates
-        return {
-            x: x,
-            y: y
-        }
+        animatePiece.style.top = `${y}px`;
+        animatePiece.style.left = `${x}px`;
+    },
+
+    end: (tileEnd) => {
+        let animatePiece = document.getElementById('piece-moving');
+
+        animatePiece.style.visibility = 'hidden';
+        clearInterval(pieceAnimation.animationId);
+        sessionStorage.removeItem('animFrame');
+
+        //getting the tile data of the end position
+        let tileData = tile.getData(tileEnd);
+
+        //getting the piece information
+        let animPiece = sessionStorage.getItem('animPiece');
+        let animColor = sessionStorage.getItem('animColor');
+
+        //removing the piece information from the session storage
+        sessionStorage.removeItem('animPiece');
+        sessionStorage.removeItem('animColor');
+
+        //setting the tile information of the moving piece in the new position
+        tile.set(tileData.x, tileData.y, animPiece, animColor);
+
+        //moving on to the next turn once the animation is done
+        nextTurn();
     }
 };
