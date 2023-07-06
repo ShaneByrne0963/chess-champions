@@ -120,8 +120,8 @@ const tile = {
             chessPiece.destroy(tileDataTo);
         }
 
-        tile.set(tileDataTo.x, tileDataTo.y, tileDataFrom.piece, tileDataFrom.color);
-        tile.clear(tileDataFrom.x, tileDataFrom.y);
+        // tile.set(tileDataTo.x, tileDataTo.y, tileDataFrom.piece, tileDataFrom.color);
+        // tile.clear(tileDataFrom.x, tileDataFrom.y);
 
         chessPiece.setAnimation(tileDataFrom, tileDataTo);
 
@@ -960,6 +960,12 @@ const chessPiece = {
 
         //storing the animation position in the session storage
         sessionStorage.setItem('animFrame', '0');
+        //storing information of the piece that is moving to update the tile after the animation
+        sessionStorage.setItem('animPiece', tileDataFrom.piece);
+        sessionStorage.setItem('animColor', tileDataFrom.color);
+
+        //then clearing the tile when it moves
+        tile.clear(tileDataFrom.x, tileDataFrom.y);
 
         //getting the elements of the start and end tiles
         let startElement = tile.getElement(tileDataFrom.x, tileDataFrom.y);
@@ -987,6 +993,20 @@ const chessPiece = {
             animatePiece.style.visibility = 'hidden';
             clearInterval(chessPiece.animationId);
             sessionStorage.removeItem('animFrame');
+
+            //getting the tile data of the end position
+            let tileData = tile.getData(tileTo);
+
+            //getting the piece information
+            let animPiece = sessionStorage.getItem('animPiece');
+            let animColor = sessionStorage.getItem('animColor');
+
+            //removing the piece information from the session storage
+            sessionStorage.removeItem('animPiece');
+            sessionStorage.removeItem('animColor');
+
+            //setting the tile information of the moving piece in the new position
+            tile.set(tileData.x, tileData.y, animPiece, animColor);
 
             //moving on to the next turn once the animation is done
             nextTurn();
