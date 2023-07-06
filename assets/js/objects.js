@@ -951,6 +951,7 @@ const chessPiece = {
     animationId: undefined,
 
     setAnimation: (tileDataFrom, tileDataTo) => {
+        console.clear();
         let animatePiece = document.getElementById('piece-moving');
 
         //changing the 'piece-moving' element to match the moving piece
@@ -962,18 +963,30 @@ const chessPiece = {
 
         //getting the elements of the start and end tiles
         let startElement = tile.getElement(tileDataFrom.x, tileDataFrom.y);
-        let endElement = tile.getElement(tileDataFrom.x, tileDataFrom.y);
+        let endElement = tile.getElement(tileDataTo.x, tileDataTo.y);
 
         chessPiece.animationId = setInterval(chessPiece.animateFrame, 1, startElement, endElement);        
     },
 
     animateFrame: (tileFrom, tileTo) => {
         let animatePiece = document.getElementById('piece-moving');
-        let frame = sessionStorage.getItem('animFrame');
+        let frame = parseInt(sessionStorage.getItem('animFrame'));
 
         //changing the size of the moving element every frame in case the screen size changes
+        //element.offsetWidth source: https://softauthor.com/javascript-get-width-of-an-html-element/#using-innerwidth
         animatePiece.style.width = `${tileFrom.offsetWidth}px`;
         animatePiece.style.height = `${tileFrom.offsetHeight}px`;
+
+        //getting the position of both the start and end elements
+        //source: https://stackoverflow.com/questions/442404/retrieve-the-position-x-y-of-an-html-element
+        let startPosition = tileFrom.getBoundingClientRect();
+        let endPosition = tileTo.getBoundingClientRect();
+
+        let finalPosition = ((endPosition.top - startPosition.top) / animationTime) * frame;
+        console.log(endPosition.top);
+
+        animatePiece.style.top = `${((endPosition.top - startPosition.top) / animationTime) * frame}px`;
+        animatePiece.style.left = `${((endPosition.left - startPosition.left) / animationTime) * frame}px`;
 
         frame++;
         if (frame >= animationTime) {
