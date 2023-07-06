@@ -138,6 +138,10 @@ h1 {
 
 /* chess board */
 
+#game-area {
+    position: relative;
+}
+
 #chess-board {
     background-color: rgb(80, 24, 24);
     padding: 16px;
@@ -171,6 +175,10 @@ h1 {
 #tile-selected {
     height: 100%;
     background-color: rgba(255, 128, 255, 0.5);
+}
+
+#piece-moving {
+    position: absolute;
 }
 
 .possible-move {

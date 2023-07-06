@@ -1,7 +1,7 @@
 //constants
 const boardSize = 8; //the width and height of the board in terms of tiles
- //the maximum number of announcements that can be displayed
- //when this limit is reached the oldest will be destroyed
+//the maximum number of announcements that can be displayed
+//when this limit is reached the oldest will be destroyed
 const announcementLimit = 10;
 
 //setting the types of players for each color
@@ -194,7 +194,7 @@ function getPlayerName(playerColor) {
             playerPlace = 2;
             break;
         default:
-            throw `Error at getPlayerName: Invalid color ${playerColor}. Aborting!`
+            throw `Error at getPlayerName: Invalid color ${playerColor}. Aborting!`;
     }
 
     //finding the ui element that contains the information of the player
@@ -248,7 +248,7 @@ function nextTurn() {
     //alerting the player if there is a check this round
     if (isCheck(playerTurn.color)) {
         //looking for a checkmate
-        
+
         if (checkmate) {
             checkmate = true;
             addAnnouncement(`Checkmate! ${lastPlayerName} wins!`);

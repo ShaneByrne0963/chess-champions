@@ -1,5 +1,5 @@
 //object that stores tile functions
-let tile = {
+const tile = {
     /**
      * Gets the tile information at a certain coordinate
      * @param {*} x the x coordinate of the tile
@@ -473,7 +473,7 @@ let tile = {
 };
 
 //object that stores piece functions and the information of different pieces
-let chessPiece = {
+const chessPiece = {
     //chess move rules:
     // 'normal' means add the following coordinates to the current tile
     // 'attack' means the piece can only move to the tile if an enemy is on it
@@ -592,7 +592,7 @@ let chessPiece = {
 
                 } else {
                     //if the piece that is looking to move is the king, that means the king's position will change to currentTile's position
-                    kingY = currentTile.y
+                    kingY = currentTile.y;
                     tileEval = tile.evaluate(currentTile, tileData);
                 }
                 //not a valid move if the king is under threat
@@ -944,5 +944,13 @@ let chessPiece = {
 
         //removing the grave piece from the graveyard
         deadPiece.remove();
+    },
+
+    animate: (tileDataFrom, tileDataTo) => {
+
+    },
+
+    animateFrame: () => {
+
     }
 };
