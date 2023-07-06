@@ -972,8 +972,8 @@ const chessPiece = {
         let frame = sessionStorage.getItem('animFrame');
 
         //changing the size of the moving element every frame in case the screen size changes
-        animatePiece.style.width = '100px';
-        animatePiece.style.height = '100px';
+        animatePiece.style.width = `${tileFrom.offsetWidth}px`;
+        animatePiece.style.height = `${tileFrom.offsetHeight}px`;
 
         frame++;
         if (frame >= animationTime) {
