@@ -1020,9 +1020,27 @@ const pieceAnimation = {
         let startPosition = tileStart.getBoundingClientRect();
         let endPosition = tileEnd.getBoundingClientRect();
 
-        let x = startPosition.left + (((endPosition.left - startPosition.left) / animationTime) * frame);
-        let y = startPosition.top + (((endPosition.top - startPosition.top) / animationTime) * frame);
+        //gets the start and end positions of the animation
+        let xStart = startPosition.left;
+        let yStart = startPosition.top;
+        let xEnd = endPosition.left;
+        let yEnd = endPosition.top;
 
+        //finds the distance between the start and end position
+        let xDistance = xEnd - xStart;
+        let yDistance = yEnd - yStart;
+
+        //the animation speeds up until it reaches the halfway point and then slows down to a stop
+        //think of it like a point moving around a circle from one side to the other,
+        //but remove one axis so it moves in a straight line
+        //in this case "frame" is the angle of the point on this theoretical circle
+        let frameRadians = (frame / animationTime) * Math.PI; //pi radians is equal to 180 degrees, which would be the full length of the circle
+
+        //using "cos" for both x and y as we are only interested in one axis
+        let x = xStart + (xDistance / 2) - (Math.cos(frameRadians) * (xDistance / 2));
+        let y = yStart + (yDistance / 2) - (Math.cos(frameRadians) * (yDistance / 2));
+
+        //setting the css style for the position of the element
         animatePiece.style.top = `${y}px`;
         animatePiece.style.left = `${x}px`;
     },
