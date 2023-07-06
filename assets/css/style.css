@@ -138,10 +138,6 @@ h1 {
 
 /* chess board */
 
-#game-area {
-    position: relative;
-}
-
 #chess-board {
     background-color: rgb(80, 24, 24);
     padding: 16px;

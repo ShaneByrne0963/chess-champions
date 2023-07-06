@@ -977,16 +977,10 @@ const chessPiece = {
         animatePiece.style.width = `${tileFrom.offsetWidth}px`;
         animatePiece.style.height = `${tileFrom.offsetHeight}px`;
 
-        //getting the position of both the start and end elements
-        //source: https://stackoverflow.com/questions/442404/retrieve-the-position-x-y-of-an-html-element
-        let startPosition = tileFrom.getBoundingClientRect();
-        let endPosition = tileTo.getBoundingClientRect();
+        let animatePosition = chessPiece.getAnimationPosition(tileFrom, tileTo, frame);
 
-        let finalPosition = ((endPosition.top - startPosition.top) / animationTime) * frame;
-        console.log(endPosition.top);
-
-        animatePiece.style.top = `${((endPosition.top - startPosition.top) / animationTime) * frame}px`;
-        animatePiece.style.left = `${((endPosition.left - startPosition.left) / animationTime) * frame}px`;
+        animatePiece.style.top = `${animatePosition.y}px`;
+        animatePiece.style.left = `${animatePosition.x}px`;
 
         frame++;
         if (frame >= animationTime) {
@@ -998,6 +992,22 @@ const chessPiece = {
             nextTurn();
         } else {
             sessionStorage.setItem('animFrame', frame);
+        }
+    },
+
+    getAnimationPosition: (tileFrom, tileTo, frame) => {
+        //getting the position of both the start and end elements
+        //source: https://stackoverflow.com/questions/442404/retrieve-the-position-x-y-of-an-html-element
+        let startPosition = tileFrom.getBoundingClientRect();
+        let endPosition = tileTo.getBoundingClientRect();
+
+        let x = startPosition.left + (((endPosition.left - startPosition.left) / animationTime) * frame);
+        let y = startPosition.top + (((endPosition.top - startPosition.top) / animationTime) * frame);
+
+        //returns an object of the coordinates
+        return {
+            x: x,
+            y: y
         }
     }
 };
