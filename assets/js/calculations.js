@@ -7,12 +7,11 @@ function makeMove(color) {
     let highestScorePieces = [];
 
     //getting all the pieces on the board that belong to the ai
-    let pieces = document.getElementsByClassName(color);
+    let pieces = chessPiece.getAll(color);
 
     //before checking all the moves, the scores of all the pieces in their current positions will be calculated and stored
     let currentScores = [];
-    for (let currentPiece of pieces) {
-        let pieceData = tile.getData(currentPiece);
+    for (let pieceData of pieces) {
         currentScores.push(tile.getScore(pieceData, pieceData));
     }
 
@@ -20,7 +19,7 @@ function makeMove(color) {
         let currentPiece = pieces[i];
         //if the piece has not yet been added to the high score array
         let added = false;
-        let currentInfo = tile.getData(currentPiece);
+        let currentInfo = chessPiece.get(currentPiece.parentNode);
         //stores any moves that have the same score as the highest score
         currentInfo.highestMoves = [];
         //gets all of the tiles the current piece can move to

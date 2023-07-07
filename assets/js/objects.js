@@ -173,7 +173,7 @@ const tile = {
             while (tile.inBounds(x, y)) {
                 //stop the vector if it comes into contact with itself
                 if (!(x === evaluatingTile.x && y === evaluatingTile.y)) {
-                    let secondTile = tile.get(x, y);
+                    let secondTile = chessPiece.findData(x, y);
 
                     if (secondTile.color === evaluatingTile.color) { //if the evaluation runs into a friendly piece
                         //if the friendly piece can attack the tile if an enemy moves to it
@@ -545,7 +545,7 @@ const chessPiece = {
         };
     },
 
-    find: (x, y) => {
+    findData: (x, y) => {
         let tileElement = tile.getElement(x, y);
         let pieceData = chessPiece.get(tileElement);
 
@@ -663,7 +663,7 @@ const chessPiece = {
             //if the forward value is greater than 1, then all tiles in between will be checked to see if they are blank
             let blockMove = false;
             for (let i = 1; i < forwardAmount && !blockMove; i++) {
-                let tileInfo = chessPiece.find(newX, tileData.y + (i * yDirection));
+                let tileInfo = chessPiece.findData(newX, tileData.y + (i * yDirection));
                 //if there is a friendly piece, or any piece at all if the rule 'disarmed' applies, the tile will be considered blocked
                 if (tileInfo.color === tileData.color || (move[0] === 'disarmed' && tileInfo.color !== '')) {
                     blockMove = true;
@@ -683,7 +683,7 @@ const chessPiece = {
         //checking if the move is within the bounding box of the chess board
         if (tile.inBounds(newX, newY)) {
             //the tile element that is being checked
-            let checkTile = chessPiece.find(newX, newY);
+            let checkTile = chessPiece.findData(newX, newY);
 
             //checking the different rules for the piece. see chessPiece object for move rules
             switch (move[0]) {
@@ -697,7 +697,7 @@ const chessPiece = {
                 //for moves that loop in a certain direction until an obstacle is found
                 case 'vector':
                     do {
-                        checkTile = chessPiece.find(newX, newY);
+                        checkTile = chessPiece.findData(newX, newY);
                         //adding the move to the array if the tile is not occupied by a friendly piece
                         if (checkTile.color !== tileData.color) {
                             moveTiles.push(checkTile);
@@ -908,7 +908,7 @@ const chessPiece = {
         let pieces = [];
 
         for (let element of pieceElements) {
-            pieces.push(tile.getData(element));
+            pieces.push(chessPiece.get(element.parentNode));
         }
 
         return pieces;
@@ -1178,6 +1178,6 @@ const pieceAnimation = {
 
         chessPiece.changeTile(pieceElement, endTileElement);
         //moving on to the next turn once the animation is done
-        //nextTurn();
+        nextTurn();
     }
 };
