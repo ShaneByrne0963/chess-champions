@@ -521,18 +521,26 @@ const chessPiece = {
     create: (tileElement, piece, color) => {
         //creating a new element and setting it's classes
         let newPiece = document.createElement('div');
-        newPiece.className = `chess-piece ${piece} ${color}`;
 
-        //finding the correct location of it's image in the directory. "pawnNew" will result in nothing
+        //converting the camelCase in pawnNew to html standard pawn-new
+        let pieceClass = piece;
+        //used to find the correct location of it's image in the directory. "pawnNew" will result in nothing
         let pieceImage = piece;
-        if (pieceImage === 'pawnNew') {
+        if (piece === 'pawnNew') {
+            pieceClass = 'pawn-new';
             pieceImage = 'pawn';
         }
+        newPiece.className = `chess-piece ${pieceClass} ${color}`;
+        
         //finding the correct image using pieceImage and color
         newPiece.style.backgroundImage = `url(./assets/images/chess-pieces/${color}-${pieceImage}.png)`;
 
         //adding the newly created element to the specified tile element
         tileElement.appendChild(newPiece);
+    },
+
+    get: (pieceElement) => {
+
     },
 
     /**
