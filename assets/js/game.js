@@ -127,13 +127,18 @@ function startGame() {
  */
 function tileClick(x, y) {
     //only select the tile if it has a clickable class attached to it
-    let clickedClass = this.className;
+    let clickedTile = tile.getElement(x, y);
+    console.log(clickedTile);
+    let clickedClass = clickedTile.className;
     if (clickedClass.includes('clickable')) {
-        let tilePiece = tile.getPiece(this);
+        let tilePiece = tile.getPieceElement(clickedTile);
 
         if (tilePiece !== null) {
-            
+            tile.select(clickedTile);
+            console.log("Here.....");
         }
+
+        console.log("Here.");
 
 
 
@@ -285,7 +290,7 @@ function allowTurn(color) {
         //adding the 'clickable' class to the player pieces
         let playerElements = document.getElementsByClassName(color);
         for (let playerPiece of playerElements) {
-            tile.addInteraction(playerPiece);
+            tile.addInteraction(playerPiece.parentNode);
         }
     } else {
         //the ai script running if it is the computer's turn

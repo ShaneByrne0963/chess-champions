@@ -2,11 +2,11 @@
 const tile = {
     getPiece: (tileElement) => {
         //getting the piece element of the tile, if there is one
-        let tilePiece = tile.getPieceElement(tileElement);
+        let pieceElement = tile.getPieceElement(tileElement);
         let tileData = null;
 
-        if (tilePiece !== null) {
-            tileData = chessPiece.get(tilePiece);
+        if (pieceElement !== null) {
+            tileData = chessPiece.get(pieceElement);
         }
         return tileData;
     },
@@ -22,16 +22,16 @@ const tile = {
         for (let child of tileChildren) {
             //checking if the child element is a chess piece using its classes
             let childClass = child.classList;
-            if (childClass.includes('chess-piece')) {
+            if (childClass.contains('chess-piece')) {
                 //getting the information of the piece that was found
-                tilePiece = chessPiece.get(child);
+                tilePiece = child;
                 break;
             }
         }
         return tilePiece;
     },
     /**
-     * Gets an HTML element in a given location
+     * Gets an HTML element of a tile in a specified location
      * @param {*} x The x position of the tile on the board
      * @param {*} y The y position of the tile on the board
      * @returns The tile HTML element
@@ -49,7 +49,7 @@ const tile = {
         let kings = document.getElementsByClassName('king');
         let kingData;
         for (let king of kings) {
-            kingData = tile.getData(king);
+            kingData = chessPiece.get(king);
             if (kingData.color === color) {
                 break;
             }
@@ -367,15 +367,15 @@ const tile = {
         return (x >= 0 && x < boardSize && y >= 0 && y < boardSize);
     },
 
-    select: (selectTile) => {
+    select: (tileElement) => {
         //getting the tile data
-        let selectData = tile.getData(selectTile);
+        let selectData = tile.getPiece(tileElement);
 
         if (localStorage.getItem(selectData.color) === 'player') {
             //creates another div as a child of the selected tile
             let selectDiv = document.createElement('div');
             selectDiv.id = 'tile-selected';
-            selectTile.appendChild(selectDiv);
+            tileElement.appendChild(selectDiv);
 
             //show all the available moves the selected piece can take
             let possibleMoves = chessPiece.getAllMoveTiles(selectData);
@@ -538,6 +538,13 @@ const chessPiece = {
             piece: piece,
             color: color
         };
+    },
+
+    find: (x, y) => {
+        let tileElement = tile.getElement(x. y);
+        let pieceData = tile.getPiece(tileElement);
+
+        return pieceData;
     },
 
     /**
