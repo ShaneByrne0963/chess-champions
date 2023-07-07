@@ -211,7 +211,7 @@ const tile = {
             let y = tileData.y + move[2];
             if (tile.inBounds(x, y)) {
                 if (!(x === evaluatingTile.x && y === evaluatingTile.y)) {
-                    let secondTile = tile.get(x, y);
+                    let secondTile = chessPiece.findData(x, y);
                     if (secondTile.color === evaluatingTile.color) { //if the evaluation runs into a friendly piece
                         if (secondTile.piece === 'knight') {
                             allyGuarded.push(secondTile);
@@ -543,6 +543,24 @@ const chessPiece = {
             piece: piece,
             color: color
         };
+    },
+
+    /**
+     * Gets a chess piece element on a certain tile
+     * @param {integer} x The x position of the tile on the board
+     * @param {integer} y The y position of the tile on the board
+     * @returns {object} The element of the piece at this tile, or null if the tile is empty
+     */
+    findElement: (x, y) => {
+        let tileElement = tile.getElement(x, y);
+        let tileChildren = tileElement.children;
+
+        for (let child of tileChildren) {
+            if (child.classList.contains('chess-piece')) {
+                return child;
+            }
+        }
+        return null;
     },
 
     findData: (x, y) => {

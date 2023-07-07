@@ -16,10 +16,9 @@ function makeMove(color) {
     }
 
     for (let i = 0; i < pieces.length; i++) {
-        let currentPiece = pieces[i];
+        let currentInfo = pieces[i];
         //if the piece has not yet been added to the high score array
         let added = false;
-        let currentInfo = chessPiece.get(currentPiece.parentNode);
         //stores any moves that have the same score as the highest score
         currentInfo.highestMoves = [];
         //gets all of the tiles the current piece can move to
@@ -76,5 +75,7 @@ function makeMove(color) {
     //then, that piece will pick one of it's best moves at random
     let finalTile = movePiece.highestMoves[Math.floor(Math.random() * movePiece.highestMoves.length)];
 
-    tile.move(movePiece, finalTile);
+    //let movingElement = chessPiece.get()
+
+    //chessPiece.move();
 }
