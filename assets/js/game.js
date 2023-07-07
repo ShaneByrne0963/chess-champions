@@ -131,14 +131,11 @@ function tileClick(x, y) {
     console.log(clickedTile);
     let clickedClass = clickedTile.className;
     if (clickedClass.includes('clickable')) {
-        let tilePiece = tile.getPieceElement(clickedTile);
+        let pieceElement = tile.getPieceElement(clickedTile);
 
-        if (tilePiece !== null) {
+        if (pieceElement !== null) {
             tile.select(clickedTile);
-            console.log("Here.....");
         }
-
-        console.log("Here.");
 
 
 

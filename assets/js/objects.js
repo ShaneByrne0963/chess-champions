@@ -366,16 +366,17 @@ const tile = {
 
     select: (tileElement) => {
         //getting the tile data
-        let selectData = chessPiece.get(tileElement);
+        let pieceElement = tile.getPieceElement(tileElement);
+        let pieceData = chessPiece.get(tileElement);
 
-        if (localStorage.getItem(selectData.color) === 'player') {
+        if (localStorage.getItem(pieceData.color) === 'player') {
             //creates another div as a child of the selected tile
             let selectDiv = document.createElement('div');
             selectDiv.id = 'tile-selected';
-            tileElement.appendChild(selectDiv);
+            pieceElement.appendChild(selectDiv);
 
             //show all the available moves the selected piece can take
-            let possibleMoves = chessPiece.getAllMoveTiles(selectData);
+            let possibleMoves = chessPiece.getAllMoveTiles(pieceData);
 
             for (let move of possibleMoves) {
                 //creating a div displaying an image on every possible move
