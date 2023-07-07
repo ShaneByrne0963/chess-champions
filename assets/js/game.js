@@ -58,6 +58,9 @@ function startGame() {
     //clears all the announcements from the ui
     clearAnnouncements();
 
+    //clears the board before creating new pieces
+    tile.clearAll();
+
     //removing any piece images from the graveyard
     let graveyardPieces = document.getElementsByClassName('piece-dead');
     while (graveyardPieces.length > 0) {

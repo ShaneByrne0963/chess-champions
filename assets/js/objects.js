@@ -9,6 +9,7 @@ const tile = {
 
         //looping through each child element to check if it is a chess piece
         for (let child of tileChildren) {
+            //checking if the child element is a chess piece using its classes
             let childClass = child.classList;
             if (childClass.includes('chess-piece')) {
                 //getting the information of the piece that was found
@@ -16,7 +17,6 @@ const tile = {
                 break;
             }
         }
-
         return tilePiece;
     },
     /**
@@ -65,7 +65,7 @@ const tile = {
         //first removing the 'clickable' class from all of the pieces
         tile.removeAllInteraction();
 
-        //if the piece is "pawnNew", then it will be converted to 'pawn' after it's first move
+        //if the piece is "pawnNew", then it will be converted to 'pawn' after its first move
         if (tileDataFrom.piece === 'pawnNew') {
             tileDataFrom.piece = 'pawn';
         }
@@ -110,6 +110,19 @@ const tile = {
         let tileClass = currentTile.className;
         currentTile.className = tileClass.slice(0, 15); //removes any classes added in the previous game (ends up with "tile tile-white" or "tile tile-black")
         currentTile.style.backgroundImage = "";
+    },
+
+    /**
+     * Clears all pieces from the board
+     */
+    clearAll: () => {
+        //getting all the chess piece elements
+        let pieces = document.getElementsByClassName('chess-piece');
+
+        //keep removing the elements from the DOM until there is none left
+        while (pieces.length > 0) {
+            pieces[0].remove();
+        }
     },
 
     /**
