@@ -1030,8 +1030,11 @@ const chessPiece = {
 };
 
 const pieceAnimation = {
-    //will be used to store the animation function in order to stop it once it's done
-    animationId: undefined,
+    //will be used to store the animation functions in order to stop it once it's done
+    activeAnimations: [],
+    //will increment for every animation. this will give each animation a unique id which
+    //will be used to access it when you want an animation to stop
+    animationId: 0,
 
     /**
      * Starts an animation
@@ -1039,32 +1042,26 @@ const pieceAnimation = {
      * @param {object} tileEnd The tile the animation will finish on
      */
     start: (pieceElement, endTileElement) => {
-        // //getting the id of the animation element
-        // let animatePiece = document.getElementById('piece-moving');
-        // //getting the elements of the start and end tiles
-        // let startElement = tile.getElement(tileDataStart.x, tileDataStart.y);
-        // let endElement = tile.getElement(tileDataEnd.x, tileDataEnd.y);
+        //adding the animation class to the piece
+        pieceElement.classList.add('piece-moving');
 
-        //adding the animation class
+        //storing the frame position in the session storage
+        sessionStorage.setItem(`animFrame-${animationId}`, '0');
 
+        //storing the id and function of the animation in an object to be accessed when the animation ends
+        let animationData = {
+            interval: setInterval(pieceAnimation.nextFrame, 1, animationId, pieceElement, endTileElement),
+            id: animationId
+        }
 
-
-
-
-        //getting the position and size of the animation element ready before making it visible
-        pieceAnimation.set(startElement, endElement, 0);
-
-        //changing the 'piece-moving' element to match the moving piece
-        animatePiece.style.backgroundImage = `url(./assets/images//chess-pieces/${tileDataStart.color}-${tileDataStart.piece}.png)`;
-        animatePiece.style.visibility = 'visible';
-
-        //storing the animation position in the session storage
-        sessionStorage.setItem('animFrame', '0');
-        //storing information of the piece that is moving to update the tile after the animation
-        sessionStorage.setItem('animPiece', tileDataStart.piece);
-        sessionStorage.setItem('animColor', tileDataStart.color);
-
-        pieceAnimation.animationId = setInterval(pieceAnimation.nextFrame, 1, startElement, endElement);
+        //adding the object to the activeAnimations array
+        pieceAnimation.activeAnimations.push(animationData);
+        
+        //increasing the id by 1 and resetting once it reaches 1000
+        animationId++;
+        if (animationId >= 1000) {
+            animationId = 0;
+        }
     },
 
     /**
@@ -1072,22 +1069,16 @@ const pieceAnimation = {
      * @param {object} tileStart The tile the animation started on
      * @param {object} tileEnd The tile the animation will finish on
      */
-    nextFrame: (tileStart, tileEnd) => {
-        let frame = parseInt(sessionStorage.getItem('animFrame'));
+    nextFrame: (animId, tileStart, tileEnd) => {
+        let frame = parseInt(sessionStorage.getItem(`animFrame-${animId}`));
 
         pieceAnimation.set(tileStart, tileEnd, frame);
 
         frame++;
         if (frame >= animationTime) {
-            pieceAnimation.end(tileEnd);
+            pieceAnimation.end(animId, tileEnd);
         } else {
-            sessionStorage.setItem('animFrame', frame);
-
-            //clearing the start tile after the animation has begun to remove the flicker
-            if (frame === 1) {
-                let tileData = tile.getData(tileStart);
-                tile.clear(tileData.x, tileData.y);
-            }
+            sessionStorage.setItem(`animFrame-${animId}`, frame);
         }
     },
 
