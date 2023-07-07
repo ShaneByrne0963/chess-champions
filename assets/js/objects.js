@@ -531,7 +531,7 @@ const chessPiece = {
             pieceImage = 'pawn';
         }
         newPiece.className = `chess-piece ${pieceClass} ${color}`;
-        
+
         //finding the correct image using pieceImage and color
         newPiece.style.backgroundImage = `url(./assets/images/chess-pieces/${color}-${pieceImage}.png)`;
 
@@ -540,7 +540,25 @@ const chessPiece = {
     },
 
     get: (pieceElement) => {
+        let parentTile = pieceElement.parentNode;
+        let x = parseInt(parentTile.id[5]); //"tile-x-y": "x" is the 5th character of the id string
+        let y = parseInt(parentTile.id[7]); //"tile-x-y": "y" is the 7th character of the id string
 
+        let tileClass = pieceElement.classList;
+        let piece = chessPiece.getTypeFromClass(tileClass);
+        let color = '';
+        if (tileClass.contains('white')) {
+            color = 'white';
+        } else if (tileClass.contains('black')) {
+            color = 'black';
+        }
+
+        return {
+            x: x,
+            y: y,
+            piece: piece,
+            color: color
+        };
     },
 
     /**
@@ -548,7 +566,7 @@ const chessPiece = {
      * @param {*} tileClass the class of the tile. should be in string or array form
      * @returns The piece in the given tile, in string format
      */
-    getPieceFromClass: (tileClass) => {
+    getTypeFromClass: (tileClass) => {
         if (typeof tileClass === 'string' || typeof tileClass === 'object') {
             let pieceNames = ['pawn-new', 'pawn', 'knight', 'bishop', 'rook', 'queen', 'king'];
             let foundPiece = '';
