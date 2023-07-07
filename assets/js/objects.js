@@ -1076,7 +1076,7 @@ const pieceAnimation = {
 
         frame++;
         if (frame >= animationTime) {
-            pieceAnimation.end(animId, tileEnd);
+            pieceAnimation.end(animId, pieceElement, endTileElement);
         } else {
             sessionStorage.setItem(`animFrame-${animId}`, frame);
         }
@@ -1153,29 +1153,22 @@ const pieceAnimation = {
      * Calls the end of the piece animation
      * @param {object} tileEnd The element of the tile the animation finishes on
      */
-    end: (tileEnd) => {
-        //getting the id of the animation element
-        let animatePiece = document.getElementById('piece-moving');
+    end: (animId, pieceElement, endTileElement) => {
+        //removes the frame position from session storage
+        sessionStorage.removeItem(`animFrame-${animId}`);
 
-        animatePiece.style.visibility = 'hidden';
-        clearInterval(pieceAnimation.animationId);
-        sessionStorage.removeItem('animFrame');
-
-        //getting the tile data of the end position
-        let tileData = tile.getData(tileEnd);
-
-        //getting the piece information
-        let animPiece = sessionStorage.getItem('animPiece');
-        let animColor = sessionStorage.getItem('animColor');
-
-        //removing the piece information from the session storage
-        sessionStorage.removeItem('animPiece');
-        sessionStorage.removeItem('animColor');
-
-        //setting the tile information of the moving piece in the new position
-        tile.set(tileData.x, tileData.y, animPiece, animColor);
+        //finding the function of this specific animation in activeAnimations using the id
+        for (let i in pieceAnimation.activeAnimations) {
+            let animate = pieceAnimation.activeAnimations[i];
+            if (animate.id === animId) {
+                //stopping the interval
+                clearInterval(animate.interval);
+                //removing the animation from activeAnimations
+                pieceAnimation.activeAnimations.splice(i, 1);
+            }
+        }
 
         //moving on to the next turn once the animation is done
-        nextTurn();
+        //nextTurn();
     }
 };
