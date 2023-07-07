@@ -3,12 +3,8 @@ const tile = {
     getPiece: (tileElement) => {
         //getting the piece element of the tile, if there is one
         let pieceElement = tile.getPieceElement(tileElement);
-        let tileData = null;
 
-        if (pieceElement !== null) {
-            tileData = chessPiece.get(pieceElement);
-        }
-        return tileData;
+        return chessPiece.get(pieceElement);
     },
 
     getPieceElement: (tileElement) => {
@@ -38,6 +34,14 @@ const tile = {
      */
     getElement: (x, y) => {
         return document.getElementById(`tile-${x}-${y}`);
+    },
+
+    getX: (tileElement) => {
+        return parseInt(tileElement.id[5]); //"tile-x-y": "x" is the 5th character of the id string
+    },
+
+    getY: (tileElement) => {
+        return parseInt(tileElement.id[7]); //"tile-x-y": "y" is the 7th character of the id string
     },
 
     /**
@@ -520,16 +524,22 @@ const chessPiece = {
 
     get: (pieceElement) => {
         let parentTile = pieceElement.parentNode;
-        let x = parseInt(parentTile.id[5]); //"tile-x-y": "x" is the 5th character of the id string
-        let y = parseInt(parentTile.id[7]); //"tile-x-y": "y" is the 7th character of the id string
-
-        let tileClass = pieceElement.classList;
-        let piece = chessPiece.getTypeFromClass(tileClass);
+        //get the coordinates of the tile
+        let x = tile.getX(parentTile);
+        let y = tile.getY(parentTile);
+        let piece = '';
         let color = '';
-        if (tileClass.contains('white')) {
-            color = 'white';
-        } else if (tileClass.contains('black')) {
-            color = 'black';
+
+        //updates the piece and color of the object if there is a piece
+        //if not, the values of color and piece will be ''
+        if (pieceElement !== null) {
+            tileClass = pieceElement.classList;
+            piece = chessPiece.getTypeFromClass(tileClass);
+            if (tileClass.contains('white')) {
+                color = 'white';
+            } else if (tileClass.contains('black')) {
+                color = 'black';
+            }
         }
 
         return {
@@ -541,7 +551,7 @@ const chessPiece = {
     },
 
     find: (x, y) => {
-        let tileElement = tile.getElement(x. y);
+        let tileElement = tile.getElement(x, y);
         let pieceData = tile.getPiece(tileElement);
 
         return pieceData;
@@ -678,7 +688,7 @@ const chessPiece = {
         //checking if the move is within the bounding box of the chess board
         if (tile.inBounds(newX, newY)) {
             //the tile element that is being checked
-            let checkTile = tile.get(newX, newY);
+            let checkTile = chessPiece.find(newX, newY);
 
             //checking the different rules for the piece. see chessPiece object for move rules
             switch (move[0]) {
@@ -692,7 +702,7 @@ const chessPiece = {
                 //for moves that loop in a certain direction until an obstacle is found
                 case 'vector':
                     do {
-                        checkTile = tile.get(newX, newY);
+                        checkTile = chessPiece.find(newX, newY);
                         //adding the move to the array if the tile is not occupied by a friendly piece
                         if (checkTile.color !== tileData.color) {
                             moveTiles.push(checkTile);
