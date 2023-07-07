@@ -75,7 +75,8 @@ function makeMove(color) {
     //then, that piece will pick one of it's best moves at random
     let finalTile = movePiece.highestMoves[Math.floor(Math.random() * movePiece.highestMoves.length)];
 
-    //let movingElement = chessPiece.get()
+    let movingElement = chessPiece.findElement(movePiece.x, movePiece.y);
+    let tileMoveElement = tile.getElement(finalTile.x, finalTile.y)
 
-    //chessPiece.move();
+    chessPiece.move(movingElement, tileMoveElement);
 }
