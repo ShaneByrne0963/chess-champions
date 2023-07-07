@@ -1069,10 +1069,10 @@ const pieceAnimation = {
      * @param {object} tileStart The tile the animation started on
      * @param {object} tileEnd The tile the animation will finish on
      */
-    nextFrame: (animId, tileStart, tileEnd) => {
+    nextFrame: (animId, pieceElement, endTileElement) => {
         let frame = parseInt(sessionStorage.getItem(`animFrame-${animId}`));
 
-        pieceAnimation.set(tileStart, tileEnd, frame);
+        pieceAnimation.set(pieceElement, endTileElement, frame);
 
         frame++;
         if (frame >= animationTime) {
@@ -1088,12 +1088,12 @@ const pieceAnimation = {
      * @param {object} tileEnd The tile the animation will finish on
      * @param {integer} frame The frame the animation is currently on
      */
-    set: (tileStart, tileEnd, frame) => {
+    set: (pieceElement, endTileElement, frame) => {
         //changing the width and height
-        pieceAnimation.setSize(tileStart);
+        //pieceAnimation.setSize(tileStart);
 
         //changing the position
-        pieceAnimation.setPosition(tileStart, tileEnd, frame);
+        pieceAnimation.setPosition(pieceElement, endTileElement, frame);
     },
 
     /**
@@ -1115,14 +1115,14 @@ const pieceAnimation = {
      * @param {object} tileEnd The tile the animation will finish on
      * @param {integer} frame The frame the animation is currently on
      */
-    setPosition: (tileStart, tileEnd, frame) => {
-        //getting the id of the animation element
-        let animatePiece = document.getElementById('piece-moving');
+    setPosition: (pieceElement, endTileElement, frame) => {
+        //getting the starting tile of the piece element, which is simply it's parent
+        let startingTile = pieceElement.parentNode;
 
         //getting the position of both the start and end elements
         //source: https://stackoverflow.com/questions/442404/retrieve-the-position-x-y-of-an-html-element
-        let startPosition = tileStart.getBoundingClientRect();
-        let endPosition = tileEnd.getBoundingClientRect();
+        let startPosition = startingTile.getBoundingClientRect();
+        let endPosition = endTileElement.getBoundingClientRect();
 
         //gets the start and end positions of the animation
         let xStart = startPosition.left;
@@ -1141,12 +1141,12 @@ const pieceAnimation = {
         let frameRadians = (frame / animationTime) * Math.PI; //pi radians is equal to 180 degrees, which would be the full length of the circle
 
         //using "cos" for both x and y as we are only interested in one axis
-        let x = xStart + (xDistance / 2) - (Math.cos(frameRadians) * (xDistance / 2));
-        let y = yStart + (yDistance / 2) - (Math.cos(frameRadians) * (yDistance / 2));
+        let x = (xDistance / 2) - (Math.cos(frameRadians) * (xDistance / 2));
+        let y = (yDistance / 2) - (Math.cos(frameRadians) * (yDistance / 2));
 
         //setting the css style for the position of the element
-        animatePiece.style.top = `${y}px`;
-        animatePiece.style.left = `${x}px`;
+        pieceElement.style.top = `${y}px`;
+        pieceElement.style.left = `${x}px`;
     },
 
     /**
