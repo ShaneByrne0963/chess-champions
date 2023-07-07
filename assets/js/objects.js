@@ -510,7 +510,7 @@ const chessPiece = {
         newPiece.className = `chess-piece ${color} ${pieceClass}`;
 
         //finding the correct image using pieceImage and color
-        newPiece.style.backgroundImage = `url(./assets/images/chess-pieces/${color}-${pieceImage}.png)`;
+        chessPiece.setImage(newPiece, pieceImage, color);
 
         //adding the newly created element to the specified tile element
         tileElement.appendChild(newPiece);
@@ -743,6 +743,20 @@ const chessPiece = {
         pieceElement.classList.remove(oldPiece);
         //and replacing it with the new one
         pieceElement.classList.add(newPiece);
+        //getting the color of the piece from it's parent tile
+        let pieceData = chessPiece.get(pieceElement.parentNode);
+        //updating the piece image
+        chessPiece.setImage(pieceElement, newPiece, pieceData.color);
+    },
+
+    /**
+     * Finds the location of the correct piece image and applies it to the element
+     * @param {object} pieceElement The element which you want to change the piece image to
+     * @param {string} piece The type of piece it will change to
+     * @param {string} color The color it will change to
+     */
+    setImage: (pieceElement, piece, color) => {
+        pieceElement.style.backgroundImage = `url(./assets/images/chess-pieces/${color}-${piece}.png)`;
     },
 
     move: (pieceElement, newTileElement) => {
