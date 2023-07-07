@@ -518,6 +518,23 @@ const chessPiece = {
         value: 2000
     },
 
+    create: (tileElement, piece, color) => {
+        //creating a new element and setting it's classes
+        let newPiece = document.createElement('div');
+        newPiece.className = `chess-piece ${piece} ${color}`;
+
+        //finding the correct location of it's image in the directory. "pawnNew" will result in nothing
+        let pieceImage = piece;
+        if (pieceImage === 'pawnNew') {
+            pieceImage = 'pawn';
+        }
+        //finding the correct image using pieceImage and color
+        newPiece.style.backgroundImage = `url(./assets/images/chess-pieces/${color}-${pieceImage}.png)`;
+
+        //adding the newly created element to the specified tile element
+        tileElement.appendChild(newPiece);
+    },
+
     /**
      * reads a tiles class and determines what piece it has
      * @param {*} tileClass the class of the tile. should be in string or array form

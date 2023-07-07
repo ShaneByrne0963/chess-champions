@@ -71,6 +71,8 @@ function startGame() {
             let topColor = localStorage.getItem('topPosition');
             let bottomColor = (topColor === 'white') ? 'black' : 'white';
 
+            let tileElement = tile.getElement(i, j);
+
             //creating the back row of chess pieces for each side
             if (j === 0 || j === boardSize - 1) {
                 //setting the piece type
@@ -92,7 +94,8 @@ function startGame() {
                 } else {
                     color = bottomColor;
                 }
-                tile.set(i, j, piece, color);
+                chessPiece.create(tileElement, piece, color);
+                //tile.set(i, j, piece, color);
             }
             //setting up the pawns for both sides
             else if (j === 1 || j === boardSize - 2) {
@@ -102,7 +105,8 @@ function startGame() {
                 } else {
                     color = bottomColor;
                 }
-                tile.set(i, j, piece, color);
+                chessPiece.create(tileElement, piece, color);
+                //tile.set(i, j, piece, color);
             }
             //Clearing any tiles set from the previous game
             else {
