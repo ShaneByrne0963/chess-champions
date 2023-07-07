@@ -1,43 +1,6 @@
 //object that stores tile functions
 const tile = {
     /**
-     * Gets the tile information at a certain coordinate
-     * @param {*} x the x coordinate of the tile
-     * @param {*} y the y coordinate of the tile
-     * @returns The information of the tile in object form {x, y, piece, color}
-     */
-    get: (x, y) => {
-        let currentTile = tile.getElement(x, y);
-        return tile.getData(currentTile);
-    },
-
-    /**
-     * Gets the coordinates, piece type and color of a tile
-     * @param {*} tileElement The tile element you wish to retrieve the information from
-     * @returns The information of the tile in object form {x, y, piece, color}
-     */
-    getData: (tileElement) => {
-        let x = parseInt(tileElement.id[5]); //"tile-x-y": "x" is the 5th character of the id string
-        let y = parseInt(tileElement.id[7]); //"tile-x-y": "y" is the 7th character of the id string
-        let tileClass = tileElement.classList;
-        let piece = chessPiece.getPieceFromClass(tileClass);
-        let color = '';
-        if (tileClass.contains('white')) {
-            color = 'white';
-        } else if (tileClass.contains('black')) {
-            color = 'black';
-        }
-
-        //builds the object containing the information and returns it
-        return {
-            x: x,
-            y: y,
-            piece: piece,
-            color: color
-        };
-    },
-
-    /**
      * Gets an HTML element in a given location
      * @param {*} x The x position of the tile on the board
      * @param {*} y The y position of the tile on the board
@@ -62,33 +25,6 @@ const tile = {
             }
         }
         return kingData;
-    },
-
-    /**
-     * Sets a chess piece at a certain position
-     * @param {*} x The x position of the tile (from 0 to boardSize - 1)
-     * @param {*} y The y position of the tile (from 0 to boardSize - 1) 
-     * @param {*} piece The type of piece you wish to set the tile to 
-     * @param {*} color The color of the piece you wish to set the tile to
-     */
-    set: (x, y, piece, color) => {
-        let currentTile = document.getElementById(`tile-${x}-${y}`);
-        let tileClass = currentTile.className;
-        tileClass = tileClass.slice(0, 15); //removes any classes added in the previous game (ends up with "tile tile-white" or "tile tile-black")
-
-        //converts the camelCase spelling to html naming convention
-        let convertPiece = piece;
-        if (convertPiece === 'pawnNew') {
-            convertPiece = 'pawn-new';
-        }
-
-        tileClass += ` ${convertPiece} ${color}`;
-        currentTile.className = tileClass;
-        //setting the piece type to a regular pawn for the image to be located
-        if (piece === 'pawnNew') {
-            piece = 'pawn';
-        }
-        currentTile.style.backgroundImage = `url(assets/images/chess-pieces/${color}-${piece}.png)`;
     },
 
     /**

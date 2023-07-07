@@ -95,7 +95,6 @@ function startGame() {
                     color = bottomColor;
                 }
                 chessPiece.create(tileElement, piece, color);
-                //tile.set(i, j, piece, color);
             }
             //setting up the pawns for both sides
             else if (j === 1 || j === boardSize - 2) {
@@ -106,7 +105,6 @@ function startGame() {
                     color = bottomColor;
                 }
                 chessPiece.create(tileElement, piece, color);
-                //tile.set(i, j, piece, color);
             }
             //Clearing any tiles set from the previous game
             else {
