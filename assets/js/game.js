@@ -146,6 +146,7 @@ function tileClick(x, y) {
                     tile.deselectAll();
                     isPossibleMove = true;
                     // tile.move(tile.getData(selectedTile), tile.getData(clickedTile));
+                    chessPiece.move(selectedTile, clickedTile);
                     break;
                 }
             }

@@ -507,7 +507,7 @@ const chessPiece = {
             pieceClass = 'pawn-new';
             pieceImage = 'pawn';
         }
-        newPiece.className = `chess-piece ${pieceClass} ${color}`;
+        newPiece.className = `chess-piece ${color} ${pieceClass}`;
 
         //finding the correct image using pieceImage and color
         newPiece.style.backgroundImage = `url(./assets/images/chess-pieces/${color}-${pieceImage}.png)`;
@@ -725,6 +725,31 @@ const chessPiece = {
             }
         }
         return moveTiles;
+    },
+
+    /**
+     * Changes the piece type of a specified element
+     * @param {object} pieceElement The element you wish to change
+     * @param {string} newPiece The new piece type
+     */
+    setPieceType: (pieceElement, newPiece) => {
+        //getting the original piece type from the element
+        let oldPiece = chessPiece.getTypeFromClass(pieceElement.classList);
+        //converting camelCase to html naming convention
+        if (oldPiece === 'pawnNew') {
+            oldPiece = 'pawn-new';
+        }
+        //removing the piece type
+        pieceElement.classList.remove(oldPiece);
+        //and replacing it with the new one
+        pieceElement.classList.add(newPiece);
+    },
+
+    move: (pieceElement, newTileElement) => {
+        //first removing the 'clickable' class from all of the pieces
+        tile.removeAllInteraction();
+
+        chessPiece.setPieceType(pieceElement, 'king');
     },
 
     /**
