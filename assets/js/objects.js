@@ -1,6 +1,17 @@
 //object that stores tile functions
 const tile = {
     getPiece: (tileElement) => {
+        //getting the piece element of the tile, if there is one
+        let tilePiece = tile.getPieceElement(tileElement);
+        let tileData = null;
+
+        if (tilePiece !== null) {
+            tileData = chessPiece.get(tilePiece);
+        }
+        return tileData;
+    },
+
+    getPieceElement: (tileElement) => {
         //assuming the tile doesn't have a piece until it finds one
         let tilePiece = null;
 

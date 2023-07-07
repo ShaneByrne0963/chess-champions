@@ -67,13 +67,14 @@ function startGame() {
         graveyardPieces[0].remove();
     }
 
+    let topColor = localStorage.getItem('topPosition');
+    let bottomColor = (topColor === 'white') ? 'black' : 'white';
     for (let i = 0; i < boardSize; i++) {
         for (let j = 0; j < boardSize; j++) {
             let piece = '';
             let color = '';
-            let topColor = localStorage.getItem('topPosition');
-            let bottomColor = (topColor === 'white') ? 'black' : 'white';
 
+            //getting the current tile's element
             let tileElement = tile.getElement(i, j);
 
             //creating the back row of chess pieces for each side
@@ -97,7 +98,6 @@ function startGame() {
                 } else {
                     color = bottomColor;
                 }
-                chessPiece.create(tileElement, piece, color);
             }
             //setting up the pawns for both sides
             else if (j === 1 || j === boardSize - 2) {
@@ -107,11 +107,10 @@ function startGame() {
                 } else {
                     color = bottomColor;
                 }
-                chessPiece.create(tileElement, piece, color);
             }
-            //Clearing any tiles set from the previous game
-            else {
-                tile.clear(i, j);
+            //creating a piece when it should be created
+            if (piece != '' && color != '') {
+                chessPiece.create(tileElement, piece, color);
             }
         }
     }
@@ -128,33 +127,40 @@ function startGame() {
  */
 function tileClick(x, y) {
     //only select the tile if it has a clickable class attached to it
-    let clickedTile = tile.getElement(x, y);
-    let clickedClass = clickedTile.className;
+    let clickedClass = this.className;
     if (clickedClass.includes('clickable')) {
-        //checking if the tile that's been clicked on is a possible move
-        let clickedChildren = clickedTile.children;
+        let tilePiece = tile.getPiece(this);
 
-        //if the tile has any children
-        if (clickedChildren.length > 0) {
-            //loop through all the children until a child with class name 'possible-move' is found.
-            //should only have one child but this is a safeguard in case there's more than one
-            for (let child of clickedChildren) {
-                if (child.classList.contains('possible-move')) {
-                    //gets the div of the selected piece
-                    let selectedTile = document.getElementById('tile-selected').parentNode;
-                    tile.deselectAll();
-                    tile.move(tile.getData(selectedTile), tile.getData(clickedTile));
-                    break;
-                }
-            }
+        if (tilePiece !== null) {
+            
         }
 
-        else {
-            //clear all selected tiles
-            tile.deselectAll();
 
-            tile.select(clickedTile);
-        }
+
+        // //checking if the tile that's been clicked on is a possible move
+        // let clickedChildren = clickedTile.children;
+
+        // //if the tile has any children
+        // if (clickedChildren.length > 0) {
+        //     //loop through all the children until a child with class name 'possible-move' is found.
+        //     //should only have one child but this is a safeguard in case there's more than one
+        //     for (let child of clickedChildren) {
+        //         if (child.classList.contains('possible-move')) {
+        //             //gets the div of the selected piece
+        //             let selectedTile = document.getElementById('tile-selected').parentNode;
+        //             tile.deselectAll();
+        //             tile.move(tile.getData(selectedTile), tile.getData(clickedTile));
+        //             break;
+        //         }
+        //     }
+        // }
+
+        // else {
+        //     //clear all selected tiles
+        //     tile.deselectAll();
+
+        //     tile.select(clickedTile);
+        // }
     } else {
         //clear all selected tiles
         tile.deselectAll();
