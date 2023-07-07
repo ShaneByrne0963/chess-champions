@@ -1046,21 +1046,21 @@ const pieceAnimation = {
         pieceElement.classList.add('piece-moving');
 
         //storing the frame position in the session storage
-        sessionStorage.setItem(`animFrame-${animationId}`, '0');
+        sessionStorage.setItem(`animFrame-${pieceAnimation.animationId}`, '0');
 
         //storing the id and function of the animation in an object to be accessed when the animation ends
         let animationData = {
-            interval: setInterval(pieceAnimation.nextFrame, 1, animationId, pieceElement, endTileElement),
-            id: animationId
+            interval: setInterval(pieceAnimation.nextFrame, 1, pieceAnimation.animationId, pieceElement, endTileElement),
+            id: pieceAnimation.animationId
         }
 
         //adding the object to the activeAnimations array
         pieceAnimation.activeAnimations.push(animationData);
         
         //increasing the id by 1 and resetting once it reaches 1000
-        animationId++;
-        if (animationId >= 1000) {
-            animationId = 0;
+        pieceAnimation.animationId++;
+        if (pieceAnimation.animationId >= 1000) {
+            pieceAnimation.animationId = 0;
         }
     },
 
