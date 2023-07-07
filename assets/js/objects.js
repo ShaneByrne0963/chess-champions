@@ -1,5 +1,16 @@
 //object that stores tile functions
 const tile = {
+    get: (tileElement) => {
+        //assuming the tile doesn't have a piece until it finds one
+        let tilePiece = null;
+
+        //getting all the children of the tile
+        let tileChildren = tileElement.children;
+
+        for (let child of tileChildren) {
+
+        }
+    }
     /**
      * Gets an HTML element in a given location
      * @param {*} x The x position of the tile on the board
@@ -503,9 +514,9 @@ const chessPiece = {
      * @returns The piece in the given tile, in string format
      */
     getTypeFromClass: (tileClass) => {
+        let foundPiece = '';
         if (typeof tileClass === 'string' || typeof tileClass === 'object') {
             let pieceNames = ['pawn-new', 'pawn', 'knight', 'bishop', 'rook', 'queen', 'king'];
-            let foundPiece = '';
             for (let i = 0; i < pieceNames.length && !foundPiece; i++) {
                 if (typeof tileClass === 'string') {
                     if (tileClass.includes(pieceNames[i])) {
@@ -518,18 +529,12 @@ const chessPiece = {
                     }
                 }
             }
-            if (foundPiece) {
-                //converting the html naming convention to camelCase
-                if (foundPiece === 'pawn-new') {
-                    foundPiece = 'pawnNew';
-                }
-                return foundPiece;
-            } else {
-                return '';
+            //converting the html naming convention to camelCase if necessary
+            if (foundPiece === 'pawn-new') {
+                foundPiece = 'pawnNew';
             }
-        } else {
-            return '';
         }
+        return foundPiece;
     },
 
     /**
