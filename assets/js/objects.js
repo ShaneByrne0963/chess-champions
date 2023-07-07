@@ -759,11 +759,25 @@ const chessPiece = {
         pieceElement.style.backgroundImage = `url(./assets/images/chess-pieces/${color}-${piece}.png)`;
     },
 
+    /**
+     * Initializes a piece move from it's original tile to a new one
+     * @param {*} pieceElement The element of the chess piece that will move
+     * @param {*} newTileElement The tile the piece will move to
+     */
     move: (pieceElement, newTileElement) => {
         //first removing the 'clickable' class from all of the pieces
         tile.removeAllInteraction();
 
-        chessPiece.setPieceType(pieceElement, 'king');
+        //getting the information about the piece
+        let pieceData = chessPiece.get(pieceElement.parentNode);
+
+        //if the piece is "pawnNew", then it will be converted to 'pawn' after its first move
+        if (pieceData.piece === 'pawnNew') {
+            chessPiece.setPieceType(pieceElement, 'pawn');
+        }
+
+        //starting the movement animation
+        pieceAnimation.start(pieceElement, newTileElement);
     },
 
     /**
@@ -1024,12 +1038,18 @@ const pieceAnimation = {
      * @param {object} tileStart The tile the animation will start on
      * @param {object} tileEnd The tile the animation will finish on
      */
-    start: (tileDataStart, tileDataEnd) => {
-        //getting the id of the animation element
-        let animatePiece = document.getElementById('piece-moving');
-        //getting the elements of the start and end tiles
-        let startElement = tile.getElement(tileDataStart.x, tileDataStart.y);
-        let endElement = tile.getElement(tileDataEnd.x, tileDataEnd.y);
+    start: (pieceElement, endTileElement) => {
+        // //getting the id of the animation element
+        // let animatePiece = document.getElementById('piece-moving');
+        // //getting the elements of the start and end tiles
+        // let startElement = tile.getElement(tileDataStart.x, tileDataStart.y);
+        // let endElement = tile.getElement(tileDataEnd.x, tileDataEnd.y);
+
+        //adding the animation class
+
+
+
+
 
         //getting the position and size of the animation element ready before making it visible
         pieceAnimation.set(startElement, endElement, 0);

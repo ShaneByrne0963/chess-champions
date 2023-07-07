@@ -186,10 +186,3 @@ h1 {
     background-repeat: no-repeat;
     background-size: cover;
 }
-
-#piece-moving {
-    position: absolute;
-    background-repeat: no-repeat;
-    background-size: cover;
-    top: 0;
-}
