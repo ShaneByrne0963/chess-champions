@@ -780,6 +780,14 @@ const chessPiece = {
         pieceAnimation.start(pieceElement, newTileElement);
     },
 
+    changeTile: (pieceElement, newTileElement) => {
+        //changing the parent of the chess piece to the new tile
+        newTileElement.appendChild(pieceElement);
+        //removing the position style properties set during the animation
+        pieceElement.style.removeProperty('left');
+        pieceElement.style.removeProperty('top');
+    },
+
     /**
      * Adds an icon div representing the destroyed piece into the opposing player's graveyard
      * @param {*} tileData the tile data object {x, y, piece, color} you wish to destroy
@@ -1038,13 +1046,10 @@ const pieceAnimation = {
 
     /**
      * Starts an animation
-     * @param {object} tileStart The tile the animation will start on
-     * @param {object} tileEnd The tile the animation will finish on
+     * @param {object} pieceElement The element of the piece that will move
+     * @param {object} endTileElement The element the animation will end on
      */
     start: (pieceElement, endTileElement) => {
-        //adding the animation class to the piece
-        pieceElement.classList.add('piece-moving');
-
         //storing the frame position in the session storage
         sessionStorage.setItem(`animFrame-${pieceAnimation.animationId}`, '0');
 
@@ -1052,11 +1057,11 @@ const pieceAnimation = {
         let animationData = {
             interval: setInterval(pieceAnimation.nextFrame, 1, pieceAnimation.animationId, pieceElement, endTileElement),
             id: pieceAnimation.animationId
-        }
+        };
 
         //adding the object to the activeAnimations array
         pieceAnimation.activeAnimations.push(animationData);
-        
+
         //increasing the id by 1 and resetting once it reaches 1000
         pieceAnimation.animationId++;
         if (pieceAnimation.animationId >= 1000) {
@@ -1066,13 +1071,14 @@ const pieceAnimation = {
 
     /**
      * Progresses through the animation
-     * @param {object} tileStart The tile the animation started on
-     * @param {object} tileEnd The tile the animation will finish on
+     * @param {object} animId The animation id used to locate the animation interval
+     * @param {object} pieceElement The element undergoing the animation
+     * @param {object} endTileElement The tile the animation will finish on
      */
     nextFrame: (animId, pieceElement, endTileElement) => {
         let frame = parseInt(sessionStorage.getItem(`animFrame-${animId}`));
 
-        pieceAnimation.set(pieceElement, endTileElement, frame);
+        pieceAnimation.setPosition(pieceElement, endTileElement, frame);
 
         frame++;
         if (frame >= animationTime) {
@@ -1111,8 +1117,8 @@ const pieceAnimation = {
 
     /**
      * Sets the position of the animation piece, based on the frame
-     * @param {object} tileStart The tile the animation started on
-     * @param {object} tileEnd The tile the animation will finish on
+     * @param {object} pieceElement The element undergoing the animation
+     * @param {object} endTileElement The tile the animation will finish on
      * @param {integer} frame The frame the animation is currently on
      */
     setPosition: (pieceElement, endTileElement, frame) => {
@@ -1151,7 +1157,9 @@ const pieceAnimation = {
 
     /**
      * Calls the end of the piece animation
-     * @param {object} tileEnd The element of the tile the animation finishes on
+     * @param {object} animId The animation id used to locate the animation interval
+     * @param {object} pieceElement The element undergoing the animation
+     * @param {object} endTileElement The tile the animation will finish on
      */
     end: (animId, pieceElement, endTileElement) => {
         //removes the frame position from session storage
@@ -1168,6 +1176,7 @@ const pieceAnimation = {
             }
         }
 
+        chessPiece.changeTile(pieceElement, endTileElement);
         //moving on to the next turn once the animation is done
         //nextTurn();
     }
