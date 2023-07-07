@@ -662,7 +662,7 @@ const chessPiece = {
             //if the forward value is greater than 1, then all tiles in between will be checked to see if they are blank
             let blockMove = false;
             for (let i = 1; i < forwardAmount && !blockMove; i++) {
-                let tileInfo = tile.get(newX, tileData.y + (i * yDirection));
+                let tileInfo = chessPiece.find(newX, tileData.y + (i * yDirection));
                 //if there is a friendly piece, or any piece at all if the rule 'disarmed' applies, the tile will be considered blocked
                 if (tileInfo.color === tileData.color || (move[0] === 'disarmed' && tileInfo.color !== '')) {
                     blockMove = true;
