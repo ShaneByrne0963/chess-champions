@@ -1,16 +1,24 @@
 //object that stores tile functions
 const tile = {
-    get: (tileElement) => {
+    getPiece: (tileElement) => {
         //assuming the tile doesn't have a piece until it finds one
         let tilePiece = null;
 
         //getting all the children of the tile
         let tileChildren = tileElement.children;
 
+        //looping through each child element to check if it is a chess piece
         for (let child of tileChildren) {
-
+            let childClass = child.classList;
+            if (childClass.includes('chess-piece')) {
+                //getting the information of the piece that was found
+                tilePiece = chessPiece.get(child);
+                break;
+            }
         }
-    }
+
+        return tilePiece;
+    },
     /**
      * Gets an HTML element in a given location
      * @param {*} x The x position of the tile on the board
