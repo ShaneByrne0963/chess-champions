@@ -1,12 +1,5 @@
 //object that stores tile functions
 const tile = {
-    getPiece: (tileElement) => {
-        //getting the piece element of the tile, if there is one
-        let pieceElement = tile.getPieceElement(tileElement);
-
-        return chessPiece.get(pieceElement);
-    },
-
     getPieceElement: (tileElement) => {
         //assuming the tile doesn't have a piece until it finds one
         let tilePiece = null;
@@ -373,7 +366,7 @@ const tile = {
 
     select: (tileElement) => {
         //getting the tile data
-        let selectData = tile.getPiece(tileElement);
+        let selectData = chessPiece.get(tileElement);
 
         if (localStorage.getItem(selectData.color) === 'player') {
             //creates another div as a child of the selected tile
@@ -522,13 +515,14 @@ const chessPiece = {
         tileElement.appendChild(newPiece);
     },
 
-    get: (pieceElement) => {
-        let parentTile = pieceElement.parentNode;
+    get: (tileElement) => {
         //get the coordinates of the tile
-        let x = tile.getX(parentTile);
-        let y = tile.getY(parentTile);
+        let x = tile.getX(tileElement);
+        let y = tile.getY(tileElement);
         let piece = '';
         let color = '';
+
+        let pieceElement = tile.getPieceElement(tileElement);
 
         //updates the piece and color of the object if there is a piece
         //if not, the values of color and piece will be ''
@@ -552,7 +546,7 @@ const chessPiece = {
 
     find: (x, y) => {
         let tileElement = tile.getElement(x, y);
-        let pieceData = tile.getPiece(tileElement);
+        let pieceData = chessPiece.get(tileElement);
 
         return pieceData;
     },
