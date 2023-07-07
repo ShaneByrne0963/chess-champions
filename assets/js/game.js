@@ -128,41 +128,38 @@ function startGame() {
 function tileClick(x, y) {
     //only select the tile if it has a clickable class attached to it
     let clickedTile = tile.getElement(x, y);
-    console.log(clickedTile);
     let clickedClass = clickedTile.className;
     if (clickedClass.includes('clickable')) {
-        let pieceElement = tile.getPieceElement(clickedTile);
 
-        if (pieceElement !== null) {
-            tile.select(clickedTile);
+        //checking if the tile that's been clicked on is a possible move
+        let clickedChildren = clickedTile.children;
+
+        //if the tile has any children
+        if (clickedChildren.length > 0) {
+            //loop through all the children until a child with class name 'possible-move' is found.
+            //should only have one child but this is a safeguard in case there's more than one
+            let isPossibleMove = false;
+            for (let child of clickedChildren) {
+                if (child.classList.contains('possible-move')) {
+                    //gets the div of the selected piece
+                    let selectedTile = document.getElementById('tile-selected').parentNode;
+                    tile.deselectAll();
+                    isPossibleMove = true;
+                    // tile.move(tile.getData(selectedTile), tile.getData(clickedTile));
+                    break;
+                }
+            }
+
+            if (!isPossibleMove) {
+                //clear all selected tiles
+                tile.deselectAll();
+
+                let pieceElement = tile.getPieceElement(clickedTile);
+                if (pieceElement !== null) {
+                    tile.select(clickedTile);
+                }
+            }
         }
-
-
-
-        // //checking if the tile that's been clicked on is a possible move
-        // let clickedChildren = clickedTile.children;
-
-        // //if the tile has any children
-        // if (clickedChildren.length > 0) {
-        //     //loop through all the children until a child with class name 'possible-move' is found.
-        //     //should only have one child but this is a safeguard in case there's more than one
-        //     for (let child of clickedChildren) {
-        //         if (child.classList.contains('possible-move')) {
-        //             //gets the div of the selected piece
-        //             let selectedTile = document.getElementById('tile-selected').parentNode;
-        //             tile.deselectAll();
-        //             tile.move(tile.getData(selectedTile), tile.getData(clickedTile));
-        //             break;
-        //         }
-        //     }
-        // }
-
-        // else {
-        //     //clear all selected tiles
-        //     tile.deselectAll();
-
-        //     tile.select(clickedTile);
-        // }
     } else {
         //clear all selected tiles
         tile.deselectAll();
