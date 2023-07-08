@@ -46,7 +46,7 @@ const tile = {
         let kings = document.getElementsByClassName('king');
         let kingData;
         for (let king of kings) {
-            kingData = chessPiece.get(king);
+            kingData = chessPiece.getData(king);
             if (kingData.color === color) {
                 break;
             }
@@ -367,7 +367,7 @@ const tile = {
     select: (tileElement) => {
         //getting the tile data
         let pieceElement = tile.getPieceElement(tileElement);
-        let pieceData = chessPiece.get(tileElement);
+        let pieceData = chessPiece.getData(tileElement);
 
         if (localStorage.getItem(pieceData.color) === 'player') {
             //creates another div as a child of the selected tile
@@ -516,7 +516,7 @@ const chessPiece = {
         tileElement.appendChild(newPiece);
     },
 
-    get: (tileElement) => {
+    getData: (tileElement) => {
         //get the coordinates of the tile
         let x = tile.getX(tileElement);
         let y = tile.getY(tileElement);
@@ -527,15 +527,8 @@ const chessPiece = {
 
         //updates the piece and color of the object if there is a piece
         //if not, the values of color and piece will be ''
-        if (pieceElement !== null) {
-            tileClass = pieceElement.classList;
-            piece = chessPiece.getTypeFromClass(tileClass);
-            if (tileClass.contains('white')) {
-                color = 'white';
-            } else if (tileClass.contains('black')) {
-                color = 'black';
-            }
-        }
+        piece = chessPiece.getType(pieceElement);
+        color = chessPiece.getColor(pieceElement);
 
         return {
             x: x,
@@ -563,11 +556,26 @@ const chessPiece = {
         return null;
     },
 
+    /**
+     * Finds a chess piece at a coordinate, and returns it's information
+     * @param {integer} x The x coordinate on the board
+     * @param {integer} y The y coordinate on the board
+     * @returns {object} The data {x, y, piece, color} of the piece
+     */
     findData: (x, y) => {
         let tileElement = tile.getElement(x, y);
-        let pieceData = chessPiece.get(tileElement);
+        let pieceData = chessPiece.getData(tileElement);
 
         return pieceData;
+    },
+
+    getType: (pieceElement) => {
+        let piece = '';
+        if (pieceElement !== null) {
+            tileClass = pieceElement.classList;
+            piece = chessPiece.getTypeFromClass(tileClass);
+        }
+        return piece;
     },
 
     /**
@@ -597,6 +605,24 @@ const chessPiece = {
             }
         }
         return foundPiece;
+    },
+
+    /**
+     * Gets the color of a chess piece
+     * @param {object} pieceElement The element of the piece
+     * @returns {string} The color of the piece
+     */
+    getColor: (pieceElement) => {
+        let color = '';
+        if (pieceElement !== null) {
+            let tileClass = pieceElement.classList;
+            if (tileClass.contains('white')) {
+                color = 'white';
+            } else if (tileClass.contains('black')) {
+                color = 'black';
+            }
+        }
+        return color;
     },
 
     /**
@@ -762,7 +788,7 @@ const chessPiece = {
         //and replacing it with the new one
         pieceElement.classList.add(newPiece);
         //getting the color of the piece from it's parent tile
-        let pieceData = chessPiece.get(pieceElement.parentNode);
+        let pieceData = chessPiece.getData(pieceElement.parentNode);
         //updating the piece image
         chessPiece.setImage(pieceElement, newPiece, pieceData.color);
     },
@@ -787,7 +813,7 @@ const chessPiece = {
         tile.removeAllInteraction();
 
         //getting the information about the piece
-        let pieceData = chessPiece.get(pieceElement.parentNode);
+        let pieceData = chessPiece.getData(pieceElement.parentNode);
 
         //if the piece is "pawnNew", then it will be converted to 'pawn' after its first move
         if (pieceData.piece === 'pawnNew') {
@@ -940,7 +966,7 @@ const chessPiece = {
         let pieces = [];
 
         for (let element of pieceElements) {
-            pieces.push(chessPiece.get(element.parentNode));
+            pieces.push(chessPiece.getData(element.parentNode));
         }
 
         return pieces;
