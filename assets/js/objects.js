@@ -1091,6 +1091,9 @@ const pieceAnimation = {
             id: pieceAnimation.animationId
         };
 
+        //changing the z index of the moving piece so it appears above all of the other pieces
+        pieceElement.style.zIndex = '2';
+
         //adding the object to the activeAnimations array
         pieceAnimation.activeAnimations.push(animationData);
 
@@ -1196,6 +1199,9 @@ const pieceAnimation = {
     end: (animId, pieceElement, endTileElement) => {
         //removes the frame position from session storage
         sessionStorage.removeItem(`animFrame-${animId}`);
+
+        //removing the z index style
+        pieceElement.style.removeProperty('z-index');
 
         //finding the function of this specific animation in activeAnimations using the id
         for (let i in pieceAnimation.activeAnimations) {
