@@ -799,6 +799,12 @@ const chessPiece = {
     },
 
     changeTile: (pieceElement, newTileElement) => {
+        //checking if the tile has another piece on it
+        let otherPiece = tile.getPieceElement(newTileElement);
+        if (otherPiece !== null) {
+            chessPiece.destroy(otherPiece);
+        }
+
         //changing the parent of the chess piece to the new tile
         newTileElement.appendChild(pieceElement);
         //removing the position style properties set during the animation
@@ -807,33 +813,41 @@ const chessPiece = {
     },
 
     /**
+     * Removes a piece from the board and adds it to the graveyard
+     * @param {object} pieceElement The element to be destroyed
+     */
+    destroy: (pieceElement) => {
+        pieceElement.remove();
+    },
+
+    /**
      * Adds an icon div representing the destroyed piece into the opposing player's graveyard
      * @param {*} tileData the tile data object {x, y, piece, color} you wish to destroy
      */
-    destroy: (tileData) => {
-        let deadPiece = document.createElement('div');
+    // destroy: (tileData) => {
+    //     let deadPiece = document.createElement('div');
 
-        //making pawns and new pawns the same for the image address
-        if (tileData.piece === 'pawnNew') {
-            tileData.piece = 'pawn';
-        }
+    //     //making pawns and new pawns the same for the image address
+    //     if (tileData.piece === 'pawnNew') {
+    //         tileData.piece = 'pawn';
+    //     }
 
-        //creating the classes to style and access the piece
-        deadPiece.className = `piece-dead dead-${tileData.piece}`;
-        //creating the url to access the particular piece
-        deadPiece.style.backgroundImage = `url(assets/images/chess-pieces/${tileData.color}-${tileData.piece}.png)`;
+    //     //creating the classes to style and access the piece
+    //     deadPiece.className = `piece-dead dead-${tileData.piece}`;
+    //     //creating the url to access the particular piece
+    //     deadPiece.style.backgroundImage = `url(assets/images/chess-pieces/${tileData.color}-${tileData.piece}.png)`;
 
-        let graveyardDiv = (tileData.color === 'black') ? document.getElementById('player1-graveyard') : document.getElementById('player2-graveyard');
-        graveyardDiv.appendChild(deadPiece);
+    //     let graveyardDiv = (tileData.color === 'black') ? document.getElementById('player1-graveyard') : document.getElementById('player2-graveyard');
+    //     graveyardDiv.appendChild(deadPiece);
 
-        //announcing the piece elimination in the ui
-        let enemyColor = (tileData.color === 'white') ? 'black' : 'white';
+    //     //announcing the piece elimination in the ui
+    //     let enemyColor = (tileData.color === 'white') ? 'black' : 'white';
 
-        //converting the first letter of the destroyed piece to uppercase
-        let destroyedPiece = tileData.piece[0].toUpperCase() + tileData.piece.slice(1);
+    //     //converting the first letter of the destroyed piece to uppercase
+    //     let destroyedPiece = tileData.piece[0].toUpperCase() + tileData.piece.slice(1);
 
-        addAnnouncement(`${getPlayerName(enemyColor)} eliminated ${getPlayerName(tileData.color)}'s ${destroyedPiece}`);
-    },
+    //     addAnnouncement(`${getPlayerName(enemyColor)} eliminated ${getPlayerName(tileData.color)}'s ${destroyedPiece}`);
+    // },
 
     /**
      * Gets the forward direction of a tile based on the color of the piece
