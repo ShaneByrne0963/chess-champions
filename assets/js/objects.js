@@ -516,6 +516,7 @@ const chessPiece = {
         tileElement.appendChild(newPiece);
     },
 
+
     getData: (tileElement) => {
         //get the coordinates of the tile
         let x = tile.getX(tileElement);
@@ -841,11 +842,14 @@ const chessPiece = {
     /**
      * Removes a piece from the board and adds it to the graveyard
      * @param {object} pieceElement The element to be destroyed
+     * @param {object} destroyerElement The piece that has destroyed the specified piece
      */
     destroy: (pieceElement, destroyerElement) => {
         //adding the destroyed piece to the appropriate graveyard
-        let pieceData = chessPiece.getData(pieceElement);
+        let pieceData = chessPiece.getData(pieceElement.parentNode);
         let graveyardDiv = (pieceData.color === 'black') ? document.getElementById('player1-graveyard') : document.getElementById('player2-graveyard');
+        console.log(pieceData);
+        graveyard.add(graveyardDiv, pieceData.piece);
 
         pieceElement.remove();
     },
