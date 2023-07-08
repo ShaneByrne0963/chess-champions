@@ -828,7 +828,7 @@ const chessPiece = {
         //checking if the tile has another piece on it
         let otherPiece = tile.getPieceElement(newTileElement);
         if (otherPiece !== null) {
-            chessPiece.destroy(otherPiece);
+            chessPiece.destroy(otherPiece, pieceElement);
         }
 
         //changing the parent of the chess piece to the new tile
@@ -842,7 +842,11 @@ const chessPiece = {
      * Removes a piece from the board and adds it to the graveyard
      * @param {object} pieceElement The element to be destroyed
      */
-    destroy: (pieceElement) => {
+    destroy: (pieceElement, destroyerElement) => {
+        //adding the destroyed piece to the appropriate graveyard
+        let pieceData = chessPiece.getData(pieceElement);
+        let graveyardDiv = (pieceData.color === 'black') ? document.getElementById('player1-graveyard') : document.getElementById('player2-graveyard');
+
         pieceElement.remove();
     },
 
@@ -1094,6 +1098,29 @@ const chessPiece = {
         deadPiece.remove();
     },
 };
+
+const graveyard = {
+    add: (graveyardElement, piece) => {
+        //the first graveyard always has black pieces in it, and the second always has white
+        let color = (graveyardElement.id === 'player1-graveyard') ? 'black' : 'white';
+
+        //creating the element to be put in the graveyard
+        let deadPiece = document.createElement('div');
+
+        //making pawns and new pawns the same for the image address
+        let pieceImage = piece;
+        if (pieceImage === 'pawnNew') {
+            pieceImage = 'pawn';
+        }
+
+        //creating the classes to style and access the piece
+        deadPiece.className = `piece-dead dead-${pieceImage}`;
+        //creating the image url to access the particular piece
+        deadPiece.style.backgroundImage = `url(assets/images/chess-pieces/${color}-${pieceImage}.png)`;
+
+        graveyardElement.appendChild(deadPiece);
+    }
+}
 
 const pieceAnimation = {
     //will be used to store the animation functions in order to stop it once it's done
