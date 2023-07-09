@@ -780,20 +780,6 @@ const chessPiece = {
     },
 
     /**
-     * Gets the forward direction of a tile based on the color of the piece
-     * @param {*} color The color of the piece
-     * @returns The forward direction
-     */
-    getForwardDirection: (color) => {
-        let topPosition = localStorage.getItem('topPosition');
-        if (color === topPosition) {
-            return 1;
-        } else {
-            return -1;
-        }
-    },
-
-    /**
      * Gets if a certain tile is at the end of the board
      * @param {string} color The color of the piece
      * @param {integer} y The y position of the piece
@@ -807,36 +793,6 @@ const chessPiece = {
 
         //return true if the y value of the tile is at the end position
         return (y === endPosition);
-    },
-
-    /**
-     * Checks if a piece can move to a certain tile
-     * @param {object} attackingTile The tile information that is checking if it can move
-     * @param {['rule', x, y]} move The direction the piece has to take to move to the new tile
-     * @param {boolean} isBeside If there is only one space between the piece and the tile it wants to move to
-     * @returns {boolean} If the attacking tile can attack using its move set
-     */
-    canAttack: (attackingTile, move, isBeside) => {
-        //checking the rule of the move
-        switch (move[0]) {
-            //checks if the attacker is a knight
-            case 'normal':
-                return (attackingTile.piece === 'knight');
-                break;
-            //checks for all the other pieces
-            case 'vector':
-                let vector1 = move[1];
-                let vector2 = move[2];
-                let isDiagonal = (Math.abs(vector1) === Math.abs(vector2));
-
-                return (attackingTile.piece === 'queen'
-                    || (isDiagonal && attackingTile.piece === 'bishop')
-                    || (!isDiagonal && attackingTile.piece === 'rook')
-                    || (isBeside && (attackingTile.piece === 'king'
-                        || (vector1 !== 0 && vector2 === chessPiece.getForwardDirection(attackingTile.color)
-                            && attackingTile.piece.includes('pawn')))));
-                break;
-        }
     },
 
     /**
@@ -1024,8 +980,32 @@ const pieceMovement = {
     king: [['normal', 1, 0], ['normal', 1, -1], ['normal', 0, -1], ['normal', -1, -1],
     ['normal', -1, 0], ['normal', -1, 1], ['normal', 0, 1], ['normal', 1, 1]],
 
+    /**
+     * Gets all the valid moves 
+     * @param {*} pieceData 
+     * @returns 
+     */
     getAllMoveTiles: (pieceData) => {
+        //the array that will store all the tile elements the piece can move to
+        let moveTiles = [];
 
+        //getting the move set of the piece
+        let moves = pieceMovement[pieceData.piece];
+
+        //looping through each of the piece's move sets
+        for (let move of moves) {
+            let availableTiles = pieceMovement.getTilesFromMove(pieceData, move);
+            //looping through all the tiles the piece can reach from this move set
+            for (let currentTile of availableTiles) {
+                //only add the tile if it doesn't leave it's king in a vulnerable position
+                //and if it is a pawn it meets the requirements to move
+                if (!isKingThreatened(currentTile, pieceData) && canPawnMove(currentTile, pieceData)) {
+                    //returns the element instead of the data as this function will be used outside of this object
+                    moveTiles.push(tile.getElement(currentTile.x, currentTile.y))
+                }
+            }
+        }
+        return moveTiles;
     },
 
     getTilesFromMove: (pieceData, move) => {
@@ -1037,6 +1017,56 @@ const pieceMovement = {
     },
 
     getTileScore: (tileData, pieceMovingData) => {
+
+    },
+
+    /**
+     * Gets the forward direction of a tile based on the color of the piece
+     * @param {*} color The color of the piece
+     * @returns The forward direction
+     */
+    getForwardDirection: (color) => {
+        let topPosition = localStorage.getItem('topPosition');
+        if (color === topPosition) {
+            return 1;
+        } else {
+            return -1;
+        }
+    },
+
+    /**
+     * Checks if a piece can move to a certain tile
+     * @param {object} attackingTile The tile information that is checking if it can move
+     * @param {['rule', x, y]} move The direction the piece has to take to move to the new tile
+     * @param {boolean} isBeside If there is only one space between the piece and the tile it wants to move to
+     * @returns {boolean} If the attacking tile can attack using its move set
+     */
+    canAttack: (attackingTile, move, isBeside) => {
+        //checking the rule of the move
+        switch (move[0]) {
+            //checks if the attacker is a knight
+            case 'normal':
+                return (attackingTile.piece === 'knight');
+            //checks for all the other pieces
+            case 'vector':
+                let vector1 = move[1];
+                let vector2 = move[2];
+                let isDiagonal = (Math.abs(vector1) === Math.abs(vector2));
+
+                return (attackingTile.piece === 'queen'
+                    || (isDiagonal && attackingTile.piece === 'bishop')
+                    || (!isDiagonal && attackingTile.piece === 'rook')
+                    || (isBeside && (attackingTile.piece === 'king'
+                        || (vector1 !== 0 && vector2 === chessPiece.getForwardDirection(attackingTile.color)
+                            && attackingTile.piece.includes('pawn')))));
+        }
+    },
+
+    isKingThreatened: (tileData, pieceMovingData) => {
+
+    },
+
+    canPawnMove: (tileData, pieceMovingData) => {
 
     }
 }
