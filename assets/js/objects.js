@@ -55,53 +55,6 @@ const tile = {
     },
 
     /**
-     * Sets a chess piece at a certain position to a given tile object
-     * @param {*} x The x position of the tile (from 0 to boardSize - 1)
-     * @param {*} y The y position of the tile (from 0 to boardSize - 1) 
-     * @param {*} tileData The object {x, y, piece, color} to set the tile to
-     */
-    setData: (x, y, tileData) => {
-        tile.set(x, y, tileData.piece, tileData.color);
-    },
-
-    /**
-     * Moves a chess piece from one tile to another
-     * @param {*} tileDataFrom The data {x, y, piece, color} of the tile you are looking to move
-     * @param {*} tileDataTo The data {x, y, piece, color} of the tile you are looking to move tileDataFrom to
-     */
-    move: (tileDataFrom, tileDataTo) => {
-        //first removing the 'clickable' class from all of the pieces
-        tile.removeAllInteraction();
-
-        //if the piece is "pawnNew", then it will be converted to 'pawn' after its first move
-        if (tileDataFrom.piece === 'pawnNew') {
-            tileDataFrom.piece = 'pawn';
-        }
-
-        //if a piece is destroyed, add it to one of the graveyards
-        if (tileDataTo.color !== '' && tileDataFrom.color !== tileDataTo.color) {
-            chessPiece.destroy(tileDataTo);
-        }
-
-        // tile.set(tileDataTo.x, tileDataTo.y, tileDataFrom.piece, tileDataFrom.color);
-        // tile.clear(tileDataFrom.x, tileDataFrom.y);
-
-        pieceAnimation.start(tileDataFrom, tileDataTo);
-    },
-
-    /**
-     * Clears a given tile of any pieces
-     * @param {*} x The x position of the tile (from 0 to boardSize - 1)
-     * @param {*} y The y position of the tile (from 0 to boardSize - 1)
-     */
-    clear: (x, y) => {
-        let currentTile = document.getElementById(`tile-${x}-${y}`);
-        let tileClass = currentTile.className;
-        currentTile.className = tileClass.slice(0, 15); //removes any classes added in the previous game (ends up with "tile tile-white" or "tile tile-black")
-        currentTile.style.backgroundImage = "";
-    },
-
-    /**
      * Clears all pieces from the board
      */
     clearAll: () => {
