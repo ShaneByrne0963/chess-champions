@@ -564,13 +564,6 @@ const chessPiece = {
                     //if the piece that is looking to move is not the king, that means the king's position won't change
                     kingY = kingData.y;
                     tileEval = tile.evaluateWithMove(kingData, kingData, tileData, currentTile);
-                    //not a valid move if it is a pawn moving to the end of the board with no pieces to revive
-                    if (tileData.piece === 'pawn') {
-                        if (chessPiece.isAtBoardEnd(tileData.color, currentTile.y) && !chessPiece.canRevive(tileData.color)) {
-                            isValidMove = false;
-                        }
-                    }
-
                 } else {
                     //if the piece that is looking to move is the king, that means the king's position will change to currentTile's position
                     kingY = currentTile.y;
@@ -981,9 +974,9 @@ const pieceMovement = {
     ['normal', -1, 0], ['normal', -1, 1], ['normal', 0, 1], ['normal', 1, 1]],
 
     /**
-     * Gets all the valid moves 
-     * @param {*} pieceData 
-     * @returns 
+     * Gets all the valid moves of a piece on the board
+     * @param {object} pieceData The piece that will be evaluated
+     * @returns {array} All the tile elements the piece can move to
      */
     getAllMoveTiles: (pieceData) => {
         //the array that will store all the tile elements the piece can move to
@@ -1025,9 +1018,9 @@ const pieceMovement = {
     },
 
     /**
-     * Gets the forward direction of a tile based on the color of the piece
+     * Gets the forward direction of a piece based on it's color
      * @param {*} color The color of the piece
-     * @returns The forward direction
+     * @returns The forward direction of the piece
      */
     getForwardDirection: (color) => {
         let topPosition = localStorage.getItem('topPosition');
@@ -1040,7 +1033,7 @@ const pieceMovement = {
 
     /**
      * Checks if a piece can move to a certain tile
-     * @param {object[x, y, piece, color]} attackingTile The tile information that is checking if it can move
+     * @param {object} attackingTile The tile information that is checking if it can move
      * @param {['rule', x, y]} move The direction the piece has to take to move to the new tile
      * @param {boolean} isBeside If there is only one space between the piece and the tile it wants to move to
      * @returns {boolean} If the attacking tile can attack using its move set
@@ -1068,12 +1061,11 @@ const pieceMovement = {
 
     /**
      * Returns if the move will result in a check
-     * @param {object[x, y, piece, color]} tileData The data object of the tile the piece is moving to
-     * @param {object[x, y, piece, color]} pieceMovingData The data object of the piece that will move to the tile
+     * @param {object} tileData The data object of the tile the piece is moving to
+     * @param {object} pieceMovingData The data object of the piece that will move to the tile
      * @returns {boolean} If the king is left in a vulnerable position after the move
      */
     isKingThreatened: (tileData, pieceMovingData) => {
-        let isValidMove = true;
         //the king's y position at the end of the move
         let kingY;
 
@@ -1096,15 +1088,26 @@ const pieceMovement = {
             //pawns cannot reach the end of the board without a graveyard piece to revive,
             //so if the king is at the end of the board with these conditions it is safe from pawns
             if (!(threat.piece === 'pawn' && chessPiece.isAtBoardEnd(threat.color, kingY) && !chessPiece.canRevive(threat.color))) {
-                isValidMove = false;
-                break;
+                return true;
             }
         }
-        return !isValidMove;
+        return false;
     },
 
+    /**
+     * Checks if a pawn is able to move to the end of the board when necessary
+     * @param {object} tileData The data object of the tile the piece will move to
+     * @param {object} pieceMovingData The data object of the moving piece
+     * @returns {boolean} If the pawn can move
+     */
     canPawnMove: (tileData, pieceMovingData) => {
-
+        //not a valid move if it is a pawn moving to the end of the board with no pieces to revive
+        if (pieceMovingData.piece === 'pawn') {
+            if (chessPiece.isAtBoardEnd(pieceMovingData.color, tileData.y) && !chessPiece.canRevive(pieceMovingData.color)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
 
