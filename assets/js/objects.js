@@ -533,60 +533,6 @@ const chessPiece = {
         return color;
     },
 
-    /**
-     * Will return all the tiles a piece can move to within it's move set
-     * @param {object} tileData The data in object form {x, y, piece, color} of the piece
-     * @returns An array of all the tiles the piece can move to
-     */
-    getAllMoveTiles: (tileData) => {
-        //the array that will store all the tiles the piece can move to
-        let moveTiles = [];
-
-        //for preventing moves that can cause self check
-        let kingData = tile.findKing(tileData.color);
-
-        //getting the move set of the piece
-        let moves = chessPiece[tileData.piece].moves;
-
-        for (let currentMove of moves) {
-            let availableTiles = chessPiece.getTilesFromMove(tileData, currentMove);
-            for (let currentTile of availableTiles) {
-                //the move is not valid if it results in a self-check or if a pawn reaches the end of the board
-                //without a revivable piece in the graveyard
-                let isValidMove = true;
-
-                //only add the tile if moving there doesn't result in a self-check
-                let tileEval;
-                //the king's y position at the end of the move
-                let kingY;
-
-                if (tileData.piece !== 'king') {
-                    //if the piece that is looking to move is not the king, that means the king's position won't change
-                    kingY = kingData.y;
-                    tileEval = tile.evaluateWithMove(kingData, kingData, tileData, currentTile);
-                } else {
-                    //if the piece that is looking to move is the king, that means the king's position will change to currentTile's position
-                    kingY = currentTile.y;
-                    tileEval = tile.evaluate(currentTile, tileData);
-                }
-                //not a valid move if the king is under threat
-                for (let threat of tileEval.enemyThreat) {
-                    //pawns cannot reach the end of the board without a graveyard piece to revive,
-                    //so if the king is at the end of the board with these conditions it is safe from pawns
-                    if (!(threat.piece === 'pawn' && chessPiece.isAtBoardEnd(threat.color, kingY) && !chessPiece.canRevive(threat.color))) {
-                        isValidMove = false;
-                        break;
-                    }
-                }
-                if (isValidMove) {
-                    moveTiles.push(currentTile);
-                }
-            }
-        }
-
-        return moveTiles;
-    },
-
     getTilesFromMove: (tileData, move) => {
         //storing all the valid moves in this array
         let moveTiles = [];
@@ -994,7 +940,7 @@ const pieceMovement = {
                 //and if it is a pawn it meets the requirements to move
                 if (!isKingThreatened(currentTile, pieceData) && canPawnMove(currentTile, pieceData)) {
                     //returns the element instead of the data as this function will be used outside of this object
-                    moveTiles.push(tile.getElement(currentTile.x, currentTile.y))
+                    moveTiles.push(tile.getElement(currentTile.x, currentTile.y));
                 }
             }
         }
@@ -1033,29 +979,30 @@ const pieceMovement = {
 
     /**
      * Checks if a piece can move to a certain tile
-     * @param {object} attackingTile The tile information that is checking if it can move
+     * @param {object} pieceData The data object of the piece looking to attack
      * @param {['rule', x, y]} move The direction the piece has to take to move to the new tile
      * @param {boolean} isBeside If there is only one space between the piece and the tile it wants to move to
      * @returns {boolean} If the attacking tile can attack using its move set
      */
-    canAttack: (attackingTile, move, isBeside) => {
+    canAttack: (pieceData, move, isBeside) => {
         //checking the rule of the move
         switch (move[0]) {
             //checks if the attacker is a knight
             case 'normal':
-                return (attackingTile.piece === 'knight');
+                return (pieceData.piece === 'knight');
             //checks for all the other pieces
             case 'vector':
                 let vector1 = move[1];
                 let vector2 = move[2];
+                //if neither vectors are 0, then the move is diagonal
                 let isDiagonal = (Math.abs(vector1) === Math.abs(vector2));
 
-                return (attackingTile.piece === 'queen'
-                    || (isDiagonal && attackingTile.piece === 'bishop')
-                    || (!isDiagonal && attackingTile.piece === 'rook')
-                    || (isBeside && (attackingTile.piece === 'king'
-                        || (vector1 !== 0 && vector2 === chessPiece.getForwardDirection(attackingTile.color)
-                            && attackingTile.piece.includes('pawn')))));
+                return (pieceData.piece === 'queen'
+                    || (isDiagonal && pieceData.piece === 'bishop')
+                    || (!isDiagonal && pieceData.piece === 'rook')
+                    || (isBeside && (pieceData.piece === 'king'
+                        || (vector1 !== 0 && vector2 === chessPiece.getForwardDirection(pieceData.color)
+                            && pieceData.piece.includes('pawn')))));
         }
     },
 
@@ -1109,7 +1056,7 @@ const pieceMovement = {
         }
         return true;
     }
-}
+};
 
 const graveyard = {
     add: (graveyardElement, piece) => {
@@ -1132,7 +1079,7 @@ const graveyard = {
 
         graveyardElement.appendChild(deadPiece);
     }
-}
+};
 
 const pieceAnimation = {
     //will be used to store the animation functions in order to stop it once it's done
