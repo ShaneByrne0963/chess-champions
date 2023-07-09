@@ -381,9 +381,16 @@ const tile = {
             for (let move of possibleMoves) {
                 //creating a div displaying an image on every possible move
                 let moveOption = document.createElement('div');
-                moveOption.className = "possible-move";
                 let moveElement = tile.getElement(move.x, move.y);
-                moveElement.appendChild(moveOption);
+                let movePiece = tile.getPieceElement(moveElement);
+                //if there is an enemy piece on the tile to move to, change the icon of the move to a skull
+                if (movePiece !== null) {
+                    moveOption.className = "possible-elimination";
+                    movePiece.appendChild(moveOption);
+                } else {
+                    moveOption.className = "possible-move";
+                    moveElement.appendChild(moveOption);
+                }
 
                 //adding the 'clickable' class to the tile
                 tile.addInteraction(moveElement);

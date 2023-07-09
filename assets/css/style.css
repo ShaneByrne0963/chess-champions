@@ -177,6 +177,12 @@ h1 {
     background-size: cover;
 }
 
+.possible-elimination {
+    height: 100%;
+    background: url("../images/possible-elimination.png") no-repeat center center;
+    background-size: cover;
+}
+
 /* chess pieces */
 
 .chess-piece {
