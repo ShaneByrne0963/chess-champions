@@ -87,25 +87,6 @@ const tile = {
         // tile.clear(tileDataFrom.x, tileDataFrom.y);
 
         pieceAnimation.start(tileDataFrom, tileDataTo);
-
-        // //reviving pieces if the pawn reaches the other side of the board
-        // let isRevive = false;
-        // if (tileDataFrom.piece === 'pawn') {
-        //     //checking if the pawn is at the end of the board to initite to initiate the piece revive sequence
-        //     if (chessPiece.isAtBoardEnd(tileDataFrom.color, tileDataTo.y)) {
-        //         isRevive = true;
-        //         chessPiece.revive({
-        //             x: tileDataTo.x,
-        //             y: tileDataTo.y,
-        //             piece: tileDataFrom.piece,
-        //             color: tileDataFrom.color
-        //         });
-        //     }
-        // }
-        // //if a pawn has moved to the other side of the board, stop the game until a piece to revive has been selected
-        // if (!isRevive) {
-        //     nextTurn();
-        // }
     },
 
     /**
@@ -522,7 +503,6 @@ const chessPiece = {
         tileElement.appendChild(newPiece);
     },
 
-
     getData: (tileElement) => {
         //get the coordinates of the tile
         let x = tile.getX(tileElement);
@@ -843,6 +823,24 @@ const chessPiece = {
         //removing the position style properties set during the animation
         pieceElement.style.removeProperty('left');
         pieceElement.style.removeProperty('top');
+
+        //reviving pieces if the pawn reaches the other side of the board
+        let pieceData = chessPiece.getData(pieceElement.parentNode);
+        let newYPosition = tile.getY(newTileElement);
+        let isRevive = false;
+        if (pieceData.piece === 'pawn') {
+            //checking if the pawn is at the end of the board to initite to initiate the piece revive sequence
+            if (chessPiece.isAtBoardEnd(pieceData.color, newYPosition)) {
+                isRevive = true;
+                chessPiece.revive(pieceElement);
+            }
+        }
+        //if a pawn has moved to the other side of the board,
+        //stop the game until a piece to revive has been selected.
+        //if not, continue the game as normal
+        if (!isRevive) {
+            nextTurn();
+        }
     },
 
     /**
@@ -859,35 +857,6 @@ const chessPiece = {
 
         pieceElement.remove();
     },
-
-    /**
-     * Adds an icon div representing the destroyed piece into the opposing player's graveyard
-     * @param {*} tileData the tile data object {x, y, piece, color} you wish to destroy
-     */
-    // destroy: (tileData) => {
-    //     let deadPiece = document.createElement('div');
-
-    //     //making pawns and new pawns the same for the image address
-    //     if (tileData.piece === 'pawnNew') {
-    //         tileData.piece = 'pawn';
-    //     }
-
-    //     //creating the classes to style and access the piece
-    //     deadPiece.className = `piece-dead dead-${tileData.piece}`;
-    //     //creating the url to access the particular piece
-    //     deadPiece.style.backgroundImage = `url(assets/images/chess-pieces/${tileData.color}-${tileData.piece}.png)`;
-
-    //     let graveyardDiv = (tileData.color === 'black') ? document.getElementById('player1-graveyard') : document.getElementById('player2-graveyard');
-    //     graveyardDiv.appendChild(deadPiece);
-
-    //     //announcing the piece elimination in the ui
-    //     let enemyColor = (tileData.color === 'white') ? 'black' : 'white';
-
-    //     //converting the first letter of the destroyed piece to uppercase
-    //     let destroyedPiece = tileData.piece[0].toUpperCase() + tileData.piece.slice(1);
-
-    //     addAnnouncement(`${getPlayerName(enemyColor)} eliminated ${getPlayerName(tileData.color)}'s ${destroyedPiece}`);
-    // },
 
     /**
      * Gets the forward direction of a tile based on the color of the piece
@@ -986,15 +955,12 @@ const chessPiece = {
         return pieces;
     },
 
-    /**
-     * Initialises the revival of another chess piece when a player's pawn reaches the
-     * other side of the chess board
-     * @param {object} pawnData The data of the pawn that has reached the end of the board
-     */
-    revive: (pawnData) => {
-        //setting the pawn position and color in the session storage to be accessed again when the player clicks on a graveyard icon
-        sessionStorage.setItem('pawnPosition', `${pawnData.x}-${pawnData.y}`);
-        sessionStorage.setItem('pawnColor', pawnData.color);
+    revive: (pawnElement) => {
+        //adding the revive id to the pawn to replace it once a new piece has been picked
+        pawnElement.id = 'promoting';
+
+        //getting the information about the pawn
+        let pawnData = chessPiece.getData(pawnElement.parentNode);
 
         //getting the appropriate graveyard for the player
         let graves = getGraveyardElements(pawnData.color);
@@ -1091,18 +1057,14 @@ const chessPiece = {
         //finds the piece name of the clicked on element
         let pieceName = chessPiece.getDeadPiece(deadPiece);
 
-        //getting the information saved to session storage and changing the pawn position to the new piece
-        let pawnLocation = sessionStorage.getItem('pawnPosition');
-        let pawnX = parseInt(pawnLocation[0]);
-        let pawnY = parseInt(pawnLocation[2]);
-        let pawnColor = sessionStorage.getItem('pawnColor');
+        //getting the pawn which reached the end of the board
+        let pawnElement = document.getElementById('promoting');
 
-        //setting the tile where the pawn moved to the selected grave piece
-        tile.set(pawnX, pawnY, pieceName, pawnColor);
+        //replacing it's piece type with the selected dead piece
+        chessPiece.setPieceType(pawnElement, pieceName);
 
-        //clearing the session storage data
-        sessionStorage.removeItem('pawnPosition');
-        sessionStorage.removeItem('pawnColor');
+        //removing the 'promoting' id from the piece
+        pawnElement.removeAttribute('id');
 
         //removing the grave piece from the graveyard
         deadPiece.remove();
@@ -1278,7 +1240,5 @@ const pieceAnimation = {
         }
 
         chessPiece.changeTile(pieceElement, endTileElement);
-        //moving on to the next turn once the animation is done
-        nextTurn();
     }
 };

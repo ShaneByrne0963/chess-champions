@@ -43,6 +43,8 @@ function makeMove(color) {
             //finally, subtracting the current score from the new score
             moveScore -= currentScores[i];
 
+            moveScore = 0;
+
             //if this is the first move of the first tile, then set the highest score to the score of this move
             if (isFirstCheck) {
                 highestScore = moveScore;
