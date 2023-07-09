@@ -533,91 +533,6 @@ const chessPiece = {
         return color;
     },
 
-    getTilesFromMove: (tileData, move) => {
-        //storing all the valid moves in this array
-        let moveTiles = [];
-        //declaring the variables storing the coordinates of the tiles to check
-        let newX = tileData.x + move[1]; //the x coordinate is always the second element in a moves array
-        let newY;
-        //getting the enemy's color
-        let enemyColor = (tileData.color === 'white') ? 'black' : 'white';
-
-        //adding forward movement only support for pawns
-        let moveY = move[2]; //the y coordinate is always the third element in a moves array
-        if (typeof moveY === 'string' && moveY.includes('forward')) {
-            //getting the last character of the forward move, which specifies the number of moves forward it can take
-            let forwardAmount = parseInt(moveY[moveY.length - 1]);
-
-            //determines which direction is forward
-            let yDirection = chessPiece.getForwardDirection(tileData.color);
-
-            //if the forward value is greater than 1, then all tiles in between will be checked to see if they are blank
-            let blockMove = false;
-            for (let i = 1; i < forwardAmount && !blockMove; i++) {
-                let tileInfo = chessPiece.findData(newX, tileData.y + (i * yDirection));
-                //if there is a friendly piece, or any piece at all if the rule 'disarmed' applies, the tile will be considered blocked
-                if (tileInfo.color === tileData.color || (move[0] === 'disarmed' && tileInfo.color !== '')) {
-                    blockMove = true;
-                    break;
-                }
-            }
-            //continue onto the next move if this move is blocked by a tile
-            if (blockMove) {
-                //return an empty array if the move is blocked
-                return [];
-            }
-            newY = tileData.y + (forwardAmount * yDirection);
-        } else {
-            newY = tileData.y + moveY;
-        }
-
-        //checking if the move is within the bounding box of the chess board
-        if (tile.inBounds(newX, newY)) {
-            //the tile element that is being checked
-            let checkTile = chessPiece.findData(newX, newY);
-
-            //checking the different rules for the piece. see chessPiece object for move rules
-            switch (move[0]) {
-                //for moves that add the coordinates to its tile position
-                case 'normal':
-                    //cannot move to a tile that has a friendly piece
-                    if (checkTile.color !== tileData.color) {
-                        moveTiles.push(checkTile);
-                    }
-                    break;
-                //for moves that loop in a certain direction until an obstacle is found
-                case 'vector':
-                    do {
-                        checkTile = chessPiece.findData(newX, newY);
-                        //adding the move to the array if the tile is not occupied by a friendly piece
-                        if (checkTile.color !== tileData.color) {
-                            moveTiles.push(checkTile);
-                        }
-                        //stopping the loop if there is any piece on the tile
-                        if (checkTile.color !== '') {
-                            break;
-                        }
-                        newX += move[1];
-                        newY += move[2];
-                    } while (tile.inBounds(newX, newY));
-                    break;
-                //for moves that are only valid if there is an enemy on the tile
-                case 'attack':
-                    if (checkTile.color === enemyColor) {
-                        moveTiles.push(checkTile);
-                    }
-                    break;
-                //for moves that are only valid if the tile is clear
-                case 'disarmed':
-                    if (checkTile.color === '') {
-                        moveTiles.push(checkTile);
-                    }
-                    break;
-            }
-        }
-        return moveTiles;
-    },
-
     /**
      * Changes the piece type of a specified element
      * @param {object} pieceElement The element you wish to change
@@ -956,16 +871,43 @@ const pieceMovement = {
         //getting the enemy's color
         let enemyColor = (pieceData.color === 'white') ? 'black' : 'white';
 
-        if (true) {
+        if (!isNaN(newY) && tile.inBounds(newX, newY)) {
+            //getting the piece information at the checked tile, if any
+            let checkPiece = chessPiece.findData(newX, newY);
+
             //checking the rule for the move set
             switch (move[0]) {
+                //for moves that add the coordinates to its tile position
                 case 'normal':
+                    //cannot move to a tile that has a friendly piece
+                    if (checkPiece.color !== pieceData.color) {
+                        moveTiles.push(checkPiece);
+                    }
                     break;
                 case 'vector':
+                    do {
+                        checkPiece = chessPiece.findData(newX, newY);
+                        //adding the move to the array if the tile is not occupied by a friendly piece
+                        if (checkPiece.color !== pieceData.color) {
+                            moveTiles.push(checkPiece);
+                        }
+                        //stopping the loop if there is any piece on the tile
+                        if (checkPiece.color !== '') {
+                            break;
+                        }
+                        newX += move[1];
+                        newY += move[2];
+                    } while (tile.inBounds(newX, newY));
                     break;
                 case 'attack':
+                    if (checkPiece.color === enemyColor) {
+                        moveTiles.push(checkPiece);
+                    }
                     break;
                 case 'disarmed':
+                    if (checkPiece.color === '') {
+                        moveTiles.push(checkPiece);
+                    }
                     break;
             }
         }
