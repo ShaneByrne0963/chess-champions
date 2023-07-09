@@ -177,10 +177,9 @@ h1 {
     background-size: cover;
 }
 
-.possible-elimination {
-    height: 100%;
-    background: url("../images/possible-elimination.png") no-repeat center center;
-    background-size: cover;
+/* the move will display a skull if there is a piece already on the tile */
+.chess-piece>.possible-move {
+    background-image: url("../images/possible-elimination.png");
 }
 
 /* chess pieces */
