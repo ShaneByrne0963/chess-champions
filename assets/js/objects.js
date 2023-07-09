@@ -266,7 +266,7 @@ const tile = {
         let tileEval = tile.evaluate(moveTile, currentTile);
 
         //adding the total number of moves the piece could make on this tile multiplied by 1% of it's value to the score
-        moveScore += tileEval.availableSpaces * (chessPiece[currentTile.piece].value / 100);
+        moveScore += tileEval.availableSpaces * (chessPiece.value[currentTile.piece] / 100);
 
         //if there is an enemy that can attack the piece at this tile, then subtract the current piece's value from the score
         let isThreatened = false;
@@ -275,7 +275,7 @@ const tile = {
 
             //finding the values of the current piece and the piece with the lowest value that is threatening it
             //stops high value pieces moving to tiles where they can be attacked by low value pieces
-            let pieceValue = chessPiece[currentTile.piece].value;
+            let pieceValue = chessPiece.value[currentTile.piece];
             let lowestEnemy = chessPiece.findLowestValue(tileEval.enemyThreat);
 
             //if all the enemyThreat values are greater than or equal to the lowest value in enemyThreat and
@@ -290,7 +290,7 @@ const tile = {
                 // 3 - this loop will continue until there is no more moves on this tile from either side
                 let infiniteLoopBlocker = 0;
                 //because the battle starts with the enemy attacking the current piece, we will start by taking away the piece's value
-                let battleScore = -chessPiece[currentTile.piece].value;
+                let battleScore = -chessPiece.value[currentTile.piece];
                 while (tileEval.enemyThreat.length > 0 && tileEval.allyGuarded.length > 0 && infiniteLoopBlocker < 1000) {
                     infiniteLoopBlocker++;
 
@@ -327,10 +327,10 @@ const tile = {
         if (!isThreatened) {
             //add 10% of the values of every target on this tile
             for (let target of tileEval.enemyTarget) {
-                moveScore += chessPiece[target.piece].value / 10;
+                moveScore += chessPiece.value[target.piece] / 10;
             }
         } else {
-            moveScore -= chessPiece[currentTile.piece].value;
+            moveScore -= chessPiece.value[currentTile.piece];
         }
         return moveScore;
     },
@@ -357,7 +357,7 @@ const tile = {
             pieceElement.appendChild(selectDiv);
 
             //show all the available moves the selected piece can take
-            let possibleMoves = chessPiece.getAllMoveTiles(pieceData);
+            //let possibleMoves = chessPiece.getAllMoveTiles(pieceData);
 
             for (let move of possibleMoves) {
                 //creating a div displaying an image on every possible move
@@ -439,41 +439,15 @@ const tile = {
 
 //object that stores piece functions and the information of different pieces
 const chessPiece = {
-    
-    pawnNew: {
-        moves: [['disarmed', 0, 'forward1'], ['disarmed', 0, 'forward2'], ['attack', -1, 'forward1'], ['attack', 1, 'forward1']],
-        value: 100
-    },
-    pawn: {
-        moves: [['disarmed', 0, 'forward1'], ['attack', -1, 'forward1'], ['attack', 1, 'forward1']],
-        value: 100
-    },
-    knight: {
-        
-        moves: [['normal', -1, -2], ['normal', 1, -2], ['normal', -2, -1], ['normal', 2, -1],
-        ['normal', -2, 1], ['normal', 2, 1], ['normal', -1, 2], ['normal', 1, 2]],
-        value: 300
-    },
-    bishop: {
-        
-        moves: [['vector', 1, 1], ['vector', -1, 1], ['vector', -1, -1], ['vector', 1, -1]],
-        value: 300
-    },
-    rook: {
-        //moves in the four cardinal directions
-        moves: [['vector', 1, 0], ['vector', 0, -1], ['vector', -1, 0], ['vector', 0, 1]],
-        value: 500
-    },
-    queen: {
-        //moves in the four cardinal directions and to tiles diagonal to it
-        moves: [['vector', 1, 0], ['vector', 1, -1], ['vector', 0, -1], ['vector', -1, -1],
-        ['vector', -1, 0], ['vector', -1, 1], ['vector', 0, 1], ['vector', 1, 1]],
-        value: 900
-    },
-    king: {
-        moves: [['normal', 1, 0], ['normal', 1, -1], ['normal', 0, -1], ['normal', -1, -1],
-        ['normal', -1, 0], ['normal', -1, 1], ['normal', 0, 1], ['normal', 1, 1]],
-        value: 2000
+    //the value of all the pieces used to calculate the best move for the ai
+    value: {
+        pawn: 100,
+        pawnNew: 100,
+        bishop: 300,
+        knight: 300,
+        rook: 500,
+        queen: 900,
+        king: 2000
     },
 
     create: (tileElement, piece, color) => {
@@ -918,12 +892,12 @@ const chessPiece = {
      * @returns An array containing the lowest value and the position the piece with that value on the array [lowestValue, lowestPosition]
      */
     findLowestValue: (pieces) => {
-        let lowestValue = chessPiece[pieces[0].piece].value;
+        let lowestValue = chessPiece.value[pieces[0].piece];
         let lowestPosition = 0;
 
         for (let i = 1; i < pieces.length; i++) {
             let currentPiece = pieces[i];
-            let pieceValue = chessPiece[currentPiece.piece].value;
+            let pieceValue = chessPiece.value[currentPiece.piece];
             if (pieceValue < lowestValue) {
                 lowestValue = pieceValue;
                 lowestPosition = i;
@@ -981,11 +955,11 @@ const chessPiece = {
                 //getting the name of the current piece in the graveyard
                 let gravePiece = chessPiece.getDeadPiece(grave);
 
-                if (gravePiece !== 'pawn' && chessPiece[gravePiece].value >= highestValue) {
-                    if (chessPiece[gravePiece].value > highestValue) {
+                if (gravePiece !== 'pawn' && chessPiece.value[gravePiece] >= highestValue) {
+                    if (chessPiece.value[gravePiece] > highestValue) {
                         //resetting the pieces to select from if there is a piece with a higher value
                         highestPieces = [];
-                        highestValue = chessPiece[gravePiece].value;
+                        highestValue = chessPiece.value[gravePiece];
                     }
                     highestPieces.push(grave);
                     //stopping the loop if the piece is a queen because it has the best value
