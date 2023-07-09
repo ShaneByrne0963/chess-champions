@@ -439,13 +439,7 @@ const tile = {
 
 //object that stores piece functions and the information of different pieces
 const chessPiece = {
-    //chess move rules:
-    // 'normal' means add the following coordinates to the current tile
-    // 'attack' means the piece can only move to the tile if an enemy is on it
-    // 'disarmed' means the piece cannot move to the tile if an enemy is on it
-    // 'vector' means continue in that direction until an obstacle is reached
-
-    //for pawns that have not made a move yet.
+    
     pawnNew: {
         moves: [['disarmed', 0, 'forward1'], ['disarmed', 0, 'forward2'], ['attack', -1, 'forward1'], ['attack', 1, 'forward1']],
         value: 100
@@ -455,13 +449,13 @@ const chessPiece = {
         value: 100
     },
     knight: {
-        //can only move in an "L"-shaped pattern
+        
         moves: [['normal', -1, -2], ['normal', 1, -2], ['normal', -2, -1], ['normal', 2, -1],
         ['normal', -2, 1], ['normal', 2, 1], ['normal', -1, 2], ['normal', 1, 2]],
         value: 300
     },
     bishop: {
-        //can only move to the tiles diagonal to it.
+        
         moves: [['vector', 1, 1], ['vector', -1, 1], ['vector', -1, -1], ['vector', 1, -1]],
         value: 300
     },
@@ -1070,6 +1064,37 @@ const chessPiece = {
         deadPiece.remove();
     },
 };
+
+const pieceMovement = {
+    //chess move rules:
+    // 'normal' means add the following coordinates to the current tile
+    // 'attack' means the piece can only move to the tile if an enemy is on it
+    // 'disarmed' means the piece cannot move to the tile if an enemy is on it
+    // 'vector' means continue in that direction until an obstacle is reached
+    // 'forward' means in the direction of the enemy side, followed by a number which is the number of steps
+    pawn: [['disarmed', 0, 'forward1'], ['attack', -1, 'forward1'], ['attack', 1, 'forward1']],
+
+    //for pawns that have not made a move yet, they can move one step further than ones who have
+    pawnNew: [['disarmed', 0, 'forward1'], ['disarmed', 0, 'forward2'], ['attack', -1, 'forward1'], ['attack', 1, 'forward1']],
+
+    //can only move to the tiles diagonal to it.
+    bishop: [['vector', 1, 1], ['vector', -1, 1], ['vector', -1, -1], ['vector', 1, -1]],
+
+    //can only move in an "L"-shaped pattern
+    knight: [['normal', -1, -2], ['normal', 1, -2], ['normal', -2, -1], ['normal', 2, -1],
+    ['normal', -2, 1], ['normal', 2, 1], ['normal', -1, 2], ['normal', 1, 2]],
+
+    //moves in the four cardinal directions
+    rook: [['vector', 1, 0], ['vector', 0, -1], ['vector', -1, 0], ['vector', 0, 1]],
+
+    //moves in the four cardinal directions and to tiles diagonal to it
+    queen: [['vector', 1, 0], ['vector', 1, -1], ['vector', 0, -1], ['vector', -1, -1],
+    ['vector', -1, 0], ['vector', -1, 1], ['vector', 0, 1], ['vector', 1, 1]],
+
+    //can move one tile in any direction
+    king: [['normal', 1, 0], ['normal', 1, -1], ['normal', 0, -1], ['normal', -1, -1],
+    ['normal', -1, 0], ['normal', -1, 1], ['normal', 0, 1], ['normal', 1, 1]],
+}
 
 const graveyard = {
     add: (graveyardElement, piece) => {
