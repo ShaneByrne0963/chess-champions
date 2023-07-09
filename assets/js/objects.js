@@ -87,7 +87,7 @@ const tile = {
         enemyColor = (evaluatingTile.color === 'white') ? 'black' : 'white';
 
         //the tile will be evaluated using the moves of the queen and the knight, as that will cover all the possible move types
-        for (let move of chessPiece['queen'].moves) {
+        for (let move of pieceMovement['queen']) {
             //the coordinates the loop will be manipulating
             let x = tileData.x;
             let y = tileData.y;
@@ -111,18 +111,18 @@ const tile = {
 
                     if (secondTile.color === evaluatingTile.color) { //if the evaluation runs into a friendly piece
                         //if the friendly piece can attack the tile if an enemy moves to it
-                        if (chessPiece.canAttack(secondTile, moveReverse, firstMove)) {
+                        if (pieceMovement.canAttack(secondTile, moveReverse, firstMove)) {
                             allyGuarded.push(secondTile);
                         }
                         break;
                     } else {
                         if (secondTile.color === enemyColor) { //if the evaluation runs into an enemy piece
                             //if the enemy piece can be attacked by the piece at this tile
-                            if (chessPiece.canAttack(evaluatingTile, move, firstMove)) {
+                            if (pieceMovement.canAttack(evaluatingTile, move, firstMove)) {
                                 enemyTarget.push(secondTile);
                             }
                             //if the enemy piece can attack the piece at this tile
-                            if (chessPiece.canAttack(secondTile, moveReverse, firstMove)) {
+                            if (pieceMovement.canAttack(secondTile, moveReverse, firstMove)) {
                                 enemyThreat.push(secondTile);
                             }
                             break;
@@ -140,7 +140,7 @@ const tile = {
                 firstMove = false;
             }
         }
-        for (let move of chessPiece['knight'].moves) {
+        for (let move of pieceMovement['knight']) {
             let x = tileData.x + move[1]; //because move[0] is 'normal'
             let y = tileData.y + move[2];
             if (tile.inBounds(x, y)) {
@@ -997,7 +997,7 @@ const pieceMovement = {
                     || (isDiagonal && pieceData.piece === 'bishop')
                     || (!isDiagonal && pieceData.piece === 'rook')
                     || (isBeside && (pieceData.piece === 'king'
-                        || (vector1 !== 0 && vector2 === chessPiece.getForwardDirection(pieceData.color)
+                        || (vector1 !== 0 && vector2 === pieceMovement.getForwardDirection(pieceData.color)
                             && pieceData.piece.includes('pawn')))));
         }
     },

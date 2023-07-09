@@ -22,12 +22,13 @@ function makeMove(color) {
         //stores any moves that have the same score as the highest score
         currentInfo.highestMoves = [];
         //gets all of the tiles the current piece can move to
-        let tileMoves = chessPiece.getAllMoveTiles(currentInfo);
+        let tileMoves = pieceMovement.getAllMoveTiles(currentInfo);
 
         //looping through the moves
         for (let move of tileMoves) {
+            let moveData = chessPiece.getData(move);
             //calculates the score of the tile based on several parameters
-            let moveScore = tile.getScore(currentInfo, move);
+            let moveScore = tile.getScore(currentInfo, moveData);
 
             //add 15 points for pawns to encourage movement
             if (currentInfo.piece === 'pawn' || currentInfo.piece === 'pawnNew') {
@@ -36,8 +37,8 @@ function makeMove(color) {
 
             //if there is an enemy on the tile the piece can destroy, then the value of that piece will be added to the score
             //the color of the piece doesn't have to be checked 
-            if (move.piece !== '') {
-                moveScore += chessPiece.value[move.piece];
+            if (moveData.piece !== '') {
+                moveScore += chessPiece.value[moveData.piece];
             }
 
             //finally, subtracting the current score from the new score
@@ -76,7 +77,6 @@ function makeMove(color) {
     let finalTile = movePiece.highestMoves[Math.floor(Math.random() * movePiece.highestMoves.length)];
 
     let movingElement = chessPiece.findElement(movePiece.x, movePiece.y);
-    let tileMoveElement = tile.getElement(finalTile.x, finalTile.y)
 
-    chessPiece.move(movingElement, tileMoveElement);
+    chessPiece.move(movingElement, finalTile);
 }

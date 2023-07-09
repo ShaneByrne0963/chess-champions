@@ -366,21 +366,18 @@ function isCheck(color) {
  * @returns {boolean} If the player is in checkmate
  */
 function isCheckmate(color) {
-    let hasMove = false;
     //getting all of the pieces to check if there is a move that will save the king
     let playerPieces = chessPiece.getAll(color);
 
     for (let playerPiece of playerPieces) {
-        let pieceMoves = chessPiece.getAllMoveTiles(playerPiece);
+        let pieceMoves = pieceMovement.getAllMoveTiles(playerPiece);
 
         //if there is a valid move, then it is not checkmate
         if (pieceMoves.length > 0) {
-            hasMove = true;
-            break;
+            return false;
         }
     }
-
-    return !hasMove;
+    return true;
 }
 
 /**
