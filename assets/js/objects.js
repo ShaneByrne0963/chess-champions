@@ -951,22 +951,25 @@ const pieceMovement = {
         //storing all the valid moves in this array
         let moveTiles = [];
         //declaring the variables storing the coordinates of the tiles to check
-        let newX = tileData.x + move[1]; //the x coordinate is always the second element in a moves array
-        let newY = tileData.x + move[2]; //the y coordinate is always the third element in a moves array
+        let newX = pieceData.x + move[1]; //the x coordinate is always the second element in a moves array
+        let newY = getYMovement(pieceData, move); //the y coordinate is always the third element in a moves array
         //getting the enemy's color
-        let enemyColor = (tileData.color === 'white') ? 'black' : 'white';
+        let enemyColor = (pieceData.color === 'white') ? 'black' : 'white';
 
-        //checking the rule for the move set
-        switch (move[0]) {
-            case 'normal':
-                break;
-            case 'vector':
-                break;
-            case 'attack':
-                break;
-            case 'disarmed':
-                break;
+        if (true) {
+            //checking the rule for the move set
+            switch (move[0]) {
+                case 'normal':
+                    break;
+                case 'vector':
+                    break;
+                case 'attack':
+                    break;
+                case 'disarmed':
+                    break;
+            }
         }
+        return moveTiles;
     },
 
     evaluateTile: (tileData, pieceData) => {
@@ -981,8 +984,37 @@ const pieceMovement = {
 
     },
 
-    canMoveForward: () => {
+    getYMovement: (pieceData, move) => {
+        let y;
+        //getting the y axis of the move
+        let moveY = move[2];
 
+        if (typeof moveY === 'string' && moveY.includes('forward')) {
+            //getting the last character of the forward move, which specifies the number of moves forward it can take
+            let forwardAmount = parseInt(moveY[moveY.length - 1]);
+
+            //determines which direction is forward
+            let forwardDirection = pieceMovement.getForwardDirection(pieceData.color);
+
+            //if the forward value is greater than 1, then all tiles in between will be checked to see if they are blank
+            let blockMove = false;
+            for (let i = 1; i < forwardAmount && !blockMove; i++) {
+                let tileInfo = chessPiece.findData(newX, tileData.y + (i * yDirection));
+                //if there is a friendly piece, or any piece at all if the rule 'disarmed' applies, the tile will be considered blocked
+                if (tileInfo.color === tileData.color || (move[0] === 'disarmed' && tileInfo.color !== '')) {
+                    blockMove = true;
+                    break;
+                }
+            }
+            //continue onto the next move if this move is blocked by a tile
+            if (blockMove) {
+                //return not a number if the move is blocked
+                y = NaN;
+            } else {
+                y = pieceData.y + (forwardAmount * forwardDirection);
+            }
+        }
+        return y;
     },
 
     /**
