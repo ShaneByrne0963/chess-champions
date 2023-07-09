@@ -1012,7 +1012,11 @@ const pieceMovement = {
 
     },
 
-    evaluateTile: (tileData) => {
+    evaluateTile: (tileData, pieceData) => {
+
+    },
+
+    evaluateTileWithMove: (tileData, pieceData, pieceMovingData, tileMovedData) => {
 
     },
 
@@ -1036,7 +1040,7 @@ const pieceMovement = {
 
     /**
      * Checks if a piece can move to a certain tile
-     * @param {object} attackingTile The tile information that is checking if it can move
+     * @param {object[x, y, piece, color]} attackingTile The tile information that is checking if it can move
      * @param {['rule', x, y]} move The direction the piece has to take to move to the new tile
      * @param {boolean} isBeside If there is only one space between the piece and the tile it wants to move to
      * @returns {boolean} If the attacking tile can attack using its move set
@@ -1062,8 +1066,41 @@ const pieceMovement = {
         }
     },
 
+    /**
+     * Returns if the move will result in a check
+     * @param {object[x, y, piece, color]} tileData The data object of the tile the piece is moving to
+     * @param {object[x, y, piece, color]} pieceMovingData The data object of the piece that will move to the tile
+     * @returns {boolean} If the king is left in a vulnerable position after the move
+     */
     isKingThreatened: (tileData, pieceMovingData) => {
+        let isValidMove = true;
+        //the king's y position at the end of the move
+        let kingY;
 
+        //only add the tile if moving there doesn't result in a self-check
+        let tileEval;
+
+        if (pieceMovingData.piece !== 'king') {
+            //finding the king if it isn't the piece that will move
+            let kingData = tile.findKing(pieceMovingData.color);
+            //if the piece that is looking to move is not the king, that means the king's position won't change
+            kingY = kingData.y;
+            tileEval = pieceMovement.evaluateTileWithMove(kingData, kingData, pieceMovingData, tileData);
+        } else {
+            //if the piece that is looking to move is the king, that means the king's position will change to currentTile's position
+            kingY = currentTile.y;
+            tileEval = pieceMovement.evaluateTile(currentTile, tileData);
+        }
+        //not a valid move if the king is under threat
+        for (let threat of tileEval.enemyThreat) {
+            //pawns cannot reach the end of the board without a graveyard piece to revive,
+            //so if the king is at the end of the board with these conditions it is safe from pawns
+            if (!(threat.piece === 'pawn' && chessPiece.isAtBoardEnd(threat.color, kingY) && !chessPiece.canRevive(threat.color))) {
+                isValidMove = false;
+                break;
+            }
+        }
+        return !isValidMove;
     },
 
     canPawnMove: (tileData, pieceMovingData) => {
