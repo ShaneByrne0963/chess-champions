@@ -992,6 +992,8 @@ const chessPiece = {
     },
 };
 
+//stores all the functions in relation to the movement of the pieces
+//will primarily work with piece data objects {x, y, piece, color}
 const pieceMovement = {
     //chess move rules:
     // 'normal' means add the following coordinates to the current tile
@@ -1021,6 +1023,22 @@ const pieceMovement = {
     //can move one tile in any direction
     king: [['normal', 1, 0], ['normal', 1, -1], ['normal', 0, -1], ['normal', -1, -1],
     ['normal', -1, 0], ['normal', -1, 1], ['normal', 0, 1], ['normal', 1, 1]],
+
+    getAllMoveTiles: (pieceData) => {
+
+    },
+
+    getTilesFromMove: (pieceData, move) => {
+
+    },
+
+    evaluateTile: (tileData) => {
+
+    },
+
+    getTileScore: (tileData, pieceMovingData) => {
+
+    }
 }
 
 const graveyard = {
