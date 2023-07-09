@@ -310,23 +310,23 @@ const tile = {
             pieceElement.appendChild(selectDiv);
 
             //show all the available moves the selected piece can take
-            //let possibleMoves = chessPiece.getAllMoveTiles(pieceData);
+            let possibleMoves = pieceMovement.getAllMoveTiles(pieceData);
+            console.log(possibleMoves);
 
             for (let move of possibleMoves) {
                 //creating a div displaying an image on every possible move
                 let moveOption = document.createElement('div');
                 moveOption.className = "possible-move";
-                let moveElement = tile.getElement(move.x, move.y);
-                let movePiece = tile.getPieceElement(moveElement);
+                let movePiece = tile.getPieceElement(move);
                 //if there is an enemy piece on the tile to move to, add the possible move to that piece
                 if (movePiece !== null) {
                     movePiece.appendChild(moveOption);
                 } else {
-                    moveElement.appendChild(moveOption);
+                    move.appendChild(moveOption);
                 }
 
                 //adding the 'clickable' class to the tile
-                tile.addInteraction(moveElement);
+                tile.addInteraction(move);
             }
         }
     },
@@ -853,7 +853,7 @@ const pieceMovement = {
             for (let currentTile of availableTiles) {
                 //only add the tile if it doesn't leave it's king in a vulnerable position
                 //and if it is a pawn it meets the requirements to move
-                if (!isKingThreatened(currentTile, pieceData) && canPawnMove(currentTile, pieceData)) {
+                if (!pieceMovement.isKingThreatened(currentTile, pieceData) && pieceMovement.canPawnMove(currentTile, pieceData)) {
                     //returns the element instead of the data as this function will be used outside of this object
                     moveTiles.push(tile.getElement(currentTile.x, currentTile.y));
                 }
@@ -867,7 +867,7 @@ const pieceMovement = {
         let moveTiles = [];
         //declaring the variables storing the coordinates of the tiles to check
         let newX = pieceData.x + move[1]; //the x coordinate is always the second element in a moves array
-        let newY = getYMovement(pieceData, move); //the y coordinate is always the third element in a moves array
+        let newY = pieceMovement.getYMovement(newX, pieceData.y, pieceData, move); //the y coordinate is always the third element in a moves array
         //getting the enemy's color
         let enemyColor = (pieceData.color === 'white') ? 'black' : 'white';
 
@@ -884,6 +884,7 @@ const pieceMovement = {
                         moveTiles.push(checkPiece);
                     }
                     break;
+                //for moves that continue to move in a direction until an obstacle is reached
                 case 'vector':
                     do {
                         checkPiece = chessPiece.findData(newX, newY);
@@ -899,11 +900,13 @@ const pieceMovement = {
                         newY += move[2];
                     } while (tile.inBounds(newX, newY));
                     break;
+                //for moves that are only valid if an enemy is on the tile
                 case 'attack':
                     if (checkPiece.color === enemyColor) {
                         moveTiles.push(checkPiece);
                     }
                     break;
+                //for moves that are only valid for empty tiles
                 case 'disarmed':
                     if (checkPiece.color === '') {
                         moveTiles.push(checkPiece);
@@ -926,7 +929,7 @@ const pieceMovement = {
 
     },
 
-    getYMovement: (pieceData, move) => {
+    getYMovement: (xStart, yStart, pieceData, move) => {
         let y;
         //getting the y axis of the move
         let moveY = move[2];
@@ -938,23 +941,20 @@ const pieceMovement = {
             //determines which direction is forward
             let forwardDirection = pieceMovement.getForwardDirection(pieceData.color);
 
+            y = yStart + (forwardAmount * forwardDirection);
+
             //if the forward value is greater than 1, then all tiles in between will be checked to see if they are blank
             let blockMove = false;
             for (let i = 1; i < forwardAmount && !blockMove; i++) {
-                let tileInfo = chessPiece.findData(newX, tileData.y + (i * yDirection));
+                let tileInfo = chessPiece.findData(xStart, yStart + (i * forwardDirection));
                 //if there is a friendly piece, or any piece at all if the rule 'disarmed' applies, the tile will be considered blocked
-                if (tileInfo.color === tileData.color || (move[0] === 'disarmed' && tileInfo.color !== '')) {
-                    blockMove = true;
+                if (tileInfo.color === pieceData.color || (move[0] === 'disarmed' && tileInfo.color !== '')) {
+                    y = NaN;
                     break;
                 }
             }
-            //continue onto the next move if this move is blocked by a tile
-            if (blockMove) {
-                //return not a number if the move is blocked
-                y = NaN;
-            } else {
-                y = pieceData.y + (forwardAmount * forwardDirection);
-            }
+        } else {
+            y = yStart + moveY;
         }
         return y;
     },
@@ -1009,6 +1009,7 @@ const pieceMovement = {
      * @returns {boolean} If the king is left in a vulnerable position after the move
      */
     isKingThreatened: (tileData, pieceMovingData) => {
+        return false;
         //the king's y position at the end of the move
         let kingY;
 
