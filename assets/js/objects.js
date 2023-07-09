@@ -948,7 +948,25 @@ const pieceMovement = {
     },
 
     getTilesFromMove: (pieceData, move) => {
+        //storing all the valid moves in this array
+        let moveTiles = [];
+        //declaring the variables storing the coordinates of the tiles to check
+        let newX = tileData.x + move[1]; //the x coordinate is always the second element in a moves array
+        let newY = tileData.x + move[2]; //the y coordinate is always the third element in a moves array
+        //getting the enemy's color
+        let enemyColor = (tileData.color === 'white') ? 'black' : 'white';
 
+        //checking the rule for the move set
+        switch (move[0]) {
+            case 'normal':
+                break;
+            case 'vector':
+                break;
+            case 'attack':
+                break;
+            case 'disarmed':
+                break;
+        }
     },
 
     evaluateTile: (tileData, pieceData) => {
@@ -960,6 +978,10 @@ const pieceMovement = {
     },
 
     getTileScore: (tileData, pieceMovingData) => {
+
+    },
+
+    canMoveForward: () => {
 
     },
 
