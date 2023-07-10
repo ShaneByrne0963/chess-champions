@@ -46,7 +46,7 @@ const tile = {
         let kings = document.getElementsByClassName('king');
         let kingData;
         for (let king of kings) {
-            kingData = chessPiece.getData(king);
+            kingData = chessPiece.getData(king.parentNode);
             if (kingData.color === color) {
                 break;
             }
@@ -87,7 +87,7 @@ const tile = {
         enemyColor = (evaluatingTile.color === 'white') ? 'black' : 'white';
 
         //the tile will be evaluated using the moves of the queen and the knight, as that will cover all the possible move types
-        for (let move of pieceMovement['queen']) {
+        for (let move of pieceMovement.queen) {
             //the coordinates the loop will be manipulating
             let x = tileData.x;
             let y = tileData.y;
@@ -140,7 +140,7 @@ const tile = {
                 firstMove = false;
             }
         }
-        for (let move of pieceMovement['knight']) {
+        for (let move of pieceMovement.knight) {
             let x = tileData.x + move[1]; //because move[0] is 'normal'
             let y = tileData.y + move[2];
             if (tile.inBounds(x, y)) {
@@ -311,7 +311,6 @@ const tile = {
 
             //show all the available moves the selected piece can take
             let possibleMoves = pieceMovement.getAllMoveTiles(pieceData);
-            console.log(possibleMoves);
 
             for (let move of possibleMoves) {
                 //creating a div displaying an image on every possible move

@@ -80,3 +80,7 @@ function makeMove(color) {
 
     chessPiece.move(movingElement, finalTile);
 }
+
+function evaluateTile() {
+    
+}
