@@ -139,9 +139,9 @@ function evaluateTileVector(tileData, evaluatingPiece, move) {
     //doing the checking and any piece it hits
     let tileEval = {
         availableSpaces: 0,
-        enemyTarget: [],
-        enemyThreat: [],
-        allyGuarded: []
+        enemyTarget: null,
+        enemyThreat: null,
+        allyGuarded: null
     };
     //if neither of the vectors are 0 then the piece is moving diagonally
     let isDiagonal = (Math.abs(vector1) === Math.abs(vector2));
@@ -160,7 +160,7 @@ function evaluateTileVector(tileData, evaluatingPiece, move) {
         if (evaluatingPiece.piece === 'queen'
             || (isDiagonal && evaluatingPiece.piece === 'bishop')
             || (!isDiagonal && evaluatingPiece.piece === 'rook')) {
-            availableSpaces++;
+            tileEval.availableSpaces++;
         }
         x += vector1;
         y += vector2;
@@ -178,9 +178,9 @@ function evaluateTilePoint(tileData, evaluatingPiece, move) {
     //doing the checking and any piece it hits
     let tileEval = {
         availableSpaces: 0,
-        enemyTarget: [],
-        enemyThreat: [],
-        allyGuarded: []
+        enemyTarget: null,
+        enemyThreat: null,
+        allyGuarded: null
     };
 
     //keep moving in the direction of the vector until it goes out of bounds, or it hits a piece (evaluated inside the loop)
@@ -194,7 +194,7 @@ function evaluateTilePoint(tileData, evaluatingPiece, move) {
         }
         //if the tile can be moved to in the move after this one, it will increase availableSpaces
         if (evaluatingPiece.piece === 'knight') {
-            availableSpaces++;
+            tileEval.availableSpaces++;
         }
     }
     return tileEval;
