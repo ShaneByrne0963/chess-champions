@@ -81,6 +81,148 @@ function makeMove(color) {
     chessPiece.move(movingElement, finalTile);
 }
 
-function evaluateTile() {
-    
+function evaluateTile(tileData, evaluatingPiece) {
+    let tileEvaluation = {
+        availableSpaces: 0,
+        enemyTarget: [],
+        enemyThreat: [],
+        allyGuarded: []
+    };
+
+    //the tile will be evaluated using the moves of the queen and the knight, as that will cover all the possible move types
+    for (let move of pieceMovement.queen) {
+        let moveResult = evaluateTileVector(tileData, evaluatingPiece, move);
+
+        tileEvaluation = addPieceRelationship(tileEvaluation, moveResult);
+    }
+
+    for (let move of pieceMovement.knight) {
+        let moveResult = evaluateTilePoint(tileData, evaluatingPiece, move);
+
+        tileEvaluation = addPieceRelationship(tileEvaluation, moveResult);
+    }
+    return tileEvaluation;
+}
+
+function evaluateTileVector(tileData, evaluatingPiece, move) {
+    //the coordinates the loop will be manipulating
+    let x = tileData.x;
+    let y = tileData.y;
+    let vector1 = move[1]; //because move[0] is the rule 'vector'
+    let vector2 = move[2];
+    let isFirstMove = true;
+
+    //storing the relationships between the piece that is
+    //doing the checking and any piece it hits
+    let tileEval = {
+        availableSpaces: 0,
+        enemyTarget: [],
+        enemyThreat: [],
+        allyGuarded: []
+    };
+    //if neither of the vectors are 0 then the piece is moving diagonally
+    let isDiagonal = (Math.abs(vector1) === Math.abs(vector2));
+
+    //keep moving in the direction of the vector until it goes out of bounds, or it hits a piece (evaluated inside the loop)
+    while (tile.inBounds(x, y)) {
+        //stop the vector if it comes into contact with itself
+        if (!(x === evaluatingPiece.x && y === evaluatingPiece.y)) {
+            let foundPiece = chessPiece.findData(x, y);
+            if (foundPiece.piece !== '') {
+                tileEval = getPieceRelationship(evaluatingPiece, foundPiece, move, isFirstMove);
+                break;
+            }
+        }
+        //if the tile can be moved to in the move after this one, it will increase availableSpaces
+        if (evaluatingPiece.piece === 'queen'
+            || (isDiagonal && evaluatingPiece.piece === 'bishop')
+            || (!isDiagonal && evaluatingPiece.piece === 'rook')) {
+            availableSpaces++;
+        }
+        x += vector1;
+        y += vector2;
+        isFirstMove = false;
+    }
+    return tileEval;
+}
+
+function evaluateTilePoint(tileData, evaluatingPiece, move) {
+    let x = tileData.x + move[1];
+    let y = tileData.y + move[2];
+    let isFirstMove = true;
+
+    //storing the relationships between the piece that is
+    //doing the checking and any piece it hits
+    let tileEval = {
+        availableSpaces: 0,
+        enemyTarget: [],
+        enemyThreat: [],
+        allyGuarded: []
+    };
+
+    //keep moving in the direction of the vector until it goes out of bounds, or it hits a piece (evaluated inside the loop)
+    if (tile.inBounds(x, y)) {
+        //stop the vector if it comes into contact with itself
+        if (!(x === evaluatingPiece.x && y === evaluatingPiece.y)) {
+            let foundPiece = chessPiece.findData(x, y);
+            if (foundPiece.piece !== '') {
+                tileEval = getPieceRelationship(evaluatingPiece, foundPiece, move, isFirstMove);
+            }
+        }
+        //if the tile can be moved to in the move after this one, it will increase availableSpaces
+        if (evaluatingPiece.piece === 'knight') {
+            availableSpaces++;
+        }
+    }
+    return tileEval;
+}
+
+function getPieceRelationship(evaluatingPiece, foundPiece, move, isFirstMove) {
+    //storing the relationships between the piece that is
+    //doing the checking and any piece it hits
+    let tileEval = {
+        availableSpaces: 0,
+        enemyTarget: null,
+        enemyThreat: null,
+        allyGuarded: null
+    };
+
+    //finds the color of the opponent
+    enemyColor = (evaluatingPiece.color === 'white') ? 'black' : 'white';
+
+    //reversing the move to evaluate pieces that can attack the evaluating piece at this tile
+    let moveReverse = [move[0], -move[1], -move[2]];
+
+    if (foundPiece.color === evaluatingPiece.color) { //if the evaluation runs into a friendly piece
+        //if the friendly piece can attack the tile if an enemy moves to it
+        if (pieceMovement.canAttack(foundPiece, moveReverse, isFirstMove)) {
+            tileEval.allyGuarded = foundPiece;
+        }
+    } else {
+        if (foundPiece.color === enemyColor) { //if the evaluation runs into an enemy piece
+            //if the enemy piece can be attacked by the piece at this tile
+            if (pieceMovement.canAttack(evaluatingPiece, move, isFirstMove)) {
+                tileEval.enemyTarget = foundPiece;
+            }
+            //if the enemy piece can attack the piece at this tile
+            if (pieceMovement.canAttack(foundPiece, moveReverse, isFirstMove)) {
+                tileEval.enemyThreat = foundPiece;
+            }
+        }
+    }
+    return tileEval;
+}
+
+function addPieceRelationship(tileEvaluation, moveResults) {
+    tileEvaluation.availableSpaces += moveResults.availableSpaces;
+    if (moveResults.allyGuarded !== null) {
+        tileEvaluation.allyGuarded.push(moveResults.allyGuarded);
+    }
+    if (moveResults.enemyTarget !== null) {
+        tileEvaluation.enemyTarget.push(moveResults.enemyTarget);
+    }
+    if (moveResults.enemyThreat !== null) {
+        tileEvaluation.enemyThreat.push(moveResults.enemyThreat);
+    }
+    return tileEvaluation;
 }

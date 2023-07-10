@@ -344,12 +344,9 @@ function clearAnnouncements() {
  */
 function isCheck(color) {
     let kingData = tile.findKing(color);
-    console.log(kingData);
 
     let kingSurroundings = tile.evaluate(kingData, kingData);
     let isThreatened = false;
-
-    console.log(kingSurroundings);
 
     //if the king is at their end of the board, pawns will only count as a threat if there are
     //pieces in the graveyard to revive
