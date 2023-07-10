@@ -104,6 +104,29 @@ function evaluateTile(tileData, evaluatingPiece) {
     return tileEvaluation;
 }
 
+function evaluateTileWithMove(tileData, evaluatingPiece, pieceFrom, tileTo) {
+    //storing pieceFrom's parent element so it can be returned after the evaluation
+    let tileFrom = pieceFrom.parentNode;
+
+    //if there is already a piece on the tile, it will be moved outside of the board to simulate it being eliminated
+    let pieceTo = tile.getPieceElement(tileTo);
+    if (pieceTo !== null) {
+        pieceTo.parentNode = document.getElementById("game");
+    }
+
+    //temporarily set pieceFrom's parent element to tileTo
+    pieceFrom.parentNode = tileTo;
+
+    //evaluating the tile now that the simulated move is set up
+    let tileEvaluation = evaluateTile(tileData, evaluatingPiece);
+
+    //returning the moved pieces back to their original tiles
+    pieceFrom.parentNode = tileFrom;
+    pieceTo.parentNode = tileTo;
+
+    return tileEvaluation;
+}
+
 function evaluateTileVector(tileData, evaluatingPiece, move) {
     //the coordinates the loop will be manipulating
     let x = tileData.x;
