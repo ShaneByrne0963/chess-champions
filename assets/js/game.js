@@ -346,7 +346,6 @@ function isCheck(color) {
     let kingData = tile.findKing(color);
 
     let kingSurroundings = evaluateTile(kingData, kingData);
-    console.log(kingSurroundings);
     let isThreatened = false;
 
     //if the king is at their end of the board, pawns will only count as a threat if there are

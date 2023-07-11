@@ -1,4 +1,5 @@
 function makeMove(color) {
+    console.clear();
     //all tiles will be given an individual score based on a number of parameters. the tile with the highest score will be chosen
     let highestScore = 0;
     //highestScore will be set to the first checked tile. after that any tile will have to beat the score to be set
@@ -12,26 +13,28 @@ function makeMove(color) {
     //before checking all the moves, the scores of all the pieces in their current positions will be calculated and stored
     let currentScores = [];
     for (let pieceData of pieces) {
-        currentScores.push(tile.getScore(pieceData, pieceData));
+        currentScores.push(getTileScore(pieceData, pieceData));
     }
 
     for (let i = 0; i < pieces.length; i++) {
-        let currentInfo = pieces[i];
+        let currentPiece = pieces[i];
         //if the piece has not yet been added to the high score array
         let added = false;
         //stores any moves that have the same score as the highest score
-        currentInfo.highestMoves = [];
+        currentPiece.highestMoves = [];
         //gets all of the tiles the current piece can move to
-        let tileMoves = pieceMovement.getAllMoveTiles(currentInfo);
+        let tileMoves = pieceMovement.getAllMoveTiles(currentPiece);
 
         //looping through the moves
         for (let move of tileMoves) {
             let moveData = chessPiece.getData(move);
             //calculates the score of the tile based on several parameters
-            let moveScore = tile.getScore(currentInfo, moveData);
+            let moveScore = getTileScore(currentPiece, moveData);
+            console.log(tile.getElement(moveData.x, moveData.y));
+            console.log(moveScore);
 
             //add 15 points for pawns to encourage movement
-            if (currentInfo.piece === 'pawn' || currentInfo.piece === 'pawnNew') {
+            if (currentPiece.piece === 'pawn' || currentPiece.piece === 'pawnNew') {
                 moveScore += 15;
             }
 
@@ -47,8 +50,8 @@ function makeMove(color) {
             //if this is the first move of the first tile, then set the highest score to the score of this move
             if (isFirstCheck) {
                 highestScore = moveScore;
-                highestScorePieces.push(currentInfo);
-                currentInfo.highestMoves.push(move);
+                highestScorePieces.push(currentPiece);
+                currentPiece.highestMoves.push(move);
                 isFirstCheck = false;
                 continue;
             } else {
@@ -56,16 +59,16 @@ function makeMove(color) {
                     //if this is the first move with the same or higher score, it will be added to the pieces list
                     if (!added) {
                         added = true;
-                        highestScorePieces.push(currentInfo);
+                        highestScorePieces.push(currentPiece);
                     }
                     //if this score is higher than the highest score, then remove everything
                     //from the high score lists and start over with the new high score
                     if (moveScore > highestScore) {
-                        highestScorePieces = [currentInfo];
-                        currentInfo.highestMoves = [];
+                        highestScorePieces = [currentPiece];
+                        currentPiece.highestMoves = [];
                     }
                     highestScore = moveScore;
-                    currentInfo.highestMoves.push(move);
+                    currentPiece.highestMoves.push(move);
                 }
             }
         }
@@ -79,6 +82,16 @@ function makeMove(color) {
     let movingElement = chessPiece.findElement(movePiece.x, movePiece.y);
 
     chessPiece.move(movingElement, finalTile);
+}
+
+function getTileScore(currentPiece, moveTile) {
+    //each move will have a score
+    let moveScore = 0;
+
+    //monitoring all the tiles around it for information
+    let tileEval = evaluateTile(moveTile, currentPiece);
+
+    return tileEval;
 }
 
 function evaluateTile(tileData, evaluatingPiece) {
@@ -185,15 +198,18 @@ function evaluateTilePoint(tileData, evaluatingPiece, move) {
 
     //keep moving in the direction of the vector until it goes out of bounds, or it hits a piece (evaluated inside the loop)
     if (tile.inBounds(x, y)) {
+        //getting the information of a tile if it has a piece or not
+        let foundPiece = chessPiece.findData(x, y);
         //stop the vector if it comes into contact with itself
         if (!(x === evaluatingPiece.x && y === evaluatingPiece.y)) {
-            let foundPiece = chessPiece.findData(x, y);
             if (foundPiece.piece !== '') {
                 tileEval = getPieceRelationship(evaluatingPiece, foundPiece, move, isFirstMove);
             }
         }
         //if the tile can be moved to in the move after this one, it will increase availableSpaces
-        if (evaluatingPiece.piece === 'knight') {
+        //we will include the the tile the piece is already on because it can always move back to it's original position
+        if (evaluatingPiece.piece === 'knight'
+            && (foundPiece.color !== evaluatingPiece.color || (x === evaluatingPiece.x && y === evaluatingPiece.y))) {
             tileEval.availableSpaces++;
         }
     }
