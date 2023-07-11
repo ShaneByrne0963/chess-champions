@@ -28,7 +28,7 @@
         <div id="menu-settings">
             <!--dropdown menu for player selection-->
             <label for="settings-players">Players:</label>
-            <select id="settings-players">
+            <select id="settings-players" onchange="buildDynamicSettings(value)">
                 <option value="pvp">Player vs. Player</option>
                 <option value="pve">Player vs. Computer</option>
                 <option value="eve">Computer vs. Computer</option>
