@@ -5,13 +5,6 @@ const animationTime = 100; //the amount of time the animation takes to move from
 //when this limit is reached the oldest will be destroyed
 const announcementLimit = 10;
 
-//setting the types of players for each color
-localStorage.setItem('white', 'player');
-localStorage.setItem('black', 'computer');
-
-//dictates which color will start on top of the board
-localStorage.setItem('topPosition', 'black');
-
 //initializes game when the page loads
 document.onload = gameInit();
 
