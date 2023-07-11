@@ -102,9 +102,11 @@ function updateWhitePosition(value) {
  * @returns The HTML to create the input
  */
 function optionPlayerName(innerText, inputId) {
+    //the old player name will be displayed in the text bar
+    let currentPlayerName = localStorage.getItem(inputId);
     return `
     <label for="${inputId}">${innerText}</label>
-    <input type="text" id="${inputId}" onchange="localStorage.setItem('${inputId}', value)" required>
+    <input type="text" id="${inputId}" onchange="localStorage.setItem('${inputId}', value)" placeholder="${currentPlayerName}" required>
     <br>
     `;
 }
@@ -114,11 +116,23 @@ function optionPlayerName(innerText, inputId) {
  * the top or the bottom
  */
 function optionWhitePosition() {
-    return `
+    let htmlString = `
     Position of White:
-    <input type="radio" name="white-pos" value="bottom" id="pos-bottom" onchange="updateWhitePosition(value)" checked>
+    <input type="radio" name="white-pos" value="bottom" id="pos-bottom" onchange="updateWhitePosition(value)"`;
+    //making the radio button checked if the white pieces are at the bottom
+    if (localStorage.getItem('topPosition') === 'black') {
+        htmlString += ` checked`;
+    }
+    htmlString += `>
     <label for="pos-bottom">Bottom</label>
-    <input type="radio" name="white-pos" value="top" id="pos-top" onchange="updateWhitePosition(value)">
+    <input type="radio" name="white-pos" value="top" id="pos-top" onchange="updateWhitePosition(value)"`;
+    //making the radio button checked if the white pieces are at the top
+    if (localStorage.getItem('topPosition') === 'white') {
+        htmlString += ` checked`;
+    }
+    htmlString += `>
     <label for="pos-top">Top</label>
     `;
+
+    return htmlString;
 }
