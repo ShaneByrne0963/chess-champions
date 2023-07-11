@@ -12,6 +12,9 @@ document.onload = gameInit();
  * Creates the chess tiles and then starts the game
  */
 function gameInit() {
+    //setting the player names in the player ui
+    setPlayerNames();
+
     //Setting up the chess board tiles
     let chessBoard = document.getElementById("chess-board");
     let chessGrid = ``;
@@ -110,6 +113,27 @@ function startGame() {
 
     //allow the player to make it's move, whether it is a player or computer
     allowTurn('white');
+}
+
+/**
+ * Sets the player names to what is stored in local storage
+ */
+function setPlayerNames() {
+    //getting the heading elements that display the player names, which is the first element of the player ui
+    let player1Heading = document.getElementById('player1-ui').children[0];
+    let player2Heading = document.getElementById('player2-ui').children[0];
+
+    //setting the inner text to the names stored in local storage
+    player1Heading.innerHTML = localStorage.getItem('p1-name');
+    player2Heading.innerHTML = localStorage.getItem('p2-name');
+
+    //adding the font awesome chess icon to indicate the color of the player
+    player1Heading.innerHTML += `
+    <span><i class="fa-solid fa-chess-king"></i></span>
+    `;
+    player2Heading.innerHTML += `
+    <span><i class="fa-solid fa-chess-king"></i></span>
+    `;
 }
 
 /**
