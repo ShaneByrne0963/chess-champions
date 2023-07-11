@@ -80,7 +80,7 @@ function updatePlayerVariables(playerType) {
 function optionPlayerName(innerText, inputId) {
     return `
     <label for="${inputId}">${innerText}</label>
-    <input type="text" id="${inputId}" required>
+    <input type="text" id="${inputId}" onchange="localStorage.setItem('${inputId}', value)" required>
     <br>
     `;
 }
