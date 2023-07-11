@@ -29,12 +29,15 @@ function buildDynamicSettings(playerType) {
             //adding name inputs for each of the players
             newHtml += optionPlayerName('Player 1 Name:', 'p1-name');
             newHtml += optionPlayerName('Player 2 Name:', 'p2-name');
+            newHtml += optionWhitePosition();
             break;
         case 'pve':
             //adding name inputs for the human player
             newHtml += optionPlayerName('Player Name:', 'p1-name');
+            newHtml += optionWhitePosition();
             break;
         case 'eve':
+            newHtml += optionWhitePosition();
             break;
     }
 
@@ -82,5 +85,15 @@ function optionPlayerName(innerText, inputId) {
     <label for="${inputId}">${innerText}</label>
     <input type="text" id="${inputId}" onchange="localStorage.setItem('${inputId}', value)" required>
     <br>
+    `;
+}
+
+function optionWhitePosition() {
+    return `
+    Position of White:
+    <input type="radio" name="white-pos" value="bottom" id="pos-bottom" checked>
+    <label for="pos-bottom">Bottom</label>
+    <input type="radio" name="white-pos" value="top" id="pos-top">
+    <label for="pos-top">Top</label>
     `;
 }
