@@ -75,9 +75,21 @@ function updatePlayerVariables(playerType) {
 }
 
 /**
+ * Sets which side the white pieces will start on, either top or bottom
+ * @param {string} value Either 'top' or 'bottom'
+ */
+function updateWhitePosition(value) {
+    if (value === 'bottom') {
+        localStorage.setItem('topPosition', 'black');
+    } else {
+        localStorage.setItem('topPosition', 'white');
+    }
+}
+
+/**
  * Returns an HTML text input and it's label for setting a player name
- * @param {*} innerText The text the label will display
- * @param {*} inputId The ID of the input
+ * @param {string} innerText The text the label will display
+ * @param {string} inputId The ID of the input
  * @returns The HTML to create the input
  */
 function optionPlayerName(innerText, inputId) {
@@ -88,12 +100,16 @@ function optionPlayerName(innerText, inputId) {
     `;
 }
 
+/**
+ * Returns an HTML radio option for setting the white pieces to either start on
+ * the top or the bottom
+ */
 function optionWhitePosition() {
     return `
     Position of White:
-    <input type="radio" name="white-pos" value="bottom" id="pos-bottom" checked>
+    <input type="radio" name="white-pos" value="bottom" id="pos-bottom" onchange="updateWhitePosition(value)" checked>
     <label for="pos-bottom">Bottom</label>
-    <input type="radio" name="white-pos" value="top" id="pos-top">
+    <input type="radio" name="white-pos" value="top" id="pos-top" onchange="updateWhitePosition(value)">
     <label for="pos-top">Top</label>
     `;
 }
