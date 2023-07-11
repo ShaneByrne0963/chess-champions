@@ -1,14 +1,23 @@
-//setting the types of players for each color
-localStorage.setItem('white', 'player');
-localStorage.setItem('black', 'player');
-//the names for each of the players
-localStorage.setItem('p1-name', 'Player 1');
-localStorage.setItem('p2-name', 'Player 2');
-//dictates which color will start on top of the board
-localStorage.setItem('topPosition', 'black');
-
 //building the default dynamic settings when the page loads
-window.onload = buildDynamicSettings('pvp');
+window.onload = settingsInit;
+
+/**
+ * Runs on page load
+ */
+function settingsInit() {
+    //setting the localStorage variables if they do not exist
+    if (localStorage.getItem('white') === null) {
+        //setting the types of players for each color
+        localStorage.setItem('white', 'player');
+        localStorage.setItem('black', 'player');
+        //the names for each of the players
+        localStorage.setItem('p1-name', 'Player 1');
+        localStorage.setItem('p2-name', 'Player 2');
+        //dictates which color will start on top of the board
+        localStorage.setItem('topPosition', 'black');
+    }
+    buildDynamicSettings('pvp');
+}
 
 /**
  * Creates a section of the game settings that depends on the type of players in the game
