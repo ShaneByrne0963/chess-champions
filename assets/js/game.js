@@ -122,6 +122,8 @@ function startGame() {
     allowTurn('white');
 }
 
+
+
 /**
  * Sets the player names to what is stored in local storage
  */

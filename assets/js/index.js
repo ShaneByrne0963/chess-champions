@@ -1,5 +1,5 @@
 //building the default dynamic settings when the page loads
-window.onload = settingsInit;
+window.onload = settingsInit();
 
 /**
  * Runs on page load
@@ -16,7 +16,33 @@ function settingsInit() {
         //dictates which color will start on top of the board
         localStorage.setItem('topPosition', 'black');
     }
-    buildDynamicSettings('pvp');
+    //finding out how many players are human and using that to set the player type select bar
+    let humanPlayers = 0;
+    let gameType = '';
+    if (localStorage.getItem('white') === 'player') {
+        humanPlayers++;
+    } if (localStorage.getItem('black') === 'player') {
+        humanPlayers++;
+    }
+    switch (humanPlayers) {
+        case 0:
+            gameType = 'eve';
+            break;
+        case 1:
+            gameType = 'pve';
+            break;
+        case 2:
+            gameType = 'pvp';
+            break;
+        default:
+            throw `Error at settingsInit(): Invalid number of players ${humanPlayers}. Aborting..`;
+    }
+    //setting the select dropdown to display the correct game type
+    let gameTypeInput = document.getElementById('settings-players');
+    gameTypeInput.value = gameType;
+
+    //building the dynamic html to be added to the settings
+    buildDynamicSettings(gameType);
 }
 
 /**
@@ -49,8 +75,7 @@ function buildDynamicSettings(playerType) {
             newHtml += optionWhitePosition();
             break;
     }
-
-    //setting the 
+    //adding the new html to the dynamic div
     dynamicDiv.innerHTML = newHtml;
 }
 
