@@ -31,11 +31,14 @@ function makeMove(color) {
             //calculates the score of the tile based on several parameters
             let moveScore = getTileScore(currentPiece, moveData);
 
+            //if there is a piece already on the tile, then add that piece's value to the score
+            if (moveData.piece !== '') {
+                moveScore += chessPiece.value[moveData.piece];
+            }
             //add 15 points for pawns to encourage movement
             if (currentPiece.piece === 'pawn' || currentPiece.piece === 'pawnNew') {
                 moveScore += 15;
             }
-
             //finally, subtracting the current score from the new score
             moveScore -= currentScores[i];
 
@@ -85,17 +88,22 @@ function makeMove(color) {
 function getTileScore(currentPiece, moveTile) {
     //each move will have a score
     let moveScore = 0;
-
     //monitoring all the tiles around it for information
     let tileEval = evaluateTile(moveTile, currentPiece);
-
     //adding the total number of moves the piece could make on this tile multiplied by 1% of it's value to the score
     moveScore += tileEval.availableSpaces * (chessPiece.value[currentPiece.piece] / 100);
 
     //calculates the risk of the piece getting eliminated if it moves to this tile
-    let isThreatened = false;
-    if (tileEval.enemyThreat.length > 0) {
-        isThreatened = true;
+    let tileBattle = simulateBattle(currentPiece, tileEval);
+    //if the outcome of the battle is negative for the current piece
+    if (tileBattle.battleScore < 0) {
+        //remove the piece's value from the score
+        moveScore -= chessPiece.value[currentPiece.piece];
+    } else {
+        //add 10% of the values of every target on this tile if the risk at this tile is low
+        for (let target of tileEval.enemyTarget) {
+            moveScore += chessPiece.value[target.piece] / 10;
+        }
     }
 
     return moveScore;
@@ -117,19 +125,27 @@ function evaluateTile(tileData, evaluatingPiece) {
 
     //the tile will be evaluated using the moves of the queen and the knight, as that will cover all the possible move types
     for (let move of pieceMovement.queen) {
+        //evaluating each vector and adding any piece it finds to the final evaluation
         let moveResult = evaluateTileVector(tileData, evaluatingPiece, move);
-
         tileEvaluation = addPieceRelationship(tileEvaluation, moveResult);
     }
 
     for (let move of pieceMovement.knight) {
+        //evaluating each point and adding any piece it finds to the final evaluation
         let moveResult = evaluateTilePoint(tileData, evaluatingPiece, move);
-
         tileEvaluation = addPieceRelationship(tileEvaluation, moveResult);
     }
     return tileEvaluation;
 }
 
+/**
+ * Scans a tile's surroundings for targets, threats and allies, taking a simulated move into consideration
+ * @param {object} tileData  The data object {x, y, piece, color} of the piece that will make the move
+ * @param {object} evaluatingPiece  The data object {x, y, piece, color} of the tile the piece will move to
+ * @param {object} pieceFrom The piece that will simulate movement
+ * @param {object} tileTo The tile the piece will simulate to
+ * @returns {object} {availableSpaces, enemyTarget, enemyThreat, allyGuarded}
+ */
 function evaluateTileWithMove(tileData, evaluatingPiece, pieceFrom, tileTo) {
     //storing pieceFrom's parent element so it can be returned after the evaluation
     let tileFrom = pieceFrom.parentNode;
@@ -287,7 +303,7 @@ function addPieceRelationship(tileEvaluation, moveResults) {
  * will attack. If the battle score is less than 0, this won't be a good move for the piece
  * @param {object} pieceData The data object {x, y, piece, color} of the piece looking to move to the tile
  * @param {object} tileEval The evaluation of the tile the piece will move to (got using evaluateTile)
- * @returns {object} The score outcome of the battle, as well as the remaining pieces
+ * @returns {[battleScore, remainingAllies, remainingEnemies]} The score outcome of the battle, as well as the remaining pieces
  */
 function simulateBattle(pieceData, tileEval) {
     //if there is an ally (or allies) guarding this tile, then a "battle" will take place.
@@ -327,7 +343,7 @@ function simulateBattle(pieceData, tileEval) {
 
                 //the first move of each loop in the battle will be the ally
                 //adding the value of the enemy most likely to have attacked (the one with the lowest value) to the score
-                battleScore += lowestEnemy[0];
+                aftermath.battleScore += lowestEnemy[0];
                 //then removing that enemy from the array
                 aftermath.remainingEnemies.splice(lowestEnemy[1], 1);
 
@@ -337,7 +353,7 @@ function simulateBattle(pieceData, tileEval) {
                     lowestEnemy = chessPiece.findLowestValue(aftermath.remainingEnemies);
 
                     //removing the ally with the lowest value from the score and array
-                    battleScore -= lowestAlly[0];
+                    aftermath.battleScore -= lowestAlly[0];
                     aftermath.remainingAllies.splice(lowestAlly[1], 1);
                 }
             }
