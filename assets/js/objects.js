@@ -344,9 +344,9 @@ const chessPiece = {
     },
 
     /**
-     * Initializes a piece move from it's original tile to a new one
+     * Initializes a piece move from it's original tile to a new one, starting the movement animation
      * @param {*} pieceElement The element of the chess piece that will move
-     * @param {*} newTileElement The tile the piece will move to
+     * @param {*} newTileElement The tile element the piece will move to
      */
     move: (pieceElement, newTileElement) => {
         //first removing the 'clickable' class from all of the pieces
@@ -364,11 +364,17 @@ const chessPiece = {
         pieceAnimation.start(pieceElement, newTileElement);
     },
 
+    /**
+     * Finishes a piece moving to a different tile by setting it to the tile's parent
+     * and destroying any piece that was already on it
+     * @param {object} pieceElement The element of the piece that is moving
+     * @param {object} 
+     */
     changeTile: (pieceElement, newTileElement) => {
         //checking if the tile has another piece on it
         let otherPiece = tile.getPieceElement(newTileElement);
         if (otherPiece !== null) {
-            chessPiece.destroy(otherPiece, pieceElement);
+            chessPiece.destroy(otherPiece);
         }
 
         //changing the parent of the chess piece to the new tile
@@ -401,13 +407,16 @@ const chessPiece = {
      * @param {object} pieceElement The element to be destroyed
      * @param {object} destroyerElement The piece that has destroyed the specified piece
      */
-    destroy: (pieceElement, destroyerElement) => {
+    destroy: (pieceElement) => {
         //adding the destroyed piece to the appropriate graveyard
         let pieceData = chessPiece.getData(pieceElement.parentNode);
         let graveyardDiv = (pieceData.color === 'black') ? document.getElementById('player1-graveyard') : document.getElementById('player2-graveyard');
-        console.log(pieceData);
         graveyard.add(graveyardDiv, pieceData.piece);
 
+        //adding an announcement for the piece elimination
+        announceElimination(pieceData);
+
+        //removes the piece from the DOM
         pieceElement.remove();
     },
 
@@ -778,11 +787,9 @@ const pieceMovement = {
      * @returns {boolean} If the king is left in a vulnerable position after the move
      */
     isKingThreatened: (tileData, pieceMovingData) => {
+        let tileEval;
         //the king's y position at the end of the move
         let kingY;
-
-        //only add the tile if moving there doesn't result in a self-check
-        let tileEval;
 
         if (pieceMovingData.piece !== 'king') {
             //finding the king if it isn't the piece that will move
@@ -799,7 +806,6 @@ const pieceMovement = {
             kingY = tileData.y;
             tileEval = evaluateTile(tileData, pieceMovingData);
         }
-        //not a valid move if the king is under threat
         for (let threat of tileEval.enemyThreat) {
             //pawns cannot reach the end of the board without a graveyard piece to revive,
             //so if the king is at the end of the board with these conditions it is safe from pawns

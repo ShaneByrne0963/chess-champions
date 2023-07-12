@@ -351,6 +351,23 @@ function addAnnouncement(text) {
     }
 }
 
+function announceElimination(pieceData) {
+    let enemyColor = (pieceData.color === 'white') ? 'black' : 'white';
+
+    //changing the piece text to be more suitable for the announcement
+    let displayPiece = pieceData.piece;
+    //converting 'pawnNew' to just 'pawn'
+    if (displayPiece === 'pawnNew') {
+        displayPiece = 'pawn';
+    }
+    //making the first letter capital
+    let firstLetter = displayPiece[0];
+    firstLetter = firstLetter.toUpperCase();
+    displayPiece = firstLetter + displayPiece.slice(1);
+
+    addAnnouncement(`${getPlayerName(enemyColor)} eliminated ${getPlayerName(pieceData.color)}'s ${displayPiece}!`);
+}
+
 /**
  * Clears all announcements in the ui
  */

@@ -81,6 +81,10 @@ function makeMove(color) {
     chessPiece.move(movingElement, finalTile);
 }
 
+function getBestMoves() {
+    
+}
+
 /**
  * Gets how good a particular move would be using a score system
  * @param {object} currentPiece The data object {x, y, piece, color} of the piece that will make the move
