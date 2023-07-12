@@ -51,8 +51,15 @@ function startGame() {
     //player1 always starts first
     setPlayerTurn(1);
 
-    //clears all the announcements from the ui
+    //clears all the animations and announcements from the ui
+    pieceAnimation.clear();
     clearAnnouncements();
+
+    //stops any timeouts for the ai making its move
+    if (pieceMovement.moveWait !== null) {
+        clearTimeout(pieceMovement.moveWait);
+        pieceMovement.moveWait = null;
+    }
 
     //clears the board before creating new pieces
     tile.clearAll();
@@ -319,7 +326,7 @@ function allowTurn(color) {
         }
     } else {
         //the ai script running if it is the computer's turn
-        setTimeout(makeMove, 1000, color);
+        pieceMovement.moveWait = setTimeout(makeMove, 1000, color);
     }
 }
 
@@ -360,21 +367,7 @@ function clearAnnouncements() {
  * @returns {boolean} If the king is being threatened by an enemy piece
  */
 function isCheck(color) {
-    console.clear();
     let kingData = tile.findKing(color);
-
-    // let kingSurroundings = evaluateTile(kingData, kingData);
-    // let isThreatened = false;
-
-    // //if the king is at their end of the board, pawns will only count as a threat if there are
-    // //pieces in the graveyard to revive
-    // for (let threat of kingSurroundings.enemyThreat) {
-    //     if (!(threat.piece === 'pawn' && chessPiece.isAtBoardEnd(threat.color, kingData.y) && !chessPiece.canRevive(threat.color))) {
-    //         isThreatened = true;
-    //         break;
-    //     }
-    // }
-
     return pieceMovement.isKingThreatened(kingData, kingData);
 }
 

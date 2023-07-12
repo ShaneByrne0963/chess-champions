@@ -612,6 +612,9 @@ const pieceMovement = {
     king: [['normal', 1, 0], ['normal', 1, -1], ['normal', 0, -1], ['normal', -1, -1],
     ['normal', -1, 0], ['normal', -1, 1], ['normal', 0, 1], ['normal', 1, 1]],
 
+    //stores the timeout for the ai to make a move
+    moveWait: null,
+
     /**
      * Gets all the valid moves of a piece on the board
      * @param {object} pieceData The data object {x, y, piece, color} of the piece that will be evaluated
@@ -993,5 +996,21 @@ const pieceAnimation = {
         }
 
         chessPiece.changeTile(pieceElement, endTileElement);
+    },
+
+    /**
+     * Clears all active animations
+     */
+    clear: () => {
+        //continue deleting the animations until there are none left
+        while (pieceAnimation.activeAnimations.length > 0) {
+            let animate = pieceAnimation.activeAnimations[0];
+            //stopping the interval
+            clearInterval(animate.interval);
+            //removing the animation from activeAnimations
+            pieceAnimation.activeAnimations.shift();
+        }
+        //resetting the animation id
+        pieceAnimation.animationId = 0;
     }
 };

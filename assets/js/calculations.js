@@ -1,5 +1,7 @@
 function makeMove(color) {
-    console.clear();
+    //removing the timeout reference for making this move
+    pieceMovement.moveWait = null;
+
     //all tiles will be given an individual score based on a number of parameters. the tile with the highest score will be chosen
     let highestScore = 0;
     //highestScore will be set to the first checked tile. after that any tile will have to beat the score to be set
