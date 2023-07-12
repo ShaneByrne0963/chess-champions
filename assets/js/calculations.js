@@ -36,12 +36,6 @@ function makeMove(color) {
                 moveScore += 15;
             }
 
-            //if there is an enemy on the tile the piece can destroy, then the value of that piece will be added to the score
-            //the color of the piece doesn't have to be checked 
-            if (moveData.piece !== '') {
-                moveScore += chessPiece.value[moveData.piece];
-            }
-
             //finally, subtracting the current score from the new score
             moveScore -= currentScores[i];
 
@@ -82,6 +76,12 @@ function makeMove(color) {
     chessPiece.move(movingElement, finalTile);
 }
 
+/**
+ * Gets how good a particular move would be using a score system
+ * @param {object} currentPiece The data object {x, y, piece, color} of the piece that will make the move
+ * @param {object} moveTile The data object {x, y, piece, color} of the tile the piece will move to
+ * @returns {integer} The total score of the move
+ */
 function getTileScore(currentPiece, moveTile) {
     //each move will have a score
     let moveScore = 0;
@@ -92,9 +92,21 @@ function getTileScore(currentPiece, moveTile) {
     //adding the total number of moves the piece could make on this tile multiplied by 1% of it's value to the score
     moveScore += tileEval.availableSpaces * (chessPiece.value[currentPiece.piece] / 100);
 
+    //calculates the risk of the piece getting eliminated if it moves to this tile
+    let isThreatened = false;
+    if (tileEval.enemyThreat.length > 0) {
+        isThreatened = true;
+    }
+
     return moveScore;
 }
 
+/**
+ * Scans a tile's surroundings for targets, threats and allies
+ * @param {object} tileData  The data object {x, y, piece, color} of the piece that will make the move
+ * @param {object} evaluatingPiece  The data object {x, y, piece, color} of the tile the piece will move to
+ * @returns {object} {availableSpaces, enemyTarget, enemyThreat, allyGuarded}
+ */
 function evaluateTile(tileData, evaluatingPiece) {
     let tileEvaluation = {
         availableSpaces: 0,
@@ -270,6 +282,67 @@ function addPieceRelationship(tileEvaluation, moveResults) {
     return tileEvaluation;
 }
 
-function simulateBattle() {
+/**
+ * Simulates a battle on a tile, assuming all the pieces that can attack
+ * will attack. If the battle score is less than 0, this won't be a good move for the piece
+ * @param {object} pieceData The data object {x, y, piece, color} of the piece looking to move to the tile
+ * @param {object} tileEval The evaluation of the tile the piece will move to (got using evaluateTile)
+ * @returns {object} The score outcome of the battle, as well as the remaining pieces
+ */
+function simulateBattle(pieceData, tileEval) {
+    //if there is an ally (or allies) guarding this tile, then a "battle" will take place.
+    // 1 - the ally with the smallest value will move to this tile and destroy the enemy piece.
+    //      we will assume the enemy attacked with their lowest value piece so we will add the
+    //      smallest value to the battle score
+    // 2 - if there is another enemy that can attack this tile, the smallest value of allyGuarded
+    //      will be taken from the battle score
+    // 3 - this loop will continue until there is no more moves on this tile from either side
+    
+    //returning the final score of the battle, as well as what pieces will be left standing
+    let aftermath = {
+        battleScore: 0,
+        remainingAllies: tileEval.allyGuarded,
+        remainingEnemies: tileEval.enemyThreat
+    };
+    //if there are enemies that can attack this tile
+    if (tileEval.enemyThreat.length > 0) {
+        //finding the values of the current piece and the piece with the lowest value that is threatening it
+        //stops high value pieces moving to tiles where they can be attacked by low value pieces
+        let pieceValue = chessPiece.value[pieceData.piece];
+        let lowestEnemyVal = chessPiece.findLowestValue(tileEval.enemyThreat);
 
+        //removing the current pieces value from the score
+        //as the first move of the battle will be to eliminate the current piece
+        aftermath.battleScore = -pieceValue;
+
+        //if all the enemyThreat values are greater than or equal to the
+        //lowest value in enemyThreat, then simulate a battle
+        if (pieceValue <= lowestEnemyVal[0]) {
+            while (aftermath.remainingEnemies.length > 0 && aftermath.remainingAllies.length > 0) {
+                //finding the piece with the lowest value in each of the tiles
+                //and keeping their values (stored in the first element) and
+                //their positions in the array (stored in the second element)
+                lowestEnemy = chessPiece.findLowestValue(aftermath.remainingEnemies);
+                let lowestAlly = chessPiece.findLowestValue(aftermath.remainingAllies);
+
+                //the first move of each loop in the battle will be the ally
+                //adding the value of the enemy most likely to have attacked (the one with the lowest value) to the score
+                battleScore += lowestEnemy[0];
+                //then removing that enemy from the array
+                aftermath.remainingEnemies.splice(lowestEnemy[1], 1);
+
+                //if there are still enemies that can attack, they will make the next move
+                if (aftermath.remainingEnemies.length > 0) {
+                    //updating the lowest enemy value as the old one was removed from the array
+                    lowestEnemy = chessPiece.findLowestValue(aftermath.remainingEnemies);
+
+                    //removing the ally with the lowest value from the score and array
+                    battleScore -= lowestAlly[0];
+                    aftermath.remainingAllies.splice(lowestAlly[1], 1);
+                }
+            }
+        }
+    }
+
+    return aftermath;
 }
