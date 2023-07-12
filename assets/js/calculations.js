@@ -89,7 +89,10 @@ function getTileScore(currentPiece, moveTile) {
     //monitoring all the tiles around it for information
     let tileEval = evaluateTile(moveTile, currentPiece);
 
-    return tileEval;
+    //adding the total number of moves the piece could make on this tile multiplied by 1% of it's value to the score
+    moveScore += tileEval.availableSpaces * (chessPiece.value[currentPiece.piece] / 100);
+
+    return moveScore;
 }
 
 function evaluateTile(tileData, evaluatingPiece) {
@@ -265,4 +268,8 @@ function addPieceRelationship(tileEvaluation, moveResults) {
         tileEvaluation.enemyThreat.push(moveResults.enemyThreat);
     }
     return tileEvaluation;
+}
+
+function simulateBattle() {
+
 }
