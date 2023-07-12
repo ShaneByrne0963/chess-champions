@@ -360,21 +360,22 @@ function clearAnnouncements() {
  * @returns {boolean} If the king is being threatened by an enemy piece
  */
 function isCheck(color) {
+    console.clear();
     let kingData = tile.findKing(color);
 
-    let kingSurroundings = evaluateTile(kingData, kingData);
-    let isThreatened = false;
+    // let kingSurroundings = evaluateTile(kingData, kingData);
+    // let isThreatened = false;
 
-    //if the king is at their end of the board, pawns will only count as a threat if there are
-    //pieces in the graveyard to revive
-    for (let threat of kingSurroundings.enemyThreat) {
-        if (!(threat.piece === 'pawn' && chessPiece.isAtBoardEnd(threat.color, kingData.y) && !chessPiece.canRevive(threat.color))) {
-            isThreatened = true;
-            break;
-        }
-    }
+    // //if the king is at their end of the board, pawns will only count as a threat if there are
+    // //pieces in the graveyard to revive
+    // for (let threat of kingSurroundings.enemyThreat) {
+    //     if (!(threat.piece === 'pawn' && chessPiece.isAtBoardEnd(threat.color, kingData.y) && !chessPiece.canRevive(threat.color))) {
+    //         isThreatened = true;
+    //         break;
+    //     }
+    // }
 
-    return isThreatened;
+    return pieceMovement.isKingThreatened(kingData, kingData);
 }
 
 /**

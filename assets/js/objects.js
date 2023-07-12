@@ -614,7 +614,7 @@ const pieceMovement = {
 
     /**
      * Gets all the valid moves of a piece on the board
-     * @param {object} pieceData The piece that will be evaluated
+     * @param {object} pieceData The data object {x, y, piece, color} of the piece that will be evaluated
      * @returns {array} All the tile elements the piece can move to
      */
     getAllMoveTiles: (pieceData) => {
@@ -695,10 +695,6 @@ const pieceMovement = {
         return moveTiles;
     },
 
-    getTileScore: (tileData, pieceMovingData) => {
-
-    },
-
     getYMovement: (xStart, yStart, pieceData, move) => {
         let y;
         //getting the y axis of the move
@@ -774,12 +770,11 @@ const pieceMovement = {
 
     /**
      * Returns if the move will result in a check
-     * @param {object} tileData The data object of the tile the piece is moving to
-     * @param {object} pieceMovingData The data object of the piece that will move to the tile
+     * @param {object} tileData The data object {x, y, piece, color} of the tile the piece is moving to
+     * @param {object} pieceMovingData The data object {x, y, piece, color} of the piece that will move to the tile
      * @returns {boolean} If the king is left in a vulnerable position after the move
      */
     isKingThreatened: (tileData, pieceMovingData) => {
-        return false;
         //the king's y position at the end of the move
         let kingY;
 
@@ -791,11 +786,15 @@ const pieceMovement = {
             let kingData = tile.findKing(pieceMovingData.color);
             //if the piece that is looking to move is not the king, that means the king's position won't change
             kingY = kingData.y;
-            tileEval = evaluateTileWithMove(kingData, kingData, pieceMovingData, tileData);
+
+            //getting the elements of the piece that will move and the tile it will move to
+            let tileElement = tile.getElement(tileData.x, tileData.y);
+            let pieceElement = chessPiece.findElement(pieceMovingData.x, pieceMovingData.y);
+            tileEval = evaluateTileWithMove(kingData, kingData, pieceElement, tileElement);
         } else {
             //if the piece that is looking to move is the king, that means the king's position will change to currentTile's position
-            kingY = currentTile.y;
-            tileEval = evaluateTile(currentTile, tileData);
+            kingY = tileData.y;
+            tileEval = evaluateTile(tileData, pieceMovingData);
         }
         //not a valid move if the king is under threat
         for (let threat of tileEval.enemyThreat) {

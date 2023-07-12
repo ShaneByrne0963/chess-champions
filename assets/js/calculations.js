@@ -142,30 +142,31 @@ function evaluateTile(tileData, evaluatingPiece) {
  * Scans a tile's surroundings for targets, threats and allies, taking a simulated move into consideration
  * @param {object} tileData  The data object {x, y, piece, color} of the piece that will make the move
  * @param {object} evaluatingPiece  The data object {x, y, piece, color} of the tile the piece will move to
- * @param {object} pieceFrom The piece that will simulate movement
- * @param {object} tileTo The tile the piece will simulate to
+ * @param {object} pieceFromElement The piece element that will simulate movement
+ * @param {object} tileToElement The element of the tile the piece will simulate to
  * @returns {object} {availableSpaces, enemyTarget, enemyThreat, allyGuarded}
  */
-function evaluateTileWithMove(tileData, evaluatingPiece, pieceFrom, tileTo) {
+function evaluateTileWithMove(tileData, evaluatingPiece, pieceFromElement, tileToElement) {
     //storing pieceFrom's parent element so it can be returned after the evaluation
-    let tileFrom = pieceFrom.parentNode;
+    let tileFrom = pieceFromElement.parentNode;
 
     //if there is already a piece on the tile, it will be moved outside of the board to simulate it being eliminated
-    let pieceTo = tile.getPieceElement(tileTo);
+    let pieceTo = tile.getPieceElement(tileToElement);
     if (pieceTo !== null) {
-        pieceTo.parentNode = document.getElementById("game");
+        document.getElementById("game").appendChild(pieceTo);
     }
 
-    //temporarily set pieceFrom's parent element to tileTo
-    pieceFrom.parentNode = tileTo;
+    //temporarily set pieceFrom's parent element to tileToElement
+    tileToElement.appendChild(pieceFromElement);
 
     //evaluating the tile now that the simulated move is set up
     let tileEvaluation = evaluateTile(tileData, evaluatingPiece);
 
     //returning the moved pieces back to their original tiles
-    pieceFrom.parentNode = tileFrom;
-    pieceTo.parentNode = tileTo;
-
+    tileFrom.appendChild(pieceFromElement);
+    if (pieceTo !== null) {
+        tileToElement.appendChild(pieceTo);
+    }
     return tileEvaluation;
 }
 
