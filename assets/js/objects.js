@@ -1,5 +1,10 @@
 //object that stores tile functions
 const tile = {
+    /**
+     * Gets the element of a piece located on a specified tile
+     * @param {object} tileElement The element of the tile you wish to check
+     * @returns The element of the piece on the tile, or null if there is none
+     */
     getPieceElement: (tileElement) => {
         //assuming the tile doesn't have a piece until it finds one
         let tilePiece = null;
@@ -19,6 +24,7 @@ const tile = {
         }
         return tilePiece;
     },
+
     /**
      * Gets an HTML element of a tile in a specified location
      * @param {*} x The x position of the tile on the board
@@ -29,10 +35,20 @@ const tile = {
         return document.getElementById(`tile-${x}-${y}`);
     },
 
+    /**
+     * Gets the x coordinate of a tile element
+     * @param {object} tileElement The element of the tile
+     * @returns {integer} The x coordinate of the tile on the board
+     */
     getX: (tileElement) => {
         return parseInt(tileElement.id[5]); //"tile-x-y": "x" is the 5th character of the id string
     },
 
+    /**
+     * Gets the y coordinate of a tile element
+     * @param {object} tileElement The element of the tile
+     * @returns {integer} The y coordinate of the tile on the board
+     */
     getY: (tileElement) => {
         return parseInt(tileElement.id[7]); //"tile-x-y": "y" is the 7th character of the id string
     },
@@ -40,7 +56,7 @@ const tile = {
     /**
      * Finds the tile data of the king with the specified color
      * @param {string} color The color of the king
-     * @returns {object} The tile data of the king
+     * @returns {object} The tile data object {x, y, piece, color} of the king
      */
     findKing: (color) => {
         let kings = document.getElementsByClassName('king');
@@ -69,21 +85,26 @@ const tile = {
 
     /**
      * Checks if a coordinate is within the board boundaries
-     * @param {*} x The x position of the tile
-     * @param {*} y The y position of the tile
+     * @param {integer} x The x position of the tile
+     * @param {integer} y The y position of the tile
      * @returns A boolean that is true if the tile to be checked is within the chess board
      */
     inBounds: (x, y) => {
         return (x >= 0 && x < boardSize && y >= 0 && y < boardSize);
     },
 
+    /**
+     * Selects a tile a human player clicks on, highlighting the tile and showing the
+     * possible moves the piece on it can take
+     * @param {object} tileElement The tile that has been clicked on
+     */
     select: (tileElement) => {
         //getting the tile data
         let pieceElement = tile.getPieceElement(tileElement);
         let pieceData = chessPiece.getData(tileElement);
 
         if (localStorage.getItem(pieceData.color) === 'player') {
-            //creates another div as a child of the selected tile
+            //creates another div to be set as a child of the selected piece
             let selectDiv = document.createElement('div');
             selectDiv.id = 'tile-selected';
             pieceElement.appendChild(selectDiv);
@@ -96,14 +117,14 @@ const tile = {
                 let moveOption = document.createElement('div');
                 moveOption.className = "possible-move";
                 let movePiece = tile.getPieceElement(move);
-                //if there is an enemy piece on the tile to move to, add the possible move to that piece
+                //if there is an enemy piece on the tile to move to, add the possible move to the piece instead of the tile
                 if (movePiece !== null) {
                     movePiece.appendChild(moveOption);
                 } else {
                     move.appendChild(moveOption);
                 }
 
-                //adding the 'clickable' class to the tile
+                //adding the 'clickable' class to the possible move tile
                 tile.addInteraction(move);
             }
         }
@@ -113,6 +134,7 @@ const tile = {
      * Removes the selected div from the tile that is selected and any tiles showing possible moves
      */
     deselectAll: () => {
+        //removing the selected tile highlight
         let selectExisting = document.getElementById('tile-selected');
         if (selectExisting) {
             selectExisting.remove();
@@ -125,7 +147,7 @@ const tile = {
             let moveParent = movesExisting[0].parentNode;
             tile.removeInteraction(moveParent);
 
-            //removing the possible move div
+            //then remove the possible move div itself
             movesExisting[0].remove();
         }
     },
@@ -152,6 +174,7 @@ const tile = {
      * Removes interaction from all tiles
      */
     removeAllInteraction: () => {
+        //getting all the clickable objects
         let clickablePieces = document.getElementsByClassName('clickable');
 
         let i = 0;
