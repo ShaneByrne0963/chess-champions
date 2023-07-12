@@ -54,6 +54,33 @@ const tile = {
     },
 
     /**
+     * Gets a data object {x, y, piece, color} at a certain tile
+     * @param {object} tileElement The element of the tile you wish to get the data from
+     * @returns {object} {x, y, piece, color}
+     */
+    getData: (tileElement) => {
+        //get the coordinates of the tile
+        let x = tile.getX(tileElement);
+        let y = tile.getY(tileElement);
+        let piece = '';
+        let color = '';
+
+        let pieceElement = tile.getPieceElement(tileElement);
+
+        //updates the piece and color of the object if there is a piece
+        //if not, the values of color and piece will be ''
+        piece = chessPiece.getType(pieceElement);
+        color = chessPiece.getColor(pieceElement);
+
+        return {
+            x: x,
+            y: y,
+            piece: piece,
+            color: color
+        };
+    },
+
+    /**
      * Finds the tile data of the king with the specified color
      * @param {string} color The color of the king
      * @returns {object} The tile data object {x, y, piece, color} of the king
@@ -62,7 +89,7 @@ const tile = {
         let kings = document.getElementsByClassName('king');
         let kingData;
         for (let king of kings) {
-            kingData = chessPiece.getData(king.parentNode);
+            kingData = tile.getData(king.parentNode);
             if (kingData.color === color) {
                 break;
             }
@@ -101,7 +128,7 @@ const tile = {
     select: (tileElement) => {
         //getting the tile data
         let pieceElement = tile.getPieceElement(tileElement);
-        let pieceData = chessPiece.getData(tileElement);
+        let pieceData = tile.getData(tileElement);
 
         if (localStorage.getItem(pieceData.color) === 'player') {
             //creates another div to be set as a child of the selected piece
@@ -225,28 +252,6 @@ const chessPiece = {
         tileElement.appendChild(newPiece);
     },
 
-    getData: (tileElement) => {
-        //get the coordinates of the tile
-        let x = tile.getX(tileElement);
-        let y = tile.getY(tileElement);
-        let piece = '';
-        let color = '';
-
-        let pieceElement = tile.getPieceElement(tileElement);
-
-        //updates the piece and color of the object if there is a piece
-        //if not, the values of color and piece will be ''
-        piece = chessPiece.getType(pieceElement);
-        color = chessPiece.getColor(pieceElement);
-
-        return {
-            x: x,
-            y: y,
-            piece: piece,
-            color: color
-        };
-    },
-
     /**
      * Gets a chess piece element on a certain tile
      * @param {integer} x The x position of the tile on the board
@@ -273,7 +278,7 @@ const chessPiece = {
      */
     findData: (x, y) => {
         let tileElement = tile.getElement(x, y);
-        let pieceData = chessPiece.getData(tileElement);
+        let pieceData = tile.getData(tileElement);
 
         return pieceData;
     },
@@ -351,7 +356,7 @@ const chessPiece = {
         //and replacing it with the new one
         pieceElement.classList.add(newPiece);
         //getting the color of the piece from it's parent tile
-        let pieceData = chessPiece.getData(pieceElement.parentNode);
+        let pieceData = tile.getData(pieceElement.parentNode);
         //updating the piece image
         chessPiece.setImage(pieceElement, newPiece, pieceData.color);
     },
@@ -376,7 +381,7 @@ const chessPiece = {
         tile.removeAllInteraction();
 
         //getting the information about the piece
-        let pieceData = chessPiece.getData(pieceElement.parentNode);
+        let pieceData = tile.getData(pieceElement.parentNode);
 
         //if the piece is "pawnNew", then it will be converted to 'pawn' after its first move
         if (pieceData.piece === 'pawnNew') {
@@ -407,7 +412,7 @@ const chessPiece = {
         pieceElement.style.removeProperty('top');
 
         //reviving pieces if the pawn reaches the other side of the board
-        let pieceData = chessPiece.getData(pieceElement.parentNode);
+        let pieceData = tile.getData(pieceElement.parentNode);
         let newYPosition = tile.getY(newTileElement);
         let isRevive = false;
         if (pieceData.piece === 'pawn') {
@@ -432,7 +437,7 @@ const chessPiece = {
      */
     destroy: (pieceElement) => {
         //adding the destroyed piece to the appropriate graveyard
-        let pieceData = chessPiece.getData(pieceElement.parentNode);
+        let pieceData = tile.getData(pieceElement.parentNode);
         let graveyardDiv = (pieceData.color === 'black') ? document.getElementById('player1-graveyard') : document.getElementById('player2-graveyard');
         graveyard.add(graveyardDiv, pieceData.piece);
 
@@ -490,7 +495,7 @@ const chessPiece = {
         let pieces = [];
 
         for (let element of pieceElements) {
-            pieces.push(chessPiece.getData(element.parentNode));
+            pieces.push(tile.getData(element.parentNode));
         }
 
         return pieces;
@@ -501,7 +506,7 @@ const chessPiece = {
         pawnElement.id = 'promoting';
 
         //getting the information about the pawn
-        let pawnData = chessPiece.getData(pawnElement.parentNode);
+        let pawnData = tile.getData(pawnElement.parentNode);
 
         //getting the appropriate graveyard for the player
         let graves = getGraveyardElements(pawnData.color);

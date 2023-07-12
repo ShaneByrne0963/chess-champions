@@ -29,7 +29,7 @@ function makeMove(color) {
 
         //looping through the moves
         for (let move of tileMoves) {
-            let moveData = chessPiece.getData(move);
+            let moveData = tile.getData(move);
             //calculates the score of the tile based on several parameters
             let moveScore = getTileScore(currentPiece, moveData);
 
