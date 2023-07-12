@@ -122,8 +122,6 @@ function startGame() {
     allowTurn('white');
 }
 
-
-
 /**
  * Sets the player names to what is stored in local storage
  */
@@ -132,9 +130,29 @@ function setPlayerNames() {
     let player1Heading = document.getElementById('player1-ui').children[0];
     let player2Heading = document.getElementById('player2-ui').children[0];
 
-    //setting the inner text to the names stored in local storage
-    player1Heading.innerHTML = localStorage.getItem('p1-name');
-    player2Heading.innerHTML = localStorage.getItem('p2-name');
+    //setting the inner text to the names stored in local storage, or as 'Chess Bot' if the player is the computer
+    let player1Type = localStorage.getItem('white');
+    let player2Type = localStorage.getItem('black');
+    //setting player 1's name
+    if (player1Type === 'player') {
+        player1Heading.innerHTML = localStorage.getItem('p1-name');
+    } else {
+        if (player2Type === 'computer') {
+            player1Heading.innerHTML = 'Chess Bot 1';
+        } else {
+            player1Heading.innerHTML = 'Chess Bot';
+        }
+    }
+    //setting player 2's name
+    if (player2Type === 'player') {
+        player2Heading.innerHTML = localStorage.getItem('p2-name');
+    } else {
+        if (player1Type === 'computer') {
+            player2Heading.innerHTML = 'Chess Bot 2';
+        } else {
+            player2Heading.innerHTML = 'Chess Bot';
+        }
+    }
 
     //adding the font awesome chess icon to indicate the color of the player
     player1Heading.innerHTML += `

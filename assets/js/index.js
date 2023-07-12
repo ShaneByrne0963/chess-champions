@@ -94,16 +94,11 @@ function updatePlayerVariables(playerType) {
             //updating the types of player that will be playing the game
             localStorage.setItem('white', 'player');
             localStorage.setItem('black', 'computer');
-            //updating the name of the computer player
-            localStorage.setItem('p2-name', 'Chess Bot');
             break;
         case 'eve':
             //updating the types of player that will be playing the game
             localStorage.setItem('white', 'computer');
             localStorage.setItem('black', 'computer');
-            //updating the name of both computer players
-            localStorage.setItem('p1-name', 'Chess Bot 1');
-            localStorage.setItem('p2-name', 'Chess Bot 2');
             break;
     }
 }
