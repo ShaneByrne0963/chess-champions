@@ -419,7 +419,7 @@ const chessPiece = {
             //checking if the pawn is at the end of the board to initite to initiate the piece revive sequence
             if (chessPiece.isAtBoardEnd(pieceData.color, newYPosition)) {
                 isRevive = true;
-                chessPiece.revive(pieceElement);
+                graveyard.revive(pieceElement);
             }
         }
         //if a pawn has moved to the other side of the board,
@@ -499,121 +499,6 @@ const chessPiece = {
         }
 
         return pieces;
-    },
-
-    revive: (pawnElement) => {
-        //adding the revive id to the pawn to replace it once a new piece has been picked
-        pawnElement.id = 'promoting';
-
-        //getting the information about the pawn
-        let pawnData = tile.getData(pawnElement.parentNode);
-
-        //getting the appropriate graveyard for the player
-        let graves = getGraveyardElements(pawnData.color);
-
-        //if the pawn that moved to the other side belongs to a player, then initiate the ui for reviving a piece
-        if (localStorage.getItem(pawnData.color) === 'player') {
-            for (let grave of graves) {
-                //the player can only revive pieces that are not pawns
-                let graveClass = grave.className;
-                if (!graveClass.includes('dead-pawn')) {
-                    //adding the function to bring the selected piece back when the player clicks on the graveyard element
-                    grave.addEventListener('click', revivePlayer);
-
-                    //adding the clickable class to the graveyard pieces to change the mouse cursor when you hover over it
-                    grave.classList.add('clickable');
-                }
-            }
-        } else {
-            //finding the piece with the highest value
-            let highestValue = 0;
-            //getting a list of pieces with the highest value and picking one at random
-            let highestPieces = [];
-            for (let grave of graves) {
-                //getting the name of the current piece in the graveyard
-                let gravePiece = chessPiece.getDeadPiece(grave);
-
-                if (gravePiece !== 'pawn' && chessPiece.value[gravePiece] >= highestValue) {
-                    if (chessPiece.value[gravePiece] > highestValue) {
-                        //resetting the pieces to select from if there is a piece with a higher value
-                        highestPieces = [];
-                        highestValue = chessPiece.value[gravePiece];
-                    }
-                    highestPieces.push(grave);
-                    //stopping the loop if the piece is a queen because it has the best value
-                    if (gravePiece === 'queen') {
-                        break;
-                    }
-                }
-            }
-
-            let finalDecision = Math.floor(Math.random() * highestPieces.length);
-            chessPiece.replaceWithDead(highestPieces[finalDecision]);
-
-            //continuing on with the game after a decision has been made
-            nextTurn();
-        }
-    },
-
-    /**
-     * Checks if there is a piece in the graveyard that the player can revive
-     * @param {string} color The color of the player that is running the function
-     * @returns {boolean} If there are pieces in the graveyard the player can revive
-     */
-    canRevive: (color) => {
-        let hasDeadPieces = false;
-        let graves = getGraveyardElements(color);
-
-        for (let grave of graves) {
-            let gravePiece = chessPiece.getDeadPiece(grave);
-            //pawns don't count as they cannot be revived
-            if (gravePiece !== 'pawn') {
-                hasDeadPieces = true;
-                break;
-            }
-        }
-        return hasDeadPieces;
-    },
-
-    /**
-     * Gets the piece name of an element in the graveyard
-     * @param {object} deadPiece The element of the dead piece
-     * @returns {string} The piece name in string form
-     */
-    getDeadPiece: (deadPiece) => {
-        let classes = deadPiece.classList;
-        let typeClass = '';
-        for (let myClass of classes) {
-            //pieces in the graveyard have a class of 'dead-' followed by their piece name
-            if (myClass.includes('dead-')) {
-                typeClass = myClass;
-                break;
-            }
-        }
-        //removes the 'dead-' part of the class to get the piece name
-        typeClass = typeClass.replace('dead-', '');
-        return typeClass;
-    },
-
-    /**
-     * Replaces the pawn that has reached the other side of the board with a piece from the graveyard
-     * @param {object} deadPiece The element of the dead piece you wish to replace the pawn with
-     */
-    replaceWithDead: (deadPiece) => {
-        //finds the piece name of the clicked on element
-        let pieceName = chessPiece.getDeadPiece(deadPiece);
-
-        //getting the pawn which reached the end of the board
-        let pawnElement = document.getElementById('promoting');
-
-        //replacing it's piece type with the selected dead piece
-        chessPiece.setPieceType(pawnElement, pieceName);
-
-        //removing the 'promoting' id from the piece
-        pawnElement.removeAttribute('id');
-
-        //removing the grave piece from the graveyard
-        deadPiece.remove();
     },
 };
 
@@ -837,7 +722,7 @@ const pieceMovement = {
         for (let threat of tileEval.enemyThreat) {
             //pawns cannot reach the end of the board without a graveyard piece to revive,
             //so if the king is at the end of the board with these conditions it is safe from pawns
-            if (!(threat.piece === 'pawn' && chessPiece.isAtBoardEnd(threat.color, kingY) && !chessPiece.canRevive(threat.color))) {
+            if (!(threat.piece === 'pawn' && chessPiece.isAtBoardEnd(threat.color, kingY) && !graveyard.canRevive(threat.color))) {
                 return true;
             }
         }
@@ -853,7 +738,7 @@ const pieceMovement = {
     canPawnMove: (tileData, pieceMovingData) => {
         //not a valid move if it is a pawn moving to the end of the board with no pieces to revive
         if (pieceMovingData.piece === 'pawn') {
-            if (chessPiece.isAtBoardEnd(pieceMovingData.color, tileData.y) && !chessPiece.canRevive(pieceMovingData.color)) {
+            if (chessPiece.isAtBoardEnd(pieceMovingData.color, tileData.y) && !graveyard.canRevive(pieceMovingData.color)) {
                 return false;
             }
         }
@@ -881,6 +766,121 @@ const graveyard = {
         deadPiece.style.backgroundImage = `url(assets/images/chess-pieces/${color}-${pieceImage}.png)`;
 
         graveyardElement.appendChild(deadPiece);
+    },
+
+    revive: (pawnElement) => {
+        //adding the revive id to the pawn to replace it once a new piece has been picked
+        pawnElement.id = 'promoting';
+
+        //getting the information about the pawn
+        let pawnData = tile.getData(pawnElement.parentNode);
+
+        //getting the appropriate graveyard for the player
+        let graves = getGraveyardElements(pawnData.color);
+
+        //if the pawn that moved to the other side belongs to a player, then initiate the ui for reviving a piece
+        if (localStorage.getItem(pawnData.color) === 'player') {
+            for (let grave of graves) {
+                //the player can only revive pieces that are not pawns
+                let graveClass = grave.className;
+                if (!graveClass.includes('dead-pawn')) {
+                    //adding the function to bring the selected piece back when the player clicks on the graveyard element
+                    grave.addEventListener('click', revivePlayer);
+
+                    //adding the clickable class to the graveyard pieces to change the mouse cursor when you hover over it
+                    grave.classList.add('clickable');
+                }
+            }
+        } else {
+            //finding the piece with the highest value
+            let highestValue = 0;
+            //getting a list of pieces with the highest value and picking one at random
+            let highestPieces = [];
+            for (let grave of graves) {
+                //getting the name of the current piece in the graveyard
+                let gravePiece = graveyard.getDeadPiece(grave);
+
+                if (gravePiece !== 'pawn' && chessPiece.value[gravePiece] >= highestValue) {
+                    if (chessPiece.value[gravePiece] > highestValue) {
+                        //resetting the pieces to select from if there is a piece with a higher value
+                        highestPieces = [];
+                        highestValue = chessPiece.value[gravePiece];
+                    }
+                    highestPieces.push(grave);
+                    //stopping the loop if the piece is a queen because it has the best value
+                    if (gravePiece === 'queen') {
+                        break;
+                    }
+                }
+            }
+
+            let finalDecision = Math.floor(Math.random() * highestPieces.length);
+            graveyard.replaceWithDead(highestPieces[finalDecision]);
+
+            //continuing on with the game after a decision has been made
+            nextTurn();
+        }
+    },
+
+    /**
+     * Checks if there is a piece in the graveyard that the player can revive
+     * @param {string} color The color of the player that is running the function
+     * @returns {boolean} If there are pieces in the graveyard the player can revive
+     */
+    canRevive: (color) => {
+        let hasDeadPieces = false;
+        let graves = getGraveyardElements(color);
+
+        for (let grave of graves) {
+            let gravePiece = graveyard.getDeadPiece(grave);
+            //pawns don't count as they cannot be revived
+            if (gravePiece !== 'pawn') {
+                hasDeadPieces = true;
+                break;
+            }
+        }
+        return hasDeadPieces;
+    },
+
+    /**
+     * Gets the piece name of an element in the graveyard
+     * @param {object} deadPiece The element of the dead piece
+     * @returns {string} The piece name in string form
+     */
+    getDeadPiece: (deadPiece) => {
+        let classes = deadPiece.classList;
+        let typeClass = '';
+        for (let myClass of classes) {
+            //pieces in the graveyard have a class of 'dead-' followed by their piece name
+            if (myClass.includes('dead-')) {
+                typeClass = myClass;
+                break;
+            }
+        }
+        //removes the 'dead-' part of the class to get the piece name
+        typeClass = typeClass.replace('dead-', '');
+        return typeClass;
+    },
+
+    /**
+     * Replaces the pawn that has reached the other side of the board with a piece from the graveyard
+     * @param {object} deadPiece The element of the dead piece you wish to replace the pawn with
+     */
+    replaceWithDead: (deadPiece) => {
+        //finds the piece name of the clicked on element
+        let pieceName = graveyard.getDeadPiece(deadPiece);
+
+        //getting the pawn which reached the end of the board
+        let pawnElement = document.getElementById('promoting');
+
+        //replacing it's piece type with the selected dead piece
+        chessPiece.setPieceType(pawnElement, pieceName);
+
+        //removing the 'promoting' id from the piece
+        pawnElement.removeAttribute('id');
+
+        //removing the grave piece from the graveyard
+        deadPiece.remove();
     }
 };
 

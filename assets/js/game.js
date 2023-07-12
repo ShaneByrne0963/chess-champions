@@ -434,7 +434,7 @@ function isCheckmate(color) {
  */
 function revivePlayer() {
     //replaces the pawn with the piece that was clicked on
-    chessPiece.replaceWithDead(this);
+    graveyard.replaceWithDead(this);
 
     //removing the clickable class and event listeners from the graveyard pieces once a piece has been picked
     let reviveButtons = document.getElementsByClassName('piece-dead');
