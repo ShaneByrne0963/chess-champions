@@ -32,15 +32,9 @@ function makeMove(color) {
             let moveData = tile.getData(move);
             //calculates the score of the tile based on several parameters
             let moveScore = getTileScore(currentPiece, moveData);
+            //adding the extra parameters to the total score
+            moveScore += getMoveOnlyScore(currentPiece, moveData);
 
-            //if there is a piece already on the tile, then add that piece's value to the score
-            if (moveData.piece !== '') {
-                moveScore += chessPiece.value[moveData.piece];
-            }
-            //add 15 points for pawns to encourage movement
-            if (currentPiece.piece === 'pawn' || currentPiece.piece === 'pawnNew') {
-                moveScore += 15;
-            }
             //finally, subtracting the current score from the new score
             moveScore -= currentScores[i];
 
@@ -81,37 +75,51 @@ function makeMove(color) {
     chessPiece.move(movingElement, finalTile);
 }
 
-function getBestMoves() {
-    
-}
-
 /**
  * Gets how good a particular move would be using a score system
  * @param {object} currentPiece The data object {x, y, piece, color} of the piece that will make the move
  * @param {object} moveTile The data object {x, y, piece, color} of the tile the piece will move to
  * @returns {integer} The total score of the move
  */
-function getTileScore(currentPiece, moveTile) {
+function getTileScore(pieceData, moveTileData) {
     //each move will have a score
     let moveScore = 0;
     //monitoring all the tiles around it for information
-    let tileEval = evaluateTile(moveTile, currentPiece);
+    let tileEval = evaluateTile(moveTileData, pieceData);
     //adding the total number of moves the piece could make on this tile multiplied by 1% of it's value to the score
-    moveScore += tileEval.availableSpaces * (chessPiece.value[currentPiece.piece] / 100);
+    moveScore += tileEval.availableSpaces * (chessPiece.value[pieceData.piece] / 100);
 
     //calculates the risk of the piece getting eliminated if it moves to this tile
-    let tileBattle = simulateBattle(currentPiece, tileEval);
+    let tileBattle = simulateBattle(pieceData, tileEval);
     //if the outcome of the battle is negative for the current piece
     if (tileBattle.battleScore < 0) {
         //remove the piece's value from the score
-        moveScore -= chessPiece.value[currentPiece.piece];
+        moveScore -= chessPiece.value[pieceData.piece];
     } else {
         //add 10% of the values of every target on this tile if the risk at this tile is low
         for (let target of tileEval.enemyTarget) {
             moveScore += chessPiece.value[target.piece] / 10;
         }
     }
+    return moveScore;
+}
 
+/**
+ * Adds or subtracts to the total tile score using parameters only related to a piece moving
+ * @param {object} pieceData The data object {x, y, piece, value} of the piece that will move
+ * @param {object} moveTileData The data object {x, y, piece, value} of the tile the piece will move to
+ * @returns {integer} The extra score of the tile
+ */
+function getMoveOnlyScore(pieceData, moveTileData) {
+    let moveScore = 0;
+    //if there is a piece already on the tile, then add that piece's value to the score
+    if (moveTileData.piece !== '') {
+        moveScore += chessPiece.value[moveTileData.piece];
+    }
+    //add 15 points for pawns to encourage movement
+    if (pieceData.piece === 'pawn' || pieceData.piece === 'pawnNew') {
+        moveScore += 15;
+    }
     return moveScore;
 }
 
@@ -366,6 +374,5 @@ function simulateBattle(pieceData, tileEval) {
             }
         }
     }
-
     return aftermath;
 }
