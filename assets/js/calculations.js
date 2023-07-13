@@ -135,8 +135,8 @@ function getMoveOnlyScore(pieceData, moveTileData) {
 
 /**
  * Scans a tile's surroundings for targets, threats and allies
- * @param {object} tileData  The data object {x, y, piece, color} of the piece that will make the move
- * @param {object} evaluatingPiece  The data object {x, y, piece, color} of the tile the piece will move to
+ * @param {object} tileData  The data object {x, y, piece, color} of the tile the piece will move to
+ * @param {object} evaluatingPiece  The data object {x, y, piece, color} of the piece that will make the move
  * @returns {object} {availableSpaces, enemyTarget, enemyThreat, allyGuarded}
  */
 function evaluateTile(tileData, evaluatingPiece) {
@@ -194,6 +194,13 @@ function evaluateTileWithMove(tileData, evaluatingPiece, pieceFromElement, tileT
     return tileEvaluation;
 }
 
+/**
+ * Scans a single vector for targets, threats, and allies
+ * @param {object} tileData  The data object {x, y, piece, color} of the piece that will make the move
+ * @param {object} evaluatingPiece  The data object {x, y, piece, color} of the tile the piece will move to
+ * @param {object} move The specific vector the scan will move along (see pieceMovement.queen for all vectors)
+ * @returns {object} {availableSpaces, enemyTarget, enemyThreat, allyGuarded}
+ */
 function evaluateTileVector(tileData, evaluatingPiece, move) {
     //the coordinates the loop will be manipulating
     let x = tileData.x;
@@ -242,6 +249,13 @@ function evaluateTileVector(tileData, evaluatingPiece, move) {
     return tileEval;
 }
 
+/**
+ * Scans a single point for targets, threats, and allies
+ * @param {object} tileData  The data object {x, y, piece, color} of the piece that will make the move
+ * @param {object} evaluatingPiece  The data object {x, y, piece, color} of the tile the piece will move to
+ * @param {object} move The specific point that will be checked (see pieceMovement.knight for the points in question)
+ * @returns {object} {availableSpaces, enemyTarget, enemyThreat, allyGuarded}
+ */
 function evaluateTilePoint(tileData, evaluatingPiece, move) {
     let x = tileData.x + move[1];
     let y = tileData.y + move[2];
@@ -275,7 +289,16 @@ function evaluateTilePoint(tileData, evaluatingPiece, move) {
     return tileEval;
 }
 
-function getPieceRelationship(evaluatingPiece, foundPiece, move, isFirstMove) {
+/**
+ * Determines whether the piece at an evaluated tile is a target, threat or
+ * ally in relation to the piece doing the evaluation
+ * @param {object} evaluatingPiece The data object {x, y, piece, color} of the piece that is doing the evaluation
+ * @param {object} foundPiece The data object {x, y, piece, color} of the piece that is being evaluated
+ * @param {object} move The move that was taken to reach the found piece (see pieceMovement object for moves)
+ * @param {boolean} isBeside If the found piece is only one tile away from the evaluating piece
+ * @returns {object} {availableSpaces, enemyTarget, enemyThreat, allyGuarded}
+ */
+function getPieceRelationship(evaluatingPiece, foundPiece, move, isBeside) {
     //storing the relationships between the piece that is
     //doing the checking and any piece it hits
     let tileEval = {
@@ -293,30 +316,40 @@ function getPieceRelationship(evaluatingPiece, foundPiece, move, isFirstMove) {
 
     if (foundPiece.color === evaluatingPiece.color) { //if the evaluation runs into a friendly piece
         //if the friendly piece can attack the tile if an enemy moves to it
-        if (pieceMovement.canAttack(foundPiece, moveReverse, isFirstMove)) {
+        if (pieceMovement.canAttack(foundPiece, moveReverse, isBeside)) {
             tileEval.allyGuarded = foundPiece;
         }
     } else if (foundPiece.color === enemyColor) { //if the evaluation runs into an enemy piece
         //if the enemy piece can be attacked by the piece at this tile
-        if (pieceMovement.canAttack(evaluatingPiece, move, isFirstMove)) {
+        if (pieceMovement.canAttack(evaluatingPiece, move, isBeside)) {
             tileEval.enemyTarget = foundPiece;
         }
         //if the enemy piece can attack the piece at this tile
-        if (pieceMovement.canAttack(foundPiece, moveReverse, isFirstMove)) {
+        if (pieceMovement.canAttack(foundPiece, moveReverse, isBeside)) {
             tileEval.enemyThreat = foundPiece;
         }
     }
     return tileEval;
 }
 
+/**
+ * Adds the result of a single move evaluation to the total evaluation list
+ * @param {object} tileEvaluation The array that will store the information of the entire tile evaluation
+ * @param {object} moveResults The results from a single move that will be added to the evaluation
+ * @returns {object} The tileEvaluation array combined with the move result
+ */
 function addPieceRelationship(tileEvaluation, moveResults) {
+    //adding the available spaces to the total evaluation
     tileEvaluation.availableSpaces += moveResults.availableSpaces;
+    //adding the allyGuarded results to the total evaluation
     if (moveResults.allyGuarded !== null) {
         tileEvaluation.allyGuarded.push(moveResults.allyGuarded);
     }
+    //adding the enemyTarget results to the total evaluation
     if (moveResults.enemyTarget !== null) {
         tileEvaluation.enemyTarget.push(moveResults.enemyTarget);
     }
+    //adding the enemyThreat results to the total evaluation
     if (moveResults.enemyThreat !== null) {
         tileEvaluation.enemyThreat.push(moveResults.enemyThreat);
     }
