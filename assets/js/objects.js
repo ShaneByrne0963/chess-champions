@@ -231,6 +231,12 @@ const chessPiece = {
         king: 2000
     },
 
+    /**
+     * Creates a chess piece at a certain tile
+     * @param {object} tileElement The element of the tile that will contain the new piece
+     * @param {string} piece The type of piece that will be created
+     * @param {string} color The color of the new piece
+     */
     create: (tileElement, piece, color) => {
         //creating a new element and setting it's classes
         let newPiece = document.createElement('div');
@@ -243,6 +249,7 @@ const chessPiece = {
             pieceClass = 'pawn-new';
             pieceImage = 'pawn';
         }
+        //setting all the classes for the piece
         newPiece.className = `chess-piece ${color} ${pieceClass}`;
 
         //finding the correct image using pieceImage and color
@@ -259,9 +266,12 @@ const chessPiece = {
      * @returns {object} The element of the piece at this tile, or null if the tile is empty
      */
     findElement: (x, y) => {
+        //getting the tile at the specified coordinates
         let tileElement = tile.getElement(x, y);
+        //getting all the children at that tile
         let tileChildren = tileElement.children;
 
+        //loops through the children to find a piece
         for (let child of tileChildren) {
             if (child.classList.contains('chess-piece')) {
                 return child;
@@ -283,10 +293,16 @@ const chessPiece = {
         return pieceData;
     },
 
+    /**
+     * Gets the type of piece from an element
+     * @param {object} pieceElement The piece element you wish to find the type of
+     * @returns {string} The type of piece, or an empty string if the tile is empty
+     */
     getType: (pieceElement) => {
         let piece = '';
         if (pieceElement !== null) {
             tileClass = pieceElement.classList;
+            //searching through all the classes until one matches one of the piece types
             piece = chessPiece.getTypeFromClass(tileClass);
         }
         return piece;
@@ -294,22 +310,28 @@ const chessPiece = {
 
     /**
      * reads a tiles class and determines what piece it has
-     * @param {*} tileClass the class of the tile. should be in string or array form
-     * @returns The piece in the given tile, in string format
+     * @param {object} tileClass the class of the tile. should be in string or array form
+     * @returns {string} The piece in the given tile, or an empty string if there is no piece
      */
     getTypeFromClass: (tileClass) => {
         let foundPiece = '';
+        //validating if the class is a string or an array
         if (typeof tileClass === 'string' || typeof tileClass === 'object') {
+            //all of the classes that are considered chess pieces
             let pieceNames = ['pawn-new', 'pawn', 'knight', 'bishop', 'rook', 'queen', 'king'];
-            for (let i = 0; i < pieceNames.length && !foundPiece; i++) {
+            for (let i = 0; i < pieceNames.length; i++) {
+                //checking for a class that matches any piece if the input is a string
                 if (typeof tileClass === 'string') {
                     if (tileClass.includes(pieceNames[i])) {
                         foundPiece = pieceNames[i];
+                        break;
                     }
                 }
+                //checking for a class that matches any piece if the input is an array
                 else {
                     if (tileClass.contains(pieceNames[i])) {
                         foundPiece = pieceNames[i];
+                        break;
                     }
                 }
             }
@@ -324,11 +346,12 @@ const chessPiece = {
     /**
      * Gets the color of a chess piece
      * @param {object} pieceElement The element of the piece
-     * @returns {string} The color of the piece
+     * @returns {string} The color of the piece, or an empty string if the piece does not exist
      */
     getColor: (pieceElement) => {
         let color = '';
         if (pieceElement !== null) {
+            //searching through the classes for either 'white' or 'black'
             let tileClass = pieceElement.classList;
             if (tileClass.contains('white')) {
                 color = 'white';
@@ -377,7 +400,7 @@ const chessPiece = {
      * @param {*} newTileElement The tile element the piece will move to
      */
     move: (pieceElement, newTileElement) => {
-        //first removing the 'clickable' class from all of the pieces
+        //first removing the 'clickable' class from all of the pieces to stop player input until it's their turn again
         tile.removeAllInteraction();
 
         //getting the information about the piece
@@ -396,15 +419,14 @@ const chessPiece = {
      * Finishes a piece moving to a different tile by setting it to the tile's parent
      * and destroying any piece that was already on it
      * @param {object} pieceElement The element of the piece that is moving
-     * @param {object} 
+     * @param {object} newTileElement The element of the tile the piece is moving to
      */
     changeTile: (pieceElement, newTileElement) => {
-        //checking if the tile has another piece on it
+        //checking if the tile has another piece on it, and destroying it if it does
         let otherPiece = tile.getPieceElement(newTileElement);
         if (otherPiece !== null) {
             chessPiece.destroy(otherPiece);
         }
-
         //changing the parent of the chess piece to the new tile
         newTileElement.appendChild(pieceElement);
         //removing the position style properties set during the animation
@@ -416,7 +438,7 @@ const chessPiece = {
         let newYPosition = tile.getY(newTileElement);
         let isRevive = false;
         if (pieceData.piece === 'pawn') {
-            //checking if the pawn is at the end of the board to initite to initiate the piece revive sequence
+            //checking if the pawn is at the end of the board to initite the piece revive sequence
             if (chessPiece.isAtBoardEnd(pieceData.color, newYPosition)) {
                 isRevive = true;
                 graveyard.revive(pieceElement);
@@ -433,11 +455,10 @@ const chessPiece = {
     /**
      * Removes a piece from the board and adds it to the graveyard
      * @param {object} pieceElement The element to be destroyed
-     * @param {object} destroyerElement The piece that has destroyed the specified piece
      */
     destroy: (pieceElement) => {
-        //adding the destroyed piece to the appropriate graveyard
         let pieceData = tile.getData(pieceElement.parentNode);
+        //finding the appropriate graveyard to add the piece to, using the piece's color
         let graveyardDiv = (pieceData.color === 'black') ? document.getElementById('player1-graveyard') : document.getElementById('player2-graveyard');
         graveyard.add(graveyardDiv, pieceData.piece);
 
@@ -467,7 +488,7 @@ const chessPiece = {
     /**
      * Finds the piece with the lowest value in an array
      * @param {object} pieces The tile data of all the pieces to be checked
-     * @returns An array containing the lowest value and the position the piece with that value on the array [lowestValue, lowestPosition]
+     * @returns An array containing the lowest value and it's position on the pieces array [lowestValue, lowestPosition]
      */
     findLowestValue: (pieces) => {
         let lowestValue = chessPiece.value[pieces[0].piece];
@@ -488,7 +509,7 @@ const chessPiece = {
     /**
      * Gets all the pieces on the board of a certain color
      * @param {string} color The color of the pieces
-     * @returns {object} An array of all the pieces
+     * @returns {object} An array of data objects {x, y, piece, color} for all the pieces
      */
     getAll: (color) => {
         let pieceElements = document.getElementsByClassName(color);

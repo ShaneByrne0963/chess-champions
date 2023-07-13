@@ -197,7 +197,6 @@ function tileClick(x, y) {
                         }
                     }
                 }
-
                 if (isPossibleMove) {
                     //gets the selected tile
                     let selectedTile = document.getElementById('tile-selected').parentNode;
@@ -207,7 +206,6 @@ function tileClick(x, y) {
                     break;
                 }
             }
-
             if (!isPossibleMove) {
                 //clear all selected tiles
                 tile.deselectAll();
@@ -369,6 +367,10 @@ function addAnnouncement(text) {
     }
 }
 
+/**
+ * Adds an announcement about the elimination of a given piece
+ * @param {object} pieceData The data object {x, y, piece, color} of the piece that was eliminated
+ */
 function announceElimination(pieceData) {
     let enemyColor = (pieceData.color === 'white') ? 'black' : 'white';
 
@@ -444,7 +446,6 @@ function revivePlayer() {
             reviveButton.removeEventListener('click', revivePlayer);
         }
     }
-
     //continuing the game
     nextTurn();
 }
