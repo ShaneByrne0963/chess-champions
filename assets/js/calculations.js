@@ -2,13 +2,6 @@ function makeMove(color) {
     //removing the timeout reference for making this move
     pieceMovement.moveWait = null;
 
-    //all tiles will be given an individual score based on a number of parameters. the tile with the highest score will be chosen
-    let highestScore = 0;
-    //highestScore will be set to the first checked tile. after that any tile will have to beat the score to be set
-    let isFirstCheck = true;
-    //in case there are multiple pieces with the highest score, their info will all be stored in this array and chosen at random
-    let highestScorePieces = [];
-
     //getting all the pieces on the board that belong to the ai
     let pieces = chessPiece.getAll(color);
 
@@ -17,9 +10,34 @@ function makeMove(color) {
     for (let pieceData of pieces) {
         currentScores.push(getTileScore(pieceData, pieceData));
     }
+    //getting a list of all the moves that have the highest score
+    let highestScorePieces = getBestMoves(pieces, currentScores);
 
-    for (let i = 0; i < pieces.length; i++) {
-        let currentPiece = pieces[i];
+    //picking a piece at random out of the array that has a move that matches the high score
+    let movePiece = highestScorePieces[Math.floor(Math.random() * highestScorePieces.length)];
+    //then, that piece will pick one of it's best moves at random
+    let finalTile = movePiece.highestMoves[Math.floor(Math.random() * movePiece.highestMoves.length)];
+
+    let movingElement = chessPiece.findElement(movePiece.x, movePiece.y);
+
+    chessPiece.move(movingElement, finalTile);
+}
+
+/**
+ * Returns a list of the best moves the ai can take on the board
+ * @param {object} pieceDataList An array of data objects {x, y, piece, color} of all the pieces the AI has
+ * @param {object} pieceCurrentScores An array of the scores all the pieces have at their current tiles
+ * @returns {object} An array of data objects {x, y, piece, color, highestMoves[]} of all the pieces that have the best moves
+ */
+function getBestMoves(pieceDataList, pieceCurrentScores) {
+    //all tiles will be given an individual score based on a number of parameters. the tile with the highest score will be chosen
+    let highestScore = 0;
+    //highestScore will be set to the first checked tile. after that any tile will have to beat the score to be set
+    let isFirstCheck = true;
+    //in case there are multiple pieces with the highest score, their info will all be stored in this array and chosen at random
+    let highestScorePieces = [];
+    for (let i = 0; i < pieceDataList.length; i++) {
+        let currentPiece = pieceDataList[i];
         //if the piece has not yet been added to the high score array
         let added = false;
         //stores any moves that have the same score as the highest score
@@ -36,7 +54,7 @@ function makeMove(color) {
             moveScore += getMoveOnlyScore(currentPiece, moveData);
 
             //finally, subtracting the current score from the new score
-            moveScore -= currentScores[i];
+            moveScore -= pieceCurrentScores[i];
 
             //if this is the first move of the first tile, then set the highest score to the score of this move
             if (isFirstCheck) {
@@ -64,15 +82,7 @@ function makeMove(color) {
             }
         }
     }
-
-    //picking a piece at random out of the array that has a move that matches the high score
-    let movePiece = highestScorePieces[Math.floor(Math.random() * highestScorePieces.length)];
-    //then, that piece will pick one of it's best moves at random
-    let finalTile = movePiece.highestMoves[Math.floor(Math.random() * movePiece.highestMoves.length)];
-
-    let movingElement = chessPiece.findElement(movePiece.x, movePiece.y);
-
-    chessPiece.move(movingElement, finalTile);
+    return highestScorePieces;
 }
 
 /**
