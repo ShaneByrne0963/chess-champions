@@ -37,19 +37,24 @@ body {
     padding: 32px;
 }
 
-/* the button that takes the user to the game */
-#menu-settings>#to-game {
-    text-align: center;
+/* small text used for note about what player starts first */
+.small-text {
+    font-size: 0.6em;
 }
 
+/* the button that takes the user to the game */
 #menu-settings a {
     display: inline-block;
-    margin: 0 auto;
+    margin: 16px auto;
     color: white;
     text-decoration: none;
     padding: 8px;
     border: 1px solid black;
     background-color: #501818;
+}
+
+#menu-settings>#to-game {
+    text-align: center;
 }
 
 /* main game */

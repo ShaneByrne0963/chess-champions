@@ -210,7 +210,7 @@ function optionPlayerColor() {
     }
     htmlString += `>
     <label for="col-black">Black</label>
-    <p>Note: The player with the white pieces always starts first</p>
+    <p class="small-text">Note: The player with the white pieces always starts first</p>
     `;
 
     return htmlString;
