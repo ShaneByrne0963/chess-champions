@@ -128,7 +128,7 @@ function getMoveOnlyScore(pieceData, moveTileData) {
     }
     //add 15 points for pawns to encourage movement
     if (pieceData.piece === 'pawn' || pieceData.piece === 'pawnNew') {
-        moveScore += (moveTileData.y * 150000);
+        moveScore += 15;
     }
     return moveScore;
 }

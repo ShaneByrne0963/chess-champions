@@ -586,6 +586,12 @@ const pieceMovement = {
         return moveTiles;
     },
 
+    /**
+     * Gets all the tiles a piece can move to from a single move
+     * @param {object} pieceData The data object {x, y, piece, color} of the piece to get the tiles
+     * @param {object} move The move the piece will use to find the tiles (see top of pieceMovement object for possible moves)
+     * @returns {object} An array of all tile data objects the piece can move to with this move
+     */
     getTilesFromMove: (pieceData, move) => {
         //storing all the valid moves in this array
         let moveTiles = [];
@@ -665,6 +671,14 @@ const pieceMovement = {
         return moveTiles;
     },
 
+    /**
+     * Gets the y coordinate after a certain move, taking forward movement into consideation
+     * @param {integer} xStart The x coordinate of the tile before the move
+     * @param {integer} yStart The y coordinate of the tile before the move
+     * @param {object} pieceData The data object {x, y, piece, color} of the piece that is doing the evaluation
+     * @param {object} move The move that is being made
+     * @returns {integer} The y coordinate after the move
+     */
     getYMovement: (xStart, yStart, pieceData, move) => {
         let y;
         //getting the y axis of the move
@@ -676,7 +690,7 @@ const pieceMovement = {
 
             //determines which direction is forward
             let forwardDirection = pieceMovement.getForwardDirection(pieceData.color);
-
+            //adds the amount of tiles to move, in the forward direction
             y = yStart + (forwardAmount * forwardDirection);
 
             //if the forward value is greater than 1, then all tiles in between will be checked to see if they are blank
@@ -840,7 +854,7 @@ const graveyard = {
         } else {
             //finds the best piece it can revive in the graveyard
             let bestPiece = graveyard.findBestDeadPiece(graves);
-            
+            //replacing the pawn with the best piece
             graveyard.replaceWithDead(bestPiece);
             //continuing on with the game after a decision has been made
             nextTurn();
@@ -867,7 +881,9 @@ const graveyard = {
     },
 
     /**
-     * Finds the best piece that can be revived in the graveyard 
+     * Finds the best piece that can be revived in the graveyard
+     * @param {object} graves An array of all the player's dead pieces
+     * @returns {object} The element of the graveyard piece best suited for revival
      */
     findBestDeadPiece: (graves) => {
         //finding the piece with the highest value
