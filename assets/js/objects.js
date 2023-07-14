@@ -610,19 +610,11 @@ const pieceMovement = {
                     break;
                 //for moves that continue to move in a direction until an obstacle is reached
                 case 'vector':
-                    do {
-                        checkPiece = chessPiece.findData(newX, newY);
-                        //adding the move to the array if the tile is not occupied by a friendly piece
-                        if (checkPiece.color !== pieceData.color) {
-                            moveTiles.push(checkPiece);
-                        }
-                        //stopping the loop if there is any piece on the tile
-                        if (checkPiece.color !== '') {
-                            break;
-                        }
-                        newX += move[1];
-                        newY += move[2];
-                    } while (tile.inBounds(newX, newY));
+                    let vectorTiles = pieceMovement.getTilesFromVector(pieceData, newX, newY, move);
+                    //adding all the tiles from this vector to the total tiles this piece can make
+                    for (let vectorTile of vectorTiles) {
+                        moveTiles.push(vectorTile);
+                    }
                     break;
                 //for moves that are only valid if an enemy is on the tile
                 case 'attack':
@@ -638,6 +630,38 @@ const pieceMovement = {
                     break;
             }
         }
+        return moveTiles;
+    },
+
+    /**
+     * Gets all the tile a piece can move to from a single vector
+     * @param {object} pieceData The data object {x, y, piece, color} of the piece that has the vector
+     * @param {integer} xStart The x coordinate of the starting position of the vector
+     * @param {integer} yStart The t coordinate of the starting position of the vector
+     * @param {object} move The vector itself, formatted as ['vector', x, y]
+     * @returns {object} An array of all the tiles that can be moved to in this vector
+     */
+    getTilesFromVector: (pieceData, xStart, yStart, move) => {
+        let x = xStart;
+        let y = yStart;
+        //storing all the tiles 
+        let moveTiles = [];
+        do {
+            checkPiece = chessPiece.findData(x, y);
+            //adding the move to the array if the tile is not occupied by a friendly piece
+            if (checkPiece.color !== pieceData.color) {
+                moveTiles.push(checkPiece);
+            }
+            //stopping the loop if there is any piece on the tile
+            if (checkPiece.color !== '') {
+                break;
+            }
+            //move the coordinates in the direction of the vector
+            x += move[1];
+            y += move[2];
+        }
+        //keep the loop going if the coordinates are still on the board
+        while (tile.inBounds(x, y));
         return moveTiles;
     },
 
