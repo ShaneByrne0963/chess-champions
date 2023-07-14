@@ -815,7 +815,12 @@ const pieceMovement = {
     },
 };
 
+//the object that stores functions related to the players' graveyards
 const graveyard = {
+    /**
+     * Adds a piece to a specified graveyard
+     * @param {object} graveyardElement The element of the graveyard that will get the new piece
+     */
     add: (graveyardElement, piece) => {
         //the first graveyard always has black pieces in it, and the second always has white
         let color = (graveyardElement.id === 'player1-graveyard') ? 'black' : 'white';
@@ -849,6 +854,10 @@ const graveyard = {
         return graves;
     },
 
+    /**
+     * initiates the pawn revival sequence to bring one of the pieces from the graveyard back to the board
+     * @param {object} pawnElement The element of the pawn that will be replaced
+     */
     revive: (pawnElement) => {
         //adding the revive id to the pawn to replace it once a new piece has been picked
         pawnElement.id = 'promoting';
@@ -997,6 +1006,7 @@ const graveyard = {
     }
 };
 
+//the object that contains the functions related to the piece movement from one tile to another
 const pieceAnimation = {
     //will be used to store the animation functions in order to stop it once it's done
     activeAnimations: [],
