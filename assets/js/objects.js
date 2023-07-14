@@ -837,6 +837,18 @@ const graveyard = {
         graveyardElement.appendChild(deadPiece);
     },
 
+    /**
+     * Gets the graveyard elements of a certain player
+     * @param {string} color The color of the player
+     * @returns {object} an array of graveyard piece elements
+     */
+    getElements: (color) => {
+        let graveyardDiv = (color === 'black') ? document.getElementById('player1-graveyard') : document.getElementById('player2-graveyard');
+        let graves = graveyardDiv.children;
+
+        return graves;
+    },
+
     revive: (pawnElement) => {
         //adding the revive id to the pawn to replace it once a new piece has been picked
         pawnElement.id = 'promoting';
@@ -845,7 +857,7 @@ const graveyard = {
         let pawnData = tile.getData(pawnElement.parentNode);
 
         //getting the appropriate graveyard for the player
-        let graves = getGraveyardElements(pawnData.color);
+        let graves = graveyard.getElements(pawnData.color);
 
         //if the pawn that moved to the other side belongs to a player, then initiate the ui for reviving a piece
         if (localStorage.getItem(pawnData.color) === 'player') {
@@ -918,7 +930,7 @@ const graveyard = {
      */
     canRevive: (color) => {
         let hasDeadPieces = false;
-        let graves = getGraveyardElements(color);
+        let graves = graveyard.getElements(color);
 
         for (let grave of graves) {
             let gravePiece = graveyard.getDeadPiece(grave);
