@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital@0;1&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@100&display=swap');
 
 /* global styles */
 
@@ -11,20 +11,21 @@ body {
     background-color: #501818;
     text-align: center;
     font-size: 1.4rem;
-    font-family: 'Playfair Display', serif;
+    font-family: 'Roboto Slab', serif;
     color: white;
-}
-
-h1 {
-    font-style: italic;
 }
 
 /* game settings page */
 
 #title-homepage {
-    font-size: 2.5rem;
+    font-size: 2rem;
     line-height: 80px;
     margin: 32px 0;
+}
+
+/* making the title icon larger */
+#title-homepage i {
+    font-size: 2em;
 }
 
 #menu-settings {
@@ -105,8 +106,6 @@ h1 {
 
 #announcements {
     padding: 16px;
-    overflow: hidden;
-    /* hides any text that escapes the div's bounds */
     position: relative;
     grid-column-start: 1;
     grid-column-end: 3;
@@ -130,7 +129,7 @@ h1 {
     color: white;
     text-decoration: none;
     text-align: center;
-    font-family: 'Playfair Display', serif;
+    font-family: 'Roboto Slab', serif;
     font-size: 1.4rem;
 }
 
