@@ -17,7 +17,22 @@ function settingsInit() {
         //which color the player will be when against a computer
         localStorage.setItem('playerColor', 'white');
     }
-    //finding out how many players are human and using that to set the player type select bar
+    //getting what type of players will be playing the game
+    let gameType = getGameType();
+
+    //setting the select dropdown to display the correct game type
+    let gameTypeInput = document.getElementById('settings-players');
+    gameTypeInput.value = gameType;
+
+    //building the dynamic html to be added to the settings
+    buildDynamicSettings(gameType);
+}
+
+/**
+ * Gets the Type of game based on the number of human players
+ * @returns {string} 'pvp', 'pve' or 'eve'
+ */
+function getGameType() {
     let humanPlayers = 0;
     let gameType = '';
     if (localStorage.getItem('white') === 'player') {
@@ -38,12 +53,7 @@ function settingsInit() {
         default:
             throw `Error at settingsInit(): Invalid number of players ${humanPlayers}. Aborting..`;
     }
-    //setting the select dropdown to display the correct game type
-    let gameTypeInput = document.getElementById('settings-players');
-    gameTypeInput.value = gameType;
-
-    //building the dynamic html to be added to the settings
-    buildDynamicSettings(gameType);
+    return gameType;
 }
 
 /**
@@ -88,17 +98,20 @@ function buildDynamicSettings(playerType) {
 function updatePlayerVariables(playerType) {
     switch (playerType) {
         case 'pvp':
-            //updating the types of player that will be playing the game
             localStorage.setItem('white', 'player');
             localStorage.setItem('black', 'player');
             break;
         case 'pve':
-            //updating the types of player that will be playing the game
-            localStorage.setItem('white', 'player');
-            localStorage.setItem('black', 'computer');
+            //changing sides depending on which color the user chooses
+            if (localStorage.getItem('playerColor') === 'white') {
+                localStorage.setItem('white', 'player');
+                localStorage.setItem('black', 'computer');
+            } else {
+                localStorage.setItem('white', 'computer');
+                localStorage.setItem('black', 'player');
+            }
             break;
         case 'eve':
-            //updating the types of player that will be playing the game
             localStorage.setItem('white', 'computer');
             localStorage.setItem('black', 'computer');
             break;
