@@ -46,6 +46,11 @@ body {
     font-size: 0.6em;
 }
 
+/* for indenting the note as well as the items in the details element */
+.indented {
+    margin-left: 32px;
+}
+
 /* the button that takes the user to the game */
 #menu-settings a {
     display: inline-block;
