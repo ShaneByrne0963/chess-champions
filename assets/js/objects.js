@@ -788,7 +788,17 @@ const pieceMovement = {
             }
         }
         return true;
-    }
+    },
+
+    /**
+     * Removes any timeout delay for the AI making a move
+     */
+    clearDelay: () => {
+        if (pieceMovement.moveWait !== null) {
+            clearTimeout(pieceMovement.moveWait);
+            pieceMovement.moveWait = null;
+        }
+    },
 };
 
 const graveyard = {
@@ -926,6 +936,18 @@ const graveyard = {
 
         //removing the grave piece from the graveyard
         deadPiece.remove();
+    },
+
+    /**
+     * Removes all graveyard pieces from the game
+     */
+    clearAll: () => {
+        //finds every graveyard piece on both sides
+        let graveyardPieces = document.getElementsByClassName('piece-dead');
+        //removing them one by one
+        while (graveyardPieces.length > 0) {
+            graveyardPieces[0].remove();
+        }
     }
 };
 

@@ -56,19 +56,13 @@ function startGame() {
     clearAnnouncements();
 
     //stops any timeouts for the ai making its move
-    if (pieceMovement.moveWait !== null) {
-        clearTimeout(pieceMovement.moveWait);
-        pieceMovement.moveWait = null;
-    }
+    pieceMovement.clearDelay();
 
     //clears the board before creating new pieces
     tile.clearAll();
 
     //removing any piece images from the graveyard
-    let graveyardPieces = document.getElementsByClassName('piece-dead');
-    while (graveyardPieces.length > 0) {
-        graveyardPieces[0].remove();
-    }
+    graveyard.clearAll();
 
     //iterating through every tile on the board to create chess pieces where necessary
     for (let i = 0; i < boardSize; i++) {
