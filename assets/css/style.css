@@ -37,6 +37,10 @@ body {
     padding: 32px;
 }
 
+#settings-dynamic>div {
+    padding: 16px 0;
+}
+
 /* small text used for note about what player starts first */
 .small-text {
     font-size: 0.6em;
