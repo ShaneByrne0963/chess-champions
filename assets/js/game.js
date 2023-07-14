@@ -70,56 +70,73 @@ function startGame() {
         graveyardPieces[0].remove();
     }
 
-    let topColor = localStorage.getItem('topPosition');
-    let bottomColor = (topColor === 'white') ? 'black' : 'white';
+    //iterating through every tile on the board to create chess pieces where necessary
     for (let i = 0; i < boardSize; i++) {
         for (let j = 0; j < boardSize; j++) {
-            let piece = '';
-            let color = '';
-
             //getting the current tile's element
             let tileElement = tile.getElement(i, j);
-
-            //creating the back row of chess pieces for each side
-            if (j === 0 || j === boardSize - 1) {
-                //setting the piece type
-                if (i === 0 || i === boardSize - 1) {
-                    piece = 'rook';
-                } else if (i === 1 || i === boardSize - 2) {
-                    piece = 'knight';
-                } else if (i === 2 || i === boardSize - 3) {
-                    piece = 'bishop';
-                } else if (i === 3) {
-                    piece = 'queen';
-                } else {
-                    piece = 'king';
-                }
-
-                //setting the color
-                if (j === 0) {
-                    color = topColor;
-                } else {
-                    color = bottomColor;
-                }
-            }
-            //setting up the pawns for both sides
-            else if (j === 1 || j === boardSize - 2) {
-                piece = 'pawnNew';
-                if (j === 1) {
-                    color = topColor;
-                } else {
-                    color = bottomColor;
-                }
-            }
+            //finding what piece and color belongs on this tile
+            let tilePiece = getStartingPiece(i, j);
+            
             //creating a piece when it should be created
-            if (piece != '' && color != '') {
-                chessPiece.create(tileElement, piece, color);
+            if (tilePiece.piece != '' && tilePiece.color != '') {
+                chessPiece.create(tileElement, tilePiece.piece, tilePiece.color);
             }
         }
     }
-
     //allow the player to make it's move, whether it is a player or computer
     allowTurn('white');
+}
+
+/**
+ * Gets the starting position of a piece at a specific tile
+ * @param {integer} x The x coordinate of the tile
+ * @param {integer} y The y coordinate of the tile
+ * @returns {object} An object {piece, color} containing what piece should start at that tile
+ */
+function getStartingPiece(x, y) {
+    //finding which color starts on the top and which starts on the bottom
+    let topColor = localStorage.getItem('topPosition');
+    let bottomColor = (topColor === 'white') ? 'black' : 'white';
+    //default the piece and color to an empty string in case no piece should start at this tile
+    let piece = '';
+    let color = '';
+
+    //creating the back row of chess pieces for each side
+    if (y === 0 || y === boardSize - 1) {
+        //setting the piece type
+        if (x === 0 || x === boardSize - 1) {
+            piece = 'rook';
+        } else if (x === 1 || x === boardSize - 2) {
+            piece = 'knight';
+        } else if (x === 2 || x === boardSize - 3) {
+            piece = 'bishop';
+        } else if (x === 3) {
+            piece = 'queen';
+        } else {
+            piece = 'king';
+        }
+
+        //setting the color
+        if (y === 0) {
+            color = topColor;
+        } else {
+            color = bottomColor;
+        }
+    }
+    //setting up the pawns for both sides
+    else if (y === 1 || y === boardSize - 2) {
+        piece = 'pawnNew';
+        if (y === 1) {
+            color = topColor;
+        } else {
+            color = bottomColor;
+        }
+    }
+    return {
+        piece: piece,
+        color: color
+    };
 }
 
 /**
