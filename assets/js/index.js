@@ -1,6 +1,5 @@
 //building the default dynamic settings when the page loads
 window.onload = settingsInit();
-
 /**
  * Runs on page load
  */
@@ -15,6 +14,8 @@ function settingsInit() {
         localStorage.setItem('p2-name', 'Player 2');
         //dictates which color will start on top of the board
         localStorage.setItem('topPosition', 'black');
+        //which color the player will be when against a computer
+        localStorage.setItem('playerColor', 'white');
     }
     //finding out how many players are human and using that to set the player type select bar
     let humanPlayers = 0;
@@ -69,6 +70,7 @@ function buildDynamicSettings(playerType) {
         case 'pve':
             //adding name inputs for the human player
             newHtml += optionPlayerName('Player Name:', 'p1-name');
+            newHtml += optionPlayerColor();
             newHtml += optionWhitePosition();
             break;
         case 'eve':
@@ -134,6 +136,7 @@ function optionPlayerName(innerText, inputId) {
 /**
  * Returns an HTML radio option for setting the white pieces to either start on
  * the top or the bottom
+ * @returns {string} The HTML to be added to the dynamic settings
  */
 function optionWhitePosition() {
     let htmlString = `
@@ -143,6 +146,7 @@ function optionWhitePosition() {
     if (localStorage.getItem('topPosition') === 'black') {
         htmlString += ` checked`;
     }
+    //adding the second radio button
     htmlString += `>
     <label for="pos-bottom">Bottom</label>
     <input type="radio" name="white-pos" value="top" id="pos-top" onchange="updateWhitePosition(value)"`;
@@ -152,6 +156,34 @@ function optionWhitePosition() {
     }
     htmlString += `>
     <label for="pos-top">Top</label>
+    `;
+
+    return htmlString;
+}
+
+/**
+ * Returns an HTML radio option for setting the player color to either white or black
+ * @returns {string} The HTML to be added to the dynamic settings
+ */
+function optionPlayerColor() {
+    let htmlString = `
+    Player Color:
+    <input type="radio" name="player-color" value="white" id="col-white" onchange="localStorage.setItem('playerColor', 'white')"`;
+    //making the radio button checked if the white pieces are at the bottom
+    if (localStorage.getItem('playerColor') === 'white') {
+        htmlString += ` checked`;
+    }
+    //adding the second radio button
+    htmlString += `>
+    <label for="col-white">White</label>
+    <input type="radio" name="player-color" value="black" id="col-black" onchange="localStorage.setItem('playerColor', 'black')"`;
+    //making the radio button checked if the white pieces are at the top
+    if (localStorage.getItem('playerColor') === 'black') {
+        htmlString += ` checked`;
+    }
+    htmlString += `>
+    <label for="col-black">Black</label>
+    <p>Note: The player with the white pieces always starts first</p>
     `;
 
     return htmlString;

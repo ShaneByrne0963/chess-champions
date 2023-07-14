@@ -1,3 +1,7 @@
+/**
+ * Calculates the move made by an AI
+ * @param {string} color The color of the AI making the move
+ */
 function makeMove(color) {
     //removing the timeout reference for making this move
     pieceMovement.moveWait = null;
