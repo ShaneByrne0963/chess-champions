@@ -118,6 +118,20 @@ function updateWhitePosition(value) {
 }
 
 /**
+ * Sets what color the player will start with
+ * @param {string} value Either 'black' or 'white'
+ */
+function updatePlayerColor(value) {
+    //this variable will be used to keep the player color even when the user switches game types
+    localStorage.setItem('playerColor', value);
+    let oppositeColor = (value === 'white') ? 'black' : 'white';
+
+    //setting the player types to the appropriate colors
+    localStorage.setItem(value, 'player');
+    localStorage.setItem(oppositeColor, 'computer');
+}
+
+/**
  * Returns an HTML text input and it's label for setting a player name
  * @param {string} innerText The text the label will display
  * @param {string} inputId The ID of the input
@@ -168,7 +182,7 @@ function optionWhitePosition() {
 function optionPlayerColor() {
     let htmlString = `
     Player Color:
-    <input type="radio" name="player-color" value="white" id="col-white" onchange="localStorage.setItem('playerColor', 'white')"`;
+    <input type="radio" name="player-color" value="white" id="col-white" onchange="updatePlayerColor('white')"`;
     //making the radio button checked if the white pieces are at the bottom
     if (localStorage.getItem('playerColor') === 'white') {
         htmlString += ` checked`;
@@ -176,7 +190,7 @@ function optionPlayerColor() {
     //adding the second radio button
     htmlString += `>
     <label for="col-white">White</label>
-    <input type="radio" name="player-color" value="black" id="col-black" onchange="localStorage.setItem('playerColor', 'black')"`;
+    <input type="radio" name="player-color" value="black" id="col-black" onchange="updatePlayerColor('black')"`;
     //making the radio button checked if the white pieces are at the top
     if (localStorage.getItem('playerColor') === 'black') {
         htmlString += ` checked`;
