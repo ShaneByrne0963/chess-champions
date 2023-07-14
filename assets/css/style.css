@@ -8,7 +8,7 @@
 }
 
 body {
-    background-color: #7D3B27;
+    background-color: #501818;
     text-align: center;
     font-size: 1.4rem;
     font-family: 'Playfair Display', serif;
@@ -29,7 +29,7 @@ h1 {
 
 #menu-settings {
     max-width: 960px;
-    background-color: #A66333;
+    background-color: #76391F;
     margin: 32px auto;
     text-align: left;
     font-size: 2rem;
@@ -52,7 +52,7 @@ h1 {
 }
 
 #ui-area {
-    background-color: #7D3B27;
+    background-color: #501818;
     color: white;
     height: 100vh;
     display: grid;
@@ -75,8 +75,7 @@ h1 {
 #player2-ui {
     padding: 16px;
     border: 1px solid black;
-    color: black;
-    background-color: #A66333;
+    background-color: #76391F;
 }
 
 #player1-ui span {
@@ -90,7 +89,6 @@ h1 {
 }
 
 #ui-area>.player-active {
-    color: white;
     border: 1px solid white;
 }
 
@@ -128,7 +126,7 @@ h1 {
     margin: 16px auto;
     padding: 16px;
     border: 1px solid black;
-    background-color: #A66333;
+    background-color: #76391F;
     color: white;
     text-decoration: none;
     text-align: center;
@@ -139,7 +137,8 @@ h1 {
 /* chess board */
 
 #chess-board {
-    background-color: rgb(80, 24, 24);
+    /* background-color: rgb(80, 24, 24); */
+    background-color: #3E110B;
     padding: 16px;
     /* board takes up 100% of the available space minus the padding */
     /* link to where i learned about calc(): https: //developer.mozilla.org/en-US/docs/Web/CSS/calc */
