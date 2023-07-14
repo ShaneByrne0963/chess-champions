@@ -835,46 +835,64 @@ const graveyard = {
 
         //if the pawn that moved to the other side belongs to a player, then initiate the ui for reviving a piece
         if (localStorage.getItem(pawnData.color) === 'player') {
-            for (let grave of graves) {
-                //the player can only revive pieces that are not pawns
-                let graveClass = grave.className;
-                if (!graveClass.includes('dead-pawn')) {
-                    //adding the function to bring the selected piece back when the player clicks on the graveyard element
-                    grave.addEventListener('click', revivePlayer);
-
-                    //adding the clickable class to the graveyard pieces to change the mouse cursor when you hover over it
-                    grave.classList.add('clickable');
-                }
-            }
+            //adds event listeners to all the pieces the player can revive
+            graveyard.pickDeadPiece(graves);
         } else {
-            //finding the piece with the highest value
-            let highestValue = 0;
-            //getting a list of pieces with the highest value and picking one at random
-            let highestPieces = [];
-            for (let grave of graves) {
-                //getting the name of the current piece in the graveyard
-                let gravePiece = graveyard.getDeadPiece(grave);
-
-                if (gravePiece !== 'pawn' && chessPiece.value[gravePiece] >= highestValue) {
-                    if (chessPiece.value[gravePiece] > highestValue) {
-                        //resetting the pieces to select from if there is a piece with a higher value
-                        highestPieces = [];
-                        highestValue = chessPiece.value[gravePiece];
-                    }
-                    highestPieces.push(grave);
-                    //stopping the loop if the piece is a queen because it has the best value
-                    if (gravePiece === 'queen') {
-                        break;
-                    }
-                }
-            }
-
-            let finalDecision = Math.floor(Math.random() * highestPieces.length);
-            graveyard.replaceWithDead(highestPieces[finalDecision]);
-
+            //finds the best piece it can revive in the graveyard
+            let bestPiece = graveyard.findBestDeadPiece(graves);
+            
+            graveyard.replaceWithDead(bestPiece);
             //continuing on with the game after a decision has been made
             nextTurn();
         }
+    },
+
+    /**
+     * Adds event listeners to the appropriate dead piece elements to allow piece revival
+     * @param {object} graves An array of all the player's dead pieces
+     */
+    pickDeadPiece: (graves) => {
+        for (let grave of graves) {
+            //getting the classes of the piece
+            let graveClass = grave.className;
+            //the player can only revive pieces that are not pawns
+            if (!graveClass.includes('dead-pawn')) {
+                //adding the function to bring the selected piece back when the player clicks on the graveyard element
+                grave.addEventListener('click', revivePlayer);
+
+                //adding the clickable class to the graveyard pieces to change the mouse cursor when you hover over it
+                grave.classList.add('clickable');
+            }
+        }
+    },
+
+    /**
+     * Finds the best piece that can be revived in the graveyard 
+     */
+    findBestDeadPiece: (graves) => {
+        //finding the piece with the highest value
+        let highestValue = 0;
+        //getting a list of pieces with the highest value and picking one at random
+        let highestPieces = [];
+        for (let grave of graves) {
+            //getting the name of the current piece in the graveyard
+            let gravePiece = graveyard.getDeadPiece(grave);
+
+            if (gravePiece !== 'pawn' && chessPiece.value[gravePiece] >= highestValue) {
+                if (chessPiece.value[gravePiece] > highestValue) {
+                    //resetting the pieces to select from if there is a piece with a higher value
+                    highestPieces = [];
+                    highestValue = chessPiece.value[gravePiece];
+                }
+                highestPieces.push(grave);
+                //stopping the loop if the piece is a queen because it has the best value
+                if (gravePiece === 'queen') {
+                    break;
+                }
+            }
+        }
+        //picking one of the best pieces it can revive and returning it
+        return highestPieces[Math.floor(Math.random() * highestPieces.length)];
     },
 
     /**
