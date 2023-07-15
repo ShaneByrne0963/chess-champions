@@ -14,6 +14,11 @@ body {
     color: white;
 }
 
+/* most interactables will change the mouse cursor when hovered over */
+.clickable:hover {
+    cursor: pointer;
+}
+
 /* game settings page */
 #title-homepage {
     font-size: 2rem;
@@ -75,19 +80,16 @@ body {
 }
 
 /* user interface */
-.clickable:hover {
-    cursor: pointer;
-}
-
 #ui-area {
     background-color: #501818;
-    color: white;
+    border-right: 1px solid black;
     height: 100vh;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto 1fr 1fr auto;
 }
 
+/* for the player turn heading on top of the ui */
 #ui-area h3 {
     font-size: 1.5em;
 }
@@ -106,6 +108,12 @@ body {
     background-color: #76391F;
 }
 
+/* removing the right border of player 2 ui because the ui itself has a border */
+#ui-area>#player2-ui {
+    border-right: none;
+}
+
+/* The chess icons representing the player color */
 #player1-ui span {
     float: right;
     color: white;
@@ -116,10 +124,12 @@ body {
     color: black;
 }
 
+/* highlighting the player ui that is their turn */
 #ui-area>.player-active {
     border: 1px solid white;
 }
 
+/* the icons of eliminated pieces */
 .piece-dead {
     width: 64px;
     height: 64px;
@@ -161,7 +171,6 @@ body {
 }
 
 /* chess board */
-
 #chess-board {
     background-color: #3E110B;
     padding: 16px;
@@ -175,7 +184,6 @@ body {
     grid-template-columns: repeat(8, 1fr);
     grid-template-rows: repeat(8, 1fr);
 }
-
 
 .tile {
     width: 100%;
@@ -196,6 +204,7 @@ body {
     background-color: rgba(255, 128, 255, 0.5);
 }
 
+/* visually displaying the possible moves a selected piece can take */
 .possible-move {
     height: 100%;
     background: url("../images/possible-move.png") no-repeat center center;
@@ -208,11 +217,20 @@ body {
 }
 
 /* chess pieces */
-
 .chess-piece {
     width: 100%;
     height: 100%;
     position: relative;
     background-repeat: no-repeat;
     background-size: cover;
+}
+
+/* banner that will display over the chess board */
+#banner {
+    display: none;
+    width: 100%;
+    height: 500px;
+    background-color: #501818;
+    position: relative;
+    bottom: calc(50% + 250px);
 }
