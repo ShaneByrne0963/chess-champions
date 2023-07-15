@@ -436,18 +436,41 @@ const chessPiece = {
         //reviving pieces if the pawn reaches the other side of the board
         let pieceData = tile.getData(pieceElement.parentNode);
         let newYPosition = tile.getY(newTileElement);
-        let isRevive = false;
+        let pawnPromote = false;
         if (pieceData.piece === 'pawn') {
             //checking if the pawn is at the end of the board to initite the piece revive sequence
             if (chessPiece.isAtBoardEnd(pieceData.color, newYPosition)) {
-                isRevive = true;
-                graveyard.revive(pieceElement);
+                pawnPromote = true;
+                //promotes the pawn depending on the 'pawnPromotion' setting
+                if (localStorage.getItem('pawnPromotion') === 'any') {
+                    chessPiece.promotePawn(pieceElement);
+                } else {
+                    graveyard.revive(pieceElement);
+                }
             }
         }
         //if a pawn has moved to the other side of the board,
-        //stop the game until a piece to revive has been selected.
+        //stop the game until a piece to promote the pawn to has been selected.
         //if not, continue the game as normal
-        if (!isRevive) {
+        if (!pawnPromote) {
+            nextTurn();
+        }
+    },
+
+    /**
+     * Promotes a pawn when it reaches the other side of the board
+     * @param {object} pieceElement The pawn's element
+     */
+    promotePawn: (pieceElement) => {
+        let color = chessPiece.getColor(pieceElement);
+
+        //if the piece belongs to a human player, enable the banner to select a piece
+        if (localStorage.getItem(color) === 'player') {
+            pickPawnPromotion();
+        } else {
+            //changing the piece to a queen if it is the computer
+            chessPiece.setPieceType(pieceElement, 'queen');
+            //moving on to the next turn
             nextTurn();
         }
     },

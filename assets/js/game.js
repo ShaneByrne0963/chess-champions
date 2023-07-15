@@ -411,6 +411,10 @@ function clearAnnouncements() {
     }
 }
 
+function pickPawnPromotion() {
+    
+}
+
 /**
  * Returns if the king is in check for this turn
  * @param {string} color The color of the king that will be evaluated
