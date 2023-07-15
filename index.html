@@ -28,7 +28,7 @@
         <div id="menu-settings">
             <!--dropdown menu for player selection-->
             <label for="settings-players">Players:</label>
-            <select id="settings-players" onchange="buildDynamicSettings(value)">
+            <select id="settings-players" class="clickable" onchange="buildDynamicSettings(value)">
                 <option value="pvp">Player vs. Player</option>
                 <option value="pve">Player vs. Computer</option>
                 <option value="eve">Computer vs. Computer</option>
@@ -41,16 +41,16 @@
                 <details>
                     <summary class="clickable">Advanced Moves</summary>
                     <label for="pawn-promotion" class="small-text indented">Pawn Promotion:</label>
-                    <select id="pawn-promotion">
+                    <select id="pawn-promotion" class="clickable">
                         <option value="any">Promote to any piece</option>
                         <option value="dead">Only promote from eliminated pieces</option>
                     </select>
                     <br>
-                    <input type="checkbox" id="castling" class="indented" checked>
-                    <label for="castling" class="small-text">Castling</label>
+                    <input type="checkbox" id="castling" class="indented clickable" checked>
+                    <label for="castling" class="small-text clickable">Castling</label>
                     <br>
-                    <input type="checkbox" id="en-passant" class="indented" checked>
-                    <label for="en-passant" class="small-text">En Passant</label>
+                    <input type="checkbox" id="en-passant" class="indented clickable" checked>
+                    <label for="en-passant" class="small-text clickable">En Passant</label>
                 </details>
             </div>
 
