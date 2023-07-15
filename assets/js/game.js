@@ -14,6 +14,7 @@ document.onload = gameInit();
 function gameInit() {
     //setting the player names in the player ui
     setPlayerNames();
+    setPromotionIcons('white');
 
     //Setting up the chess board tiles
     let chessBoard = document.getElementById("chess-board");
@@ -172,6 +173,24 @@ function setPlayerNames() {
     player2Heading.innerHTML += `
     <span><i class="fa-solid fa-chess-king"></i></span>
     `;
+}
+
+/**
+ * Sets each of the icons in the pawn promotion banner grid
+ * @param {string} color The color of the pieces to be displayed
+ */
+function setPromotionIcons(color) {
+    //finding all the promotion icons
+    let knightIcon = document.getElementById('promote-knight');
+    let bishopIcon = document.getElementById('promote-bishop');
+    let rookIcon = document.getElementById('promote-rook');
+    let queenIcon = document.getElementById('promote-queen');
+
+    //setting their images
+    chessPiece.setImage(knightIcon, 'knight', color);
+    chessPiece.setImage(bishopIcon, 'bishop', color);
+    chessPiece.setImage(rookIcon, 'rook', color);
+    chessPiece.setImage(queenIcon, 'queen', color);
 }
 
 /**
@@ -412,7 +431,7 @@ function clearAnnouncements() {
 }
 
 function pickPawnPromotion() {
-    
+
 }
 
 /**
