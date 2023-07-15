@@ -227,10 +227,34 @@ body {
 
 /* banner that will display over the chess board */
 #banner {
-    display: none;
     width: 100%;
-    height: 500px;
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
     background-color: #501818;
     position: relative;
+    text-align: center;
+}
+
+#banner>h1 {
+    font-size: 5rem;
+}
+
+/* setting specific values of the banner if it is a notification or for pawn promotion */
+.notify {
+    height: 400px;
+    bottom: calc(50% + 200px);
+}
+
+/* pawn promotion will include a grid underneath so it will need more space */
+.pawn-pick {
+    height: 500px;
     bottom: calc(50% + 250px);
+}
+
+.notify>h1 {
+    margin: 96px 0 48px 0;
+}
+
+.pawn-pick>h1 {
+    margin: 96px 0 32px 0;
 }
