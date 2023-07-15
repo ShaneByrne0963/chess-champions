@@ -256,5 +256,19 @@ body {
 }
 
 .pawn-pick>h1 {
-    margin: 96px 0 32px 0;
+    margin: 64px 0 32px 0;
+}
+
+/* the promotion icons grid within the banner */
+#promotion-icons {
+    display: grid;
+    /*
+        meanings of values in grid-template-columns
+        128px: cell containing a promotion icon
+        1fr: gap in between promotion icons
+        2fr: gap on both edges of grid
+    */
+    grid-template-columns: 2fr 128px 1fr 128px 1fr 128px 1fr 128px 2fr;
+    grid-template-rows: 128px;
+    margin-top: 64px;
 }

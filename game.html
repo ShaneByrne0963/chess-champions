@@ -54,11 +54,19 @@
         <!--where the game takes place. the structure of this div will be implemented in javascript-->
         <div id="game-area">
             <div id="chess-board"></div>
-            <!--The banner that will display checkmate and pawn promotion-->
-            <div id="banner" class="notify">
+            <!--the banner that will display checkmate and pawn promotion-->
+            <!--will store the display style in the tag itself so it can be removed when necessary-->
+            <div id="banner" class="pawn-pick">
                 <h1>Lorem Ipsum</h1>
                 <h3>More Lorem Ipsum...</h3>
-                <div></div>
+                <!--The grid that will have the pawn promotion icons-->
+                <div id="promotion-icons">
+                    <!--Each div represents a pawn promotion icons-->
+                    <div id="promote-knight"></div>
+                    <div id="promote-bishop"></div>
+                    <div id="promote-rook"></div>
+                    <div id="promote-queen"></div>
+                </div>
             </div>
         </div>
     </section>
