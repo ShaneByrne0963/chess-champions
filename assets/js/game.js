@@ -14,7 +14,7 @@ document.onload = gameInit();
 function gameInit() {
     //setting the player names in the player ui
     setPlayerNames();
-    setPromotionIcons('white');
+    setPromotionIcons('black');
 
     //Setting up the chess board tiles
     let chessBoard = document.getElementById("chess-board");

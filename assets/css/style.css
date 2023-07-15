@@ -272,6 +272,8 @@ body {
 
 #promotion-icons>div {
     background-size: cover;
+    border: 2px solid black;
+    background-color: rgb(241, 192, 126);
 }
 
 /* setting each of the icons' positions on the grid */
