@@ -466,7 +466,7 @@ const chessPiece = {
 
         //if the piece belongs to a human player, enable the banner to select a piece
         if (localStorage.getItem(color) === 'player') {
-            pickPawnPromotion();
+            pickPawnPromotion(color);
         } else {
             //changing the piece to a queen if it is the computer
             chessPiece.setPieceType(pieceElement, 'queen');

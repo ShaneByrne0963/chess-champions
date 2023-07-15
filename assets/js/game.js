@@ -14,7 +14,6 @@ document.onload = gameInit();
 function gameInit() {
     //setting the player names in the player ui
     setPlayerNames();
-    setPromotionIcons('black');
 
     //Setting up the chess board tiles
     let chessBoard = document.getElementById("chess-board");
@@ -173,24 +172,6 @@ function setPlayerNames() {
     player2Heading.innerHTML += `
     <span><i class="fa-solid fa-chess-king"></i></span>
     `;
-}
-
-/**
- * Sets each of the icons in the pawn promotion banner grid
- * @param {string} color The color of the pieces to be displayed
- */
-function setPromotionIcons(color) {
-    //finding all the promotion icons
-    let knightIcon = document.getElementById('promote-knight');
-    let bishopIcon = document.getElementById('promote-bishop');
-    let rookIcon = document.getElementById('promote-rook');
-    let queenIcon = document.getElementById('promote-queen');
-
-    //setting their images
-    chessPiece.setImage(knightIcon, 'knight', color);
-    chessPiece.setImage(bishopIcon, 'bishop', color);
-    chessPiece.setImage(rookIcon, 'rook', color);
-    chessPiece.setImage(queenIcon, 'queen', color);
 }
 
 /**
@@ -430,8 +411,56 @@ function clearAnnouncements() {
     }
 }
 
-function pickPawnPromotion() {
+/**
+ * Displays a banner over the chess board with a specified heading, subheading and,
+ * if specified, an array of pawn promotion icons
+ * @param {string} heading The heading of the banner
+ * @param {string} subheading The subheading of the banner
+ * @param {string} promotionColor The color of the pawn promotion icons, or an empty string if not wanted
+ */
+function setBanner(heading, subheading, promotionColor) {
+    //finding the banner element
+    let bannerDiv = document.getElementById('banner');
+    //removing the hidden display to show it on screen
+    bannerDiv.style.removeProperty('display');
 
+    //finding the children of the banner to update the heading and subheading
+    let bannerChildren = bannerDiv.children;
+    //the heading is the first child
+    bannerChildren[0].innerText = heading;
+    //the subheading is the second child
+    bannerChildren[1].innerText = subheading;
+
+    //displaying the pawn promotion grid if necessary
+    if (promotionColor !== '') {
+        setPromotionIcons(promotionColor);
+    }
+}
+
+function pickPawnPromotion(color) {
+    setBanner('Pawn Promoted!', 'Select one of the following to promote your pawn to:', color);
+}
+
+/**
+ * Sets each of the icons in the pawn promotion banner grid
+ * @param {string} color The color of the pieces to be displayed
+ */
+function setPromotionIcons(color) {
+    //enabling the pawn promotion grid
+    let promoteGrid = document.getElementById('promotion-icons');
+    promoteGrid.style.removeProperty('display');
+
+    //finding all the promotion icons
+    let knightIcon = document.getElementById('promote-knight');
+    let bishopIcon = document.getElementById('promote-bishop');
+    let rookIcon = document.getElementById('promote-rook');
+    let queenIcon = document.getElementById('promote-queen');
+
+    //setting their images
+    chessPiece.setImage(knightIcon, 'knight', color);
+    chessPiece.setImage(bishopIcon, 'bishop', color);
+    chessPiece.setImage(rookIcon, 'rook', color);
+    chessPiece.setImage(queenIcon, 'queen', color);
 }
 
 /**

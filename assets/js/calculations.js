@@ -60,6 +60,8 @@ function getBestMoves(pieceDataList, pieceCurrentScores) {
             //finally, subtracting the current score from the new score
             moveScore -= pieceCurrentScores[i];
 
+            moveScore = 0;
+
             //if this is the first move of the first tile, then set the highest score to the score of this move
             if (isFirstCheck) {
                 highestScore = moveScore;
@@ -235,7 +237,6 @@ function evaluateTileVector(tileData, evaluatingPiece, move) {
             let foundPiece = chessPiece.findData(x, y);
             if (foundPiece.piece !== '') {
                 tileEval = getPieceRelationship(evaluatingPiece, foundPiece, move, isFirstMove);
-                //console.log(tileEval);
                 break;
             }
         }
