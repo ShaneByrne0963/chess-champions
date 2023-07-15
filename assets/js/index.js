@@ -17,7 +17,7 @@ function settingsInit() {
         //which color the player will be when against a computer
         localStorage.setItem('playerColor', 'white');
         //special moves
-        localStorage.setItem('pawnPromotion', 'all');
+        localStorage.setItem('pawnPromotion', 'any');
         localStorage.setItem("castling", 'enabled');
         localStorage.setItem('passant', 'enabled');
     }
@@ -30,6 +30,8 @@ function settingsInit() {
 
     //building the dynamic html to be added to the settings
     buildDynamicSettings(gameType);
+    //setting the advanced moves to what is in local storage
+    updateAdvancedMoves();
 }
 
 /**
@@ -120,6 +122,22 @@ function updatePlayerVariables(playerType) {
             localStorage.setItem('black', 'computer');
             break;
     }
+}
+
+/**
+ * Sets the advanced move inputs to what is read in local storage
+ */
+function updateAdvancedMoves() {
+    let pawnPromotionDiv = document.getElementById('pawn-promotion');
+    pawnPromotionDiv.value = localStorage.getItem('pawnPromotion');
+}
+
+/**
+ * Changes the pawn promotion setting in local storage
+ * @param {string} value The value to be set 'any' or 'dead'
+ */
+function updatePawnPromotion(value) {
+    localStorage.setItem('pawnPromotion', value);
 }
 
 /**
