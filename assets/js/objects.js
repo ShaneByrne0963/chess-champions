@@ -466,13 +466,31 @@ const chessPiece = {
 
         //if the piece belongs to a human player, enable the banner to select a piece
         if (localStorage.getItem(color) === 'player') {
-            pickPawnPromotion(color);
+            //adding the promoting class to the pawn to be accessed later
+            pieceElement.id = 'promoting';
+            //enabling the banner to allow the player to promote a pawn
+            setBanner('Pawn Promoted!', 'Select one of the following to promote your pawn to:', color);
         } else {
             //changing the piece to a queen if it is the computer
             chessPiece.setPieceType(pieceElement, 'queen');
             //moving on to the next turn
             nextTurn();
         }
+    },
+
+    /**
+     * Promotes a player pawn to a specified piece
+     * @param {string} piece The piece you wish to promote the pawn to
+     */
+    promotePlayerPawn: (piece) => {
+        //getting the pawn which reached the end of the board
+        let pawnElement = document.getElementById('promoting');
+
+        //replacing it's piece type with the selected dead piece
+        chessPiece.setPieceType(pawnElement, piece);
+
+        //removing the 'promoting' id from the piece
+        pawnElement.removeAttribute('id');
     },
 
     /**
@@ -1003,14 +1021,8 @@ const graveyard = {
         //finds the piece name of the clicked on element
         let pieceName = graveyard.getDeadPiece(deadPiece);
 
-        //getting the pawn which reached the end of the board
-        let pawnElement = document.getElementById('promoting');
-
-        //replacing it's piece type with the selected dead piece
-        chessPiece.setPieceType(pawnElement, pieceName);
-
-        //removing the 'promoting' id from the piece
-        pawnElement.removeAttribute('id');
+        //promoting the pawn that has moved to the end of the board
+        chessPiece.promotePlayerPawn(pieceName);
 
         //removing the grave piece from the graveyard
         deadPiece.remove();

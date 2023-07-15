@@ -437,8 +437,17 @@ function setBanner(heading, subheading, promotionColor) {
     }
 }
 
-function pickPawnPromotion(color) {
-    setBanner('Pawn Promoted!', 'Select one of the following to promote your pawn to:', color);
+/**
+ * Removes the banner
+ */
+function removeBanner() {
+    //finding the banner element
+    let bannerDiv = document.getElementById('banner');
+    //setting its display style to none to remove it from the screen
+    bannerDiv.style.display = 'none';
+    //disabling the pawn promotion grid
+    let promoteGrid = document.getElementById('promotion-icons');
+    promoteGrid.style.display = 'none';
 }
 
 /**
@@ -461,6 +470,18 @@ function setPromotionIcons(color) {
     chessPiece.setImage(bishopIcon, 'bishop', color);
     chessPiece.setImage(rookIcon, 'rook', color);
     chessPiece.setImage(queenIcon, 'queen', color);
+}
+
+/**
+ * Sets the pawn's new piece type to the selected piece
+ * @param {string} piece The piece that has been chosen
+ */
+function selectPromotion(piece) {
+    chessPiece.promotePlayerPawn(piece);
+    //making the banner invisible again
+    removeBanner();
+    //moves to the next turn
+    nextTurn();
 }
 
 /**
