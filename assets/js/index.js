@@ -128,8 +128,23 @@ function updatePlayerVariables(playerType) {
  * Sets the advanced move inputs to what is read in local storage
  */
 function updateAdvancedMoves() {
+    //sets the select input for pawn promotion to what's been previously selected
     let pawnPromotionDiv = document.getElementById('pawn-promotion');
     pawnPromotionDiv.value = localStorage.getItem('pawnPromotion');
+
+    //updating the castling checkbox
+    let castlingDiv = document.getElementById('castling');
+    //only checking if castling is disabled as the checkbox is enabled by default
+    if (localStorage.getItem('castling') === 'disabled') {
+        castlingDiv.checked = false;
+    }
+
+    //updating the pawn passant checkbox
+    let passantDiv = document.getElementById('en-passant');
+    //only checking if castling is disabled as the checkbox is enabled by default
+    if (localStorage.getItem('passant') === 'disabled') {
+        passantDiv.checked = false;
+    }
 }
 
 /**
@@ -138,6 +153,30 @@ function updateAdvancedMoves() {
  */
 function updatePawnPromotion(value) {
     localStorage.setItem('pawnPromotion', value);
+}
+
+/**
+ * Sets the castling value in local storage
+ * @param {boolean} value true if enabled, false if disabled
+ */
+function updateCastling(value) {
+    if (value) {
+        localStorage.setItem('castling', 'enabled');
+    } else {
+        localStorage.setItem('castling', 'disabled');
+    }
+}
+
+/**
+ * Sets the en passant value in local storage
+ * @param {boolean} value true if enabled, false if disabled
+ */
+function updateEnPassant(value) {
+    if (value) {
+        localStorage.setItem('passant', 'enabled');
+    } else {
+        localStorage.setItem('passant', 'disabled');
+    }
 }
 
 /**

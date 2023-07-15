@@ -46,10 +46,10 @@
                         <option value="dead">Only promote from eliminated pieces</option>
                     </select>
                     <br>
-                    <input type="checkbox" id="castling" class="indented clickable" checked>
+                    <input type="checkbox" id="castling" class="indented clickable" onchange="updateCastling(checked)" checked>
                     <label for="castling" class="small-text clickable">Castling</label>
                     <br>
-                    <input type="checkbox" id="en-passant" class="indented clickable" checked>
+                    <input type="checkbox" id="en-passant" class="indented clickable" onchange="updateEnPassant(checked)" checked>
                     <label for="en-passant" class="small-text clickable">En Passant</label>
                 </details>
             </div>
