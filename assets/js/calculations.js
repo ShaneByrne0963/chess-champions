@@ -86,6 +86,7 @@ function getBestMoves(pieceDataList, pieceCurrentScores) {
             }
         }
     }
+    console.log(highestScore);
     return highestScorePieces;
 }
 
@@ -109,7 +110,8 @@ function getTileScore(pieceData, moveTileData) {
     if (tileBattle.battleScore < 0) {
         moveScore -= chessPiece.getValue(pieceData);
     } else {
-        moveScore += evaluateTargets(tileEval);
+        //taking targets into consideration if the move is low risk
+        moveScore += evaluateTargets(tileEval, tileBattle.battleScore);
     }
     return moveScore;
 }
@@ -415,7 +417,7 @@ function simulateBattle(pieceData, tileEval) {
         //finding the values of the current piece and the piece with the lowest value that is threatening it
         //stops high value pieces moving to tiles where they can be attacked by low value pieces
         let pieceValue = chessPiece.getValue(pieceData);
-        let lowestEnemyVal = chessPiece.findLowestValue(tileEval.enemyThreat);
+        let lowestEnemy = chessPiece.findLowestValue(tileEval.enemyThreat);
 
         //removing the current pieces value from the score
         //as the first move of the battle will be to eliminate the current piece
@@ -423,7 +425,7 @@ function simulateBattle(pieceData, tileEval) {
 
         //if all the enemyThreat values are greater than or equal to the
         //lowest value in enemyThreat, then simulate a battle
-        if (pieceValue <= lowestEnemyVal[0]) {
+        if (pieceValue <= lowestEnemy[0]) {
             while (aftermath.remainingEnemies.length > 0 && aftermath.remainingAllies.length > 0) {
                 //finding the piece with the lowest value in each of the tiles
                 //and keeping their values (stored in the first element) and
@@ -454,20 +456,21 @@ function simulateBattle(pieceData, tileEval) {
 
 /**
  * Calculates how much the targets at a tile will add to the total tile score
- * @param {object} evaluation The evaluation done at this tile
+ * @param {object} tileEval The evaluation done at this tile
+ * @param {integer} battleScore The final score after a battle has taken place (see simulateBattle function)
  * @returns {integer} The extra score from the targets
  */
-function evaluateTargets(evaluation) {
+function evaluateTargets(tileEval, battleScore) {
     let targetScore = 0;
-    if (evaluation.enemyTarget.length > 0) {
+    if (tileEval.enemyTarget.length > 0) {
         //if there is more than one target, then this makes the enemy consider
         //whether to lose one of the pieces or start a 'battle' for real
-        if (evaluation.enemyTarget.length > 1) {
-            //finds the target with the lowest value
-            let lowestTarget = chessPiece.findLowestValue(evaluation.enemyTarget);
-            if (evaluation.enemyThreat.length > 0) {
+        if (tileEval.enemyTarget.length > 1) {
+            //finds the target with the lowest value. The first element in the array is the value
+            let lowestTarget = chessPiece.findLowestValue(tileEval.enemyTarget)[0];
+            if (tileEval.enemyThreat.length > 0) {
                 //if there are threats at this tile, the enemy may start the battle if it benifits them more
-                targetScore = (lowestTarget < evaluation.battleScore) ? lowestTarget : evaluation.battleScore;
+                targetScore = (lowestTarget < battleScore) ? lowestTarget : battleScore;
             } else {
                 //if there are no pieces threatening this tile, then add the target with the
                 //lowest score to this tile because the enemy may sacrifice it to save the higher value piece
@@ -475,7 +478,7 @@ function evaluateTargets(evaluation) {
             }
         } else {
             //add 10% of the target's score if there is only one of them
-            targetScore = Math.floor(chessPiece.getValue(evaluation.enemyTarget[0]) / 10);
+            targetScore = Math.floor(chessPiece.getValue(tileEval.enemyTarget[0]) / 10);
         }
     }
     return targetScore;
