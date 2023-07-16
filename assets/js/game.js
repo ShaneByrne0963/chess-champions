@@ -331,6 +331,8 @@ function nextTurn() {
         if (checkmate) {
             checkmate = true;
             addAnnouncement(`Checkmate! ${lastPlayerName} wins!`);
+            setBanner('Checkmate!', lastPlayerName + ' wins!', '');
+            //
         } else {
             addAnnouncement("Check");
         }
