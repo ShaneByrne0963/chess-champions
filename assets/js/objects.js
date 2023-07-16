@@ -753,6 +753,18 @@ const pieceMovement = {
     },
 
     /**
+     * Gets how far a piece is from the start of its side of the board
+     * @param {integer} y The y position of the tile
+     * @param {string} color The color of the piece, used to determine which side is the start
+     * @returns {integer} How far the tile is from the start
+     */
+    getForwardDistance: (y, color) => {
+        let direction = pieceMovement.getForwardDirection(color);
+        let yDistance = (direction === 1) ? y : boardSize - 1 - y;
+        return yDistance;
+    },
+
+    /**
      * Checks if a piece can move to a certain tile
      * @param {object} pieceData The data object of the piece looking to attack
      * @param {['rule', x, y]} move The direction the piece has to take to move to the new tile
