@@ -54,8 +54,9 @@ function startGame() {
     //clears all the animations and announcements from the ui
     pieceAnimation.clear();
     clearAnnouncements();
+    removeBanner();
 
-    //stops any timeouts for the ai making its move
+    //stops any timeouts still active in the game
     pieceMovement.clearDelay();
 
     //clears the board before creating new pieces
