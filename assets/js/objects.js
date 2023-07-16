@@ -682,14 +682,10 @@ const pieceMovement = {
                 //for castling
                 case 'castle':
                     if (localStorage.getItem('castling') === 'enabled') {
-                        console.log(move);
-                        let tileEval = evaluateTileVector(pieceData, pieceData, move);
-                        console.log(move);
-                        console.log(tileEval);
-                        if (tileEval.allyGuarded !== null) {
-                            if (tileEval.allyGuarded.piece === 'rook') {
-                                moveTiles.push(tileEval.allyGuarded);
-                            }
+                        let castlePiece = pieceMovement.getCastle(pieceData, move[1]);
+                        console.log(castlePiece);
+                        if (castlePiece !== null) {
+                            moveTiles.push(castlePiece);
                         }
                     }
                     break;
@@ -902,12 +898,12 @@ const pieceMovement = {
             if (tileEval.enemyThreat.length > 0) {
                 break;
             }
-            //if there is a piece at the tile
-            if (checkingTile.piece !== '') {
+            //if there is a piece at the tile that is not the starting tile
+            if (xCurrent !== pieceData.x && checkingTile.piece !== '') {
                 if (checkingTile.color === pieceData.color) {
                     //one piece has to be a king and the other has to be a rook
                     if ((checkingTile.piece === 'rook' && pieceData.piece === 'king')
-                    || (checkingTile.piece === 'king' && pieceData.piece === 'rook')) {
+                        || (checkingTile.piece === 'king' && pieceData.piece === 'rook')) {
                         //getting the elements of each piece to check if either piece has moved
                         //if any of the pieces have already moved, then the castle is not valid
                         let pieceElement = chessPiece.findElement(pieceData.x, pieceData.y);
