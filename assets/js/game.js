@@ -125,7 +125,7 @@ function getStartingPiece(x, y) {
     }
     //setting up the pawns for both sides
     else if (y === 1 || y === boardSize - 2) {
-        piece = 'pawnNew';
+        piece = 'pawn';
         if (y === 1) {
             color = topColor;
         } else {
@@ -395,10 +395,6 @@ function announceElimination(pieceData) {
 
     //changing the piece text to be more suitable for the announcement
     let displayPiece = pieceData.piece;
-    //converting 'pawnNew' to just 'pawn'
-    if (displayPiece === 'pawnNew') {
-        displayPiece = 'pawn';
-    }
     //making the first letter capital
     let firstLetter = displayPiece[0];
     firstLetter = firstLetter.toUpperCase();

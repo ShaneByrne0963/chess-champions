@@ -223,7 +223,6 @@ const chessPiece = {
     //the value of all the pieces used to calculate the best move for the ai
     value: {
         pawn: 100,
-        pawnNew: 100,
         bishop: 300,
         knight: 300,
         rook: 500,
@@ -241,19 +240,11 @@ const chessPiece = {
         //creating a new element and setting it's classes
         let newPiece = document.createElement('div');
 
-        //converting the camelCase in pawnNew to html standard pawn-new
-        let pieceClass = piece;
-        //used to find the correct location of it's image in the directory. "pawnNew" will result in nothing
-        let pieceImage = piece;
-        if (piece === 'pawnNew') {
-            pieceClass = 'pawn-new';
-            pieceImage = 'pawn';
-        }
         //setting all the classes for the piece
-        newPiece.className = `chess-piece ${color} ${pieceClass}`;
+        newPiece.className = `chess-piece ${color} ${piece} not-moved`;
 
         //finding the correct image using pieceImage and color
-        chessPiece.setImage(newPiece, pieceImage, color);
+        chessPiece.setImage(newPiece, piece, color);
 
         //adding the newly created element to the specified tile element
         tileElement.appendChild(newPiece);
@@ -318,7 +309,7 @@ const chessPiece = {
         //validating if the class is a string or an array
         if (typeof tileClass === 'string' || typeof tileClass === 'object') {
             //all of the classes that are considered chess pieces
-            let pieceNames = ['pawn-new', 'pawn', 'knight', 'bishop', 'rook', 'queen', 'king'];
+            let pieceNames = ['pawn', 'knight', 'bishop', 'rook', 'queen', 'king'];
             for (let i = 0; i < pieceNames.length; i++) {
                 //checking for a class that matches any piece if the input is a string
                 if (typeof tileClass === 'string') {
@@ -334,10 +325,6 @@ const chessPiece = {
                         break;
                     }
                 }
-            }
-            //converting the html naming convention to camelCase if necessary
-            if (foundPiece === 'pawn-new') {
-                foundPiece = 'pawnNew';
             }
         }
         return foundPiece;
@@ -370,10 +357,6 @@ const chessPiece = {
     setPieceType: (pieceElement, newPiece) => {
         //getting the original piece type from the element
         let oldPiece = chessPiece.getTypeFromClass(pieceElement.classList);
-        //converting camelCase to html naming convention
-        if (oldPiece === 'pawnNew') {
-            oldPiece = 'pawn-new';
-        }
         //removing the piece type
         pieceElement.classList.remove(oldPiece);
         //and replacing it with the new one
@@ -403,13 +386,8 @@ const chessPiece = {
         //first removing the 'clickable' class from all of the pieces to stop player input until it's their turn again
         tile.removeAllInteraction();
 
-        //getting the information about the piece
-        let pieceData = tile.getData(pieceElement.parentNode);
-
-        //if the piece is "pawnNew", then it will be converted to 'pawn' after its first move
-        if (pieceData.piece === 'pawnNew') {
-            chessPiece.setPieceType(pieceElement, 'pawn');
-        }
+        //removing the not-moved class from the piece after it makes its first move
+        pieceElement.classList.remove('not-moved');
 
         //starting the movement animation
         pieceAnimation.start(pieceElement, newTileElement);
@@ -879,16 +857,10 @@ const graveyard = {
         //creating the element to be put in the graveyard
         let deadPiece = document.createElement('div');
 
-        //making pawns and new pawns the same for the image address
-        let pieceImage = piece;
-        if (pieceImage === 'pawnNew') {
-            pieceImage = 'pawn';
-        }
-
         //creating the classes to style and access the piece
-        deadPiece.className = `piece-dead dead-${pieceImage}`;
+        deadPiece.className = `piece-dead dead-${piece}`;
         //creating the image url to access the particular piece
-        deadPiece.style.backgroundImage = `url(assets/images/chess-pieces/${color}-${pieceImage}.png)`;
+        deadPiece.style.backgroundImage = `url(assets/images/chess-pieces/${color}-${piece}.png)`;
 
         graveyardElement.appendChild(deadPiece);
     },
