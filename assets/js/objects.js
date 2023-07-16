@@ -886,6 +886,47 @@ const pieceMovement = {
     },
 
     /**
+     * Gets if a piece can perform a castling move, and returns the object it can castle with
+     * @param {object} pieceData The data object {x, y, piece, color} of the piece checking for a castling move
+     * @param {integer} xDirection The direction (1 or -1) the piece is looking in
+     * @returns {object} The data object {x, y, piece, color} of the piece that can castle, or null if none
+     */
+    getCastle: (pieceData, xDirection) => {
+        let castlePiece = null;
+        //storing the current x position of the loop
+        let xCurrent = pieceData.x;
+        while (tile.inBounds(xCurrent, pieceData.y)) {
+            let checkingTile = chessPiece.findData(xCurrent, pieceData.y);
+            //if an enemy piece can attack any tile in between, then it is not a valid move
+            let tileEval = evaluateTile(checkingTile, pieceData);
+            if (tileEval.enemyThreat.length > 0) {
+                break;
+            }
+            //if there is a piece at the tile
+            if (checkingTile.piece !== '') {
+                if (checkingTile.color === pieceData.color) {
+                    //one piece has to be a king and the other has to be a rook
+                    if ((checkingTile.piece === 'rook' && pieceData.piece === 'king')
+                    || (checkingTile.piece === 'king' && pieceData.piece === 'rook')) {
+                        //getting the elements of each piece to check if either piece has moved
+                        //if any of the pieces have already moved, then the castle is not valid
+                        let pieceElement = chessPiece.findElement(pieceData.x, pieceData.y);
+                        let checkElement = chessPiece.findElement(xCurrent, pieceData.y);
+                        if (pieceElement.classList.contains('not-moved') && checkElement.classList.contains('not-moved')) {
+                            castlePiece = checkingTile;
+                        }
+                    }
+                }
+                //stop the loop if there is any piece on the tile
+                break;
+            }
+            //moving on to the next tile if nothing was hit
+            xCurrent += xDirection;
+        }
+        return castlePiece;
+    },
+
+    /**
      * Removes any timeout delay for the AI making a move
      */
     clearDelay: () => {
