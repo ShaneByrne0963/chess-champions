@@ -413,12 +413,13 @@ const chessPiece = {
     move: (pieceElement, newTileElement) => {
         //first removing the 'clickable' class from all of the pieces to stop player input until it's their turn again
         tile.removeAllInteraction();
-
         //removing the not-moved class from the piece after it makes its first move
         pieceElement.classList.remove('not-moved');
 
-        //starting the movement animation
-        pieceAnimation.start(pieceElement, newTileElement);
+        if (!pieceMovement.isCastlingMove(pieceElement, tile.getPieceElement(newTileElement))) {
+            //starting the movement animation if it is a normal move
+            pieceAnimation.start(pieceElement, newTileElement);
+        }
     },
 
     /**
@@ -697,7 +698,6 @@ const pieceMovement = {
                 case 'castle':
                     if (localStorage.getItem('castling') === 'enabled') {
                         let castlePiece = pieceMovement.getCastle(pieceData, move[1]);
-                        console.log(castlePiece);
                         if (castlePiece !== null) {
                             moveTiles.push(castlePiece);
                         }
@@ -934,6 +934,54 @@ const pieceMovement = {
             xCurrent += xDirection;
         }
         return castlePiece;
+    },
+
+    /**
+     * Checks if a move is a castling move, and performs it if it is
+     * @param {object} firstPiece The element of the first piece
+     * @param {object} secondPiece The element of the second piece
+     * @returns {boolean} True if the castling move was successful
+     */
+    isCastlingMove: (firstPiece, secondPiece) => {
+        //checking if both piece elements exist
+        if (firstPiece !== null && secondPiece !== null) {
+            //if the pieces at both tiles have the same color, then it is a castling move
+            let firstData = tile.getData(firstPiece.parentNode);
+            let secondData = tile.getData(secondPiece.parentNode);
+            if (firstData.color === secondData.color) {
+                //removing the not-moved class from the second piece as it is also making a move
+                secondPiece.classList.remove('not-moved');
+                //finding out which piece is the king and which is the rook
+                let kingElement, rookElement, kingData, rookData;
+                //setting the elements and data objects to the appropriate pieces
+                if (firstData.piece === 'king') {
+                    kingElement = firstPiece;
+                    rookElement = secondPiece;
+                    kingData = firstData;
+                    rookData = secondData;
+                } else {
+                    kingElement = secondPiece;
+                    rookElement = firstPiece;
+                    kingData = secondData;
+                    rookData = firstData;
+                }
+                let kingDirection = 1;
+                //reversing the king direction if the king is more to the right than the rook
+                if (kingData.x > rookData.x) {
+                    kingDirection = -1;
+                }
+                //the king always moves 2 tiles in a castling move
+                let kingMoveTile = tile.getElement(kingData.x + (kingDirection * 2), kingData.y);
+                //the rook will always be 1 tile beside the king's original tile, in the king's direction
+                let rookMoveTile = tile.getElement(kingData.x + kingDirection, kingData.y);
+
+                //starting both animations
+                pieceAnimation.start(kingElement, kingMoveTile);
+                pieceAnimation.start(rookElement, rookMoveTile);
+                return true;
+            }
+        }
+        return false;
     },
 
     /**
