@@ -130,11 +130,43 @@ function getMoveOnlyScore(pieceData, moveTileData) {
     if (moveTileData.piece !== '') {
         moveScore += chessPiece.value[moveTileData.piece];
     }
-    //add 15 points for pawns to encourage movement
+    //add extra points for pawns to encourage movement
     if (pieceData.piece === 'pawn') {
-        moveScore += 1500000 * moveTileData.y;
+        moveScore += findPawnScore(pieceData, moveTileData);
     }
     return moveScore;
+}
+
+/**
+ * Gets the extra points added to a pawn depending on how far down the board they are
+ * @param {object} pieceData The data object {x, y, piece, color} of the pawn
+ * @param {object} moveTileData The data object {x, y, piece, color} of the tile the pawn will move to
+ * @returns {integer} The total score to be added to the tile
+ */
+function findPawnScore(pieceData, moveTileData) {
+    //how many points per tile moved the pawn will get
+    let tileScore = 0;
+    //if pawns can be promoted to any piece, then set the points per tile to always be at maximum
+    if (localStorage.getItem('pawnPromotion') === 'any') {
+        tileScore = 24;
+    }
+    //if the pawn can only be promoted to pieces from the grave, then the
+    //score will depend on the best piece to revive
+    else {
+        //finding the grave piece with the highest value, if any
+        let highestValue = 0;
+        let graves = graveyard.getElements(pieceData.color);
+        for (let grave of graves) {
+            let gravePiece = graveyard.getDeadPiece(grave);
+            let graveValue = chessPiece.value[gravePiece];
+            if (graveValue > 100 && graveValue > highestValue) {
+                highestValue = graveValue;
+            }
+        }
+
+        tileScore = 15 + (highestValue / 100);
+    }
+    return pieceMovement.getForwardDistance(moveTileData.y, pieceData.color) * tileScore;
 }
 
 /**
