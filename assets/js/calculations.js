@@ -86,7 +86,6 @@ function getBestMoves(pieceDataList, pieceCurrentScores) {
             }
         }
     }
-    console.log(highestScore);
     return highestScorePieces;
 }
 
@@ -341,12 +340,17 @@ function getPieceRelationship(evaluatingPiece, foundPiece, move, isBeside) {
         enemyThreat: null,
         allyGuarded: null
     };
-
     //finds the color of the opponent
     enemyColor = (evaluatingPiece.color === 'white') ? 'black' : 'white';
-
+    //treating the 'castle' move rule like a vector
+    let moveRule = move[0];
+    if (moveRule === 'first-castle') {
+        moveRule = 'vector';
+    }
+    //creating a new array with the updated rule to avoid changing the original rule
+    let moveForward = [moveRule, move[1], move[2]];
     //reversing the move to evaluate pieces that can attack the evaluating piece at this tile
-    let moveReverse = [move[0], -move[1], -move[2]];
+    let moveReverse = [moveRule, -move[1], -move[2]];
 
     if (foundPiece.color === evaluatingPiece.color) { //if the evaluation runs into a friendly piece
         //if the friendly piece can attack the tile if an enemy moves to it
@@ -355,7 +359,7 @@ function getPieceRelationship(evaluatingPiece, foundPiece, move, isBeside) {
         }
     } else if (foundPiece.color === enemyColor) { //if the evaluation runs into an enemy piece
         //if the enemy piece can be attacked by the piece at this tile
-        if (pieceMovement.canAttack(evaluatingPiece, move, isBeside)) {
+        if (pieceMovement.canAttack(evaluatingPiece, moveForward, isBeside)) {
             tileEval.enemyTarget = foundPiece;
         }
         //if the enemy piece can attack the piece at this tile

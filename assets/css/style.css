@@ -155,7 +155,8 @@ body {
 }
 
 /* game options for restarting and returning to the main menu */
-#ui-area>button, #ui-area a {
+#ui-area>button,
+#ui-area a {
     display: inline-block;
     margin: 16px auto;
     padding: 16px;
@@ -205,13 +206,19 @@ body {
 /* visually displaying the possible moves a selected piece can take */
 .possible-move {
     height: 100%;
-    background: url("../images/possible-move.png") no-repeat center center;
+    background-image: url("../images/move-icons/possible-move.png");
     background-size: cover;
 }
 
 /* the move will display a skull if there is a piece already on the tile */
 .chess-piece>.possible-move {
-    background-image: url("../images/possible-elimination.png");
+    background-image: url("../images/move-icons/possible-elimination.png");
+}
+
+.possible-castle {
+    height: 100%;
+    background-image: url("../images/move-icons/possible-castle.png");
+    background-size: cover;
 }
 
 /* chess pieces */

@@ -576,7 +576,8 @@ const pieceMovement = {
     ['normal', -2, 1], ['normal', 2, 1], ['normal', -1, 2], ['normal', 1, 2]],
 
     //moves in the four cardinal directions
-    rook: [['vector', 1, 0], ['vector', 0, -1], ['vector', -1, 0], ['vector', 0, 1]],
+    rook: [['vector', 1, 0], ['vector', 0, -1], ['vector', -1, 0], ['vector', 0, 1],
+    ['first-castle', -1, 0], ['first-castle', 1, 0]], //castling moves
 
     //moves in the four cardinal directions and to tiles diagonal to it
     queen: [['vector', 1, 0], ['vector', 1, -1], ['vector', 0, -1], ['vector', -1, -1],
@@ -584,7 +585,8 @@ const pieceMovement = {
 
     //can move one tile in any direction
     king: [['normal', 1, 0], ['normal', 1, -1], ['normal', 0, -1], ['normal', -1, -1],
-    ['normal', -1, 0], ['normal', -1, 1], ['normal', 0, 1], ['normal', 1, 1]],
+    ['normal', -1, 0], ['normal', -1, 1], ['normal', 0, 1], ['normal', 1, 1],
+    ['first-castle', -1, 0], ['first-castle', 1, 0]], //castling moves
 
     //stores the timeout for the ai to make a move
     moveWait: null,
@@ -675,6 +677,20 @@ const pieceMovement = {
                 case 'disarmed':
                     if (checkPiece.color === '') {
                         moveTiles.push(checkPiece);
+                    }
+                    break;
+                //for castling
+                case 'castle':
+                    if (localStorage.getItem('castling') === 'enabled') {
+                        console.log(move);
+                        let tileEval = evaluateTileVector(pieceData, pieceData, move);
+                        console.log(move);
+                        console.log(tileEval);
+                        if (tileEval.allyGuarded !== null) {
+                            if (tileEval.allyGuarded.piece === 'rook') {
+                                moveTiles.push(tileEval.allyGuarded);
+                            }
+                        }
                     }
                     break;
             }
