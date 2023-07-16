@@ -4,6 +4,10 @@ const animationTime = 100; //the amount of time the animation takes to move from
 //the maximum number of announcements that can be displayed
 //when this limit is reached the oldest will be destroyed
 const announcementLimit = 10;
+//the time it takes for an ai to make its move
+const aiDelay = 1000;
+//how long the checkmate banner appears on screen before removing itself
+const checkmateBannerTime = 5000;
 
 //initializes game when the page loads
 document.onload = gameInit();
@@ -332,7 +336,8 @@ function nextTurn() {
             checkmate = true;
             addAnnouncement(`Checkmate! ${lastPlayerName} wins!`);
             setBanner('Checkmate!', lastPlayerName + ' wins!', '');
-            //
+            //removes the checkmate banner after a certain amount of time to allow the user to see the board again
+            setTimeout(removeBanner, checkmateBannerTime);
         } else {
             addAnnouncement("Check");
         }
@@ -358,7 +363,7 @@ function allowTurn(color) {
         }
     } else {
         //the ai script running if it is the computer's turn
-        pieceMovement.moveWait = setTimeout(makeMove, 1000, color);
+        pieceMovement.moveWait = setTimeout(makeMove, aiDelay, color);
     }
 }
 
