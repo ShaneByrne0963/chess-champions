@@ -928,6 +928,8 @@ const graveyard = {
      * @param {object} graves An array of all the player's dead pieces
      */
     pickDeadPiece: (graves) => {
+        //adds the banner that notifies the player to pick a piece from the graveyard
+        setBanner('Pawn Promoted!', 'Select a piece from the graveyard to bring back to the battlefield!', '');
         for (let grave of graves) {
             //getting the classes of the piece
             let graveClass = grave.className;

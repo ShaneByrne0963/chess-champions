@@ -433,7 +433,12 @@ function setBanner(heading, subheading, promotionColor) {
 
     //displaying the pawn promotion grid if necessary
     if (promotionColor !== '') {
+        //adding extra space underneath the banner to make room for the promote icons
+        bannerDiv.className = 'pawn-pick';
         setPromotionIcons(promotionColor);
+    } else {
+        //making the banner smaller if there are no promote icons
+        bannerDiv.className = 'notify';
     }
 }
 
@@ -519,6 +524,8 @@ function isCheckmate(color) {
  * the other side of the board. Brings the piece back to life in place of the pawn
  */
 function revivePlayer() {
+    //disables the banner
+    removeBanner();
     //replaces the pawn with the piece that was clicked on
     graveyard.replaceWithDead(this);
 
