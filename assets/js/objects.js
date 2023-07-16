@@ -801,14 +801,12 @@ const pieceMovement = {
      */
     isKingThreatened: (tileData, pieceMovingData) => {
         let tileEval;
-        //the king's y position at the end of the move
-        let kingY;
+        //the king's data object {x, y, piece, color}
+        let kingData;
 
         if (pieceMovingData.piece !== 'king') {
             //finding the king if it isn't the piece that will move
-            let kingData = tile.findKing(pieceMovingData.color);
-            //if the piece that is looking to move is not the king, that means the king's position won't change
-            kingY = kingData.y;
+            kingData = tile.findKing(pieceMovingData.color);
 
             //getting the elements of the piece that will move and the tile it will move to
             let tileElement = tile.getElement(tileData.x, tileData.y);
@@ -816,13 +814,26 @@ const pieceMovement = {
             tileEval = evaluateTileWithMove(kingData, kingData, pieceElement, tileElement);
         } else {
             //if the piece that is looking to move is the king, that means the king's position will change to currentTile's position
-            kingY = tileData.y;
+            kingData = pieceMovingData;
             tileEval = evaluateTile(tileData, pieceMovingData);
         }
+        //if pawns can be promoted to any piece, then any threat is considered valid
+        if (localStorage.getItem('pawnPromotion') === 'any' && tileEval.enemyThreat.length > 0) {
+            return true;
+        }
         for (let threat of tileEval.enemyThreat) {
+            //if there is a piece at the tile with a high value about to be eliminated, then the
+            //enemy pawns will be able to move to the end of the board, possibly making the king vulnerable
+            let tilePiece = chessPiece.findData(tileData.x, tileData.y);
+            let pieceValue = 0;
+            //if there is a piece at the tile, get its value
+            if (tilePiece.piece !== '') {
+                pieceValue = chessPiece.value[tilePiece.piece];
+            }
             //pawns cannot reach the end of the board without a graveyard piece to revive,
             //so if the king is at the end of the board with these conditions it is safe from pawns
-            if (!(threat.piece === 'pawn' && chessPiece.isAtBoardEnd(threat.color, kingY) && !graveyard.canRevive(threat.color))) {
+            if (!(threat.piece === 'pawn' && chessPiece.isAtBoardEnd(threat.color, kingData.y)
+            && !graveyard.canRevive(threat.color) && pieceValue <= chessPiece.value['pawn'])) {
                 return true;
             }
         }
