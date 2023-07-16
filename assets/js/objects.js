@@ -520,16 +520,16 @@ const chessPiece = {
 
     /**
      * Finds the piece with the lowest value in an array
-     * @param {object} pieces The tile data of all the pieces to be checked
+     * @param {object} pieces The tile data {x, y, piece, color} of all the pieces to be checked
      * @returns An array containing the lowest value and it's position on the pieces array [lowestValue, lowestPosition]
      */
     findLowestValue: (pieces) => {
-        let lowestValue = chessPiece.value[pieces[0].piece];
+        let lowestValue = chessPiece.getValue(pieces[0].piece);
         let lowestPosition = 0;
 
         for (let i = 1; i < pieces.length; i++) {
             let currentPiece = pieces[i];
-            let pieceValue = chessPiece.value[currentPiece.piece];
+            let pieceValue = chessPiece.getValue(currentPiece.piece);
             if (pieceValue < lowestValue) {
                 lowestValue = pieceValue;
                 lowestPosition = i;
