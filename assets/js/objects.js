@@ -824,11 +824,10 @@ const pieceMovement = {
         for (let threat of tileEval.enemyThreat) {
             //if there is a piece at the tile with a high value about to be eliminated, then the
             //enemy pawns will be able to move to the end of the board, possibly making the king vulnerable
-            let tilePiece = chessPiece.findData(tileData.x, tileData.y);
             let pieceValue = 0;
-            //if there is a piece at the tile, get its value
-            if (tilePiece.piece !== '') {
-                pieceValue = chessPiece.value[tilePiece.piece];
+            //if there is a piece at the tile that is not the piece doing the evaluation, then get its value
+            if (tileData.piece !== '' && (tileData.x !== pieceMovingData.x || tileData.y !== pieceMovingData.y)) {
+                pieceValue = chessPiece.value[tileData.piece];
             }
             //pawns cannot reach the end of the board without a graveyard piece to revive,
             //so if the king is at the end of the board with these conditions it is safe from pawns
