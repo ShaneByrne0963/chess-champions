@@ -192,50 +192,49 @@ function tileClick(x, y) {
     if (clickedClass.includes('clickable')) {
 
         //checking if the tile that's been clicked on is a possible move
-        let clickedChildren = clickedTile.children;
+        if (canMoveHere(clickedTile)) {
+            //gets the selected tile
+            let selectedTile = document.getElementById('tile-selected').parentNode;
+            //deselects all the tiles and begins the piece movement animation
+            tile.deselectAll();
+            chessPiece.move(selectedTile, clickedTile);
+        } else {
+            //clear all selected tiles
+            tile.deselectAll();
 
-        //if the tile has any children
-        if (clickedChildren.length > 0) {
-            //loop through all the children until a child with class name 'possible-move' is found.
-            //should only have one child but this is a safeguard in case there's more than one
-            let isPossibleMove = false;
-            for (let child of clickedChildren) {
-                //if there is a move icon as a child of the tile, then the piece can move there
-                if (child.classList.contains('possible-move')) {
-                    isPossibleMove = true;
-                } else if (child.classList.contains('chess-piece')) {
-                    //if there is a piece already on the tile, then check within the piece element if there is a move icon
-                    let pieceChildren = child.children;
-                    for (let pieceChild of pieceChildren) {
-                        if (pieceChild.classList.contains('possible-move')) {
-                            isPossibleMove = true;
-                            break;
-                        }
-                    }
-                }
-                if (isPossibleMove) {
-                    //gets the selected tile
-                    let selectedTile = document.getElementById('tile-selected').parentNode;
-                    //deselects all the tiles and begins the piece movement animation
-                    tile.deselectAll();
-                    chessPiece.move(selectedTile, clickedTile);
-                    break;
-                }
-            }
-            if (!isPossibleMove) {
-                //clear all selected tiles
-                tile.deselectAll();
-
-                let pieceElement = tile.getPieceElement(clickedTile);
-                if (pieceElement !== null) {
-                    tile.select(clickedTile);
-                }
+            //and selecting the new one
+            let pieceElement = tile.getPieceElement(clickedTile);
+            if (pieceElement !== null) {
+                tile.select(clickedTile);
             }
         }
     } else {
         //clear all selected tiles
         tile.deselectAll();
     }
+}
+
+/**
+ * Checks if a tile has a possible move icon
+ * @param {object} tileElement The element of the tile that is being checked
+ * @returns {boolean} If a selected piece can move to this tile
+ */
+function canMoveHere(tileElement) {
+    let childDivs = tileElement.children;
+    for (let child of childDivs) {
+        if (child.classList.contains('possible-move')) {
+            return true
+        } else if (child.classList.contains('chess-piece')) {
+            //if there is a piece already on the tile, then check within the piece element if there is a move icon
+            let pieceChildren = child.children;
+            for (let pieceChild of pieceChildren) {
+                if (pieceChild.classList.contains('possible-move')) {
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
 }
 
 /**
