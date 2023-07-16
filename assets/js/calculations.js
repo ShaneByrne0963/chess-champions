@@ -111,7 +111,7 @@ function getTileScore(pieceData, moveTileData) {
     } else {
         //add 10% of the values of every target on this tile if the risk at this tile is low
         for (let target of tileEval.enemyTarget) {
-            moveScore += Math.floor(chessPiece.getValue(target.piece) / 10);
+            moveScore += Math.floor(chessPiece.getValue(target) / 10);
         }
     }
     return moveScore;

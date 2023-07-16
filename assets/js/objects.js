@@ -524,12 +524,12 @@ const chessPiece = {
      * @returns An array containing the lowest value and it's position on the pieces array [lowestValue, lowestPosition]
      */
     findLowestValue: (pieces) => {
-        let lowestValue = chessPiece.getValue(pieces[0].piece);
+        let lowestValue = chessPiece.getValue(pieces[0]);
         let lowestPosition = 0;
 
         for (let i = 1; i < pieces.length; i++) {
             let currentPiece = pieces[i];
-            let pieceValue = chessPiece.getValue(currentPiece.piece);
+            let pieceValue = chessPiece.getValue(currentPiece);
             if (pieceValue < lowestValue) {
                 lowestValue = pieceValue;
                 lowestPosition = i;
