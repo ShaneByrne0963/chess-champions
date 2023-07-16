@@ -300,6 +300,20 @@ const chessPiece = {
     },
 
     /**
+     * Gets the value of a piece, taking a pawn's tile position into consideration
+     * @param {object} pieceData The data object {x, y, piece, color} of the piece
+     * @returns {integer} The value of the piece
+     */
+    getValue: (pieceData) => {
+        if (pieceData.piece === 'pawn') {
+            //the further the pawn is down the board, the higher the value
+            return chessPiece.value[pieceData.piece] + findPawnScore(pieceData, pieceData);
+        } else {
+            return chessPiece.value[pieceData.piece];
+        }
+    },
+
+    /**
      * reads a tiles class and determines what piece it has
      * @param {object} tileClass the class of the tile. should be in string or array form
      * @returns {string} The piece in the given tile, or an empty string if there is no piece

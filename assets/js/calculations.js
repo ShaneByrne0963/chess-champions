@@ -105,10 +105,9 @@ function getTileScore(pieceData, moveTileData) {
 
     //calculates the risk of the piece getting eliminated if it moves to this tile
     let tileBattle = simulateBattle(pieceData, tileEval);
-    //if the outcome of the battle is negative for the current piece
+    //if the outcome of the battle is negative for the current piece, then remove the piece's value from the score
     if (tileBattle.battleScore < 0) {
-        //remove the piece's value from the score
-        moveScore -= chessPiece.value[pieceData.piece];
+        moveScore -= chessPiece.getValue(pieceData);
     } else {
         //add 10% of the values of every target on this tile if the risk at this tile is low
         for (let target of tileEval.enemyTarget) {
@@ -128,7 +127,7 @@ function getMoveOnlyScore(pieceData, moveTileData) {
     let moveScore = 0;
     //if there is a piece already on the tile, then add that piece's value to the score
     if (moveTileData.piece !== '') {
-        moveScore += chessPiece.value[moveTileData.piece];
+        moveScore += chessPiece.getValue(moveTileData);
     }
     //add extra points for pawns to encourage movement
     if (pieceData.piece === 'pawn') {
@@ -163,7 +162,8 @@ function findPawnScore(pieceData, moveTileData) {
                 highestValue = graveValue;
             }
         }
-
+        //adding 15 points added with 1% of the highest piece in the graveyard's value.
+        //if the queen in in the graveyard this brings the score to 24
         tileScore = 15 + (highestValue / 100);
     }
     return pieceMovement.getForwardDistance(moveTileData.y, pieceData.color) * tileScore;
@@ -417,7 +417,7 @@ function simulateBattle(pieceData, tileEval) {
     if (tileEval.enemyThreat.length > 0) {
         //finding the values of the current piece and the piece with the lowest value that is threatening it
         //stops high value pieces moving to tiles where they can be attacked by low value pieces
-        let pieceValue = chessPiece.value[pieceData.piece];
+        let pieceValue = chessPiece.getValue(pieceData);
         let lowestEnemyVal = chessPiece.findLowestValue(tileEval.enemyThreat);
 
         //removing the current pieces value from the score
