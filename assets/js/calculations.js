@@ -109,10 +109,7 @@ function getTileScore(pieceData, moveTileData) {
     if (tileBattle.battleScore < 0) {
         moveScore -= chessPiece.getValue(pieceData);
     } else {
-        //add 10% of the values of every target on this tile if the risk at this tile is low
-        for (let target of tileEval.enemyTarget) {
-            moveScore += Math.floor(chessPiece.getValue(target) / 10);
-        }
+        moveScore += evaluateTargets(tileEval);
     }
     return moveScore;
 }
@@ -453,4 +450,33 @@ function simulateBattle(pieceData, tileEval) {
         }
     }
     return aftermath;
+}
+
+/**
+ * Calculates how much the targets at a tile will add to the total tile score
+ * @param {object} evaluation The evaluation done at this tile
+ * @returns {integer} The extra score from the targets
+ */
+function evaluateTargets(evaluation) {
+    let targetScore = 0;
+    if (evaluation.enemyTarget.length > 0) {
+        //if there is more than one target, then this makes the enemy consider
+        //whether to lose one of the pieces or start a 'battle' for real
+        if (evaluation.enemyTarget.length > 1) {
+            //finds the target with the lowest value
+            let lowestTarget = chessPiece.findLowestValue(evaluation.enemyTarget);
+            if (evaluation.enemyThreat.length > 0) {
+                //if there are threats at this tile, the enemy may start the battle if it benifits them more
+                targetScore = (lowestTarget < evaluation.battleScore) ? lowestTarget : evaluation.battleScore;
+            } else {
+                //if there are no pieces threatening this tile, then add the target with the
+                //lowest score to this tile because the enemy may sacrifice it to save the higher value piece
+                targetScore = lowestTarget;
+            }
+        } else {
+            //add 10% of the target's score if there is only one of them
+            targetScore = Math.floor(chessPiece.getValue(evaluation.enemyTarget[0]) / 10);
+        }
+    }
+    return targetScore;
 }
