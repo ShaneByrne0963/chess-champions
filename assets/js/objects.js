@@ -979,6 +979,10 @@ const graveyard = {
      * @returns {boolean} If there are pieces in the graveyard the player can revive
      */
     canRevive: (color) => {
+        //if pawn promotion is set to any, then it is not necessary to have a piece in the graveyard to promote
+        if (localStorage.getItem('pawnPromotion') === 'any') {
+            return true;
+        }
         let hasDeadPieces = false;
         let graves = graveyard.getElements(color);
 
