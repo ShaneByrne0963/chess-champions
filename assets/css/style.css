@@ -210,15 +210,14 @@ body {
     background-size: cover;
 }
 
-/* the move will display a skull if there is a piece already on the tile */
+/* the move will display a red circle if there is a piece already on the tile */
 .chess-piece>.possible-move {
     background-image: url("../images/move-icons/possible-elimination.png");
 }
 
-.possible-castle {
-    height: 100%;
+/* displaying the arrow swap icon for castling moves */
+.chess-piece>.castling {
     background-image: url("../images/move-icons/possible-castle.png");
-    background-size: cover;
 }
 
 /* chess pieces */

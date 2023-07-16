@@ -143,6 +143,12 @@ const tile = {
                 //creating a div displaying an image on every possible move
                 let moveOption = document.createElement('div');
                 moveOption.className = "possible-move";
+                //adding the castling class to the possible move icon if the piece color of the two tiles match
+                let moveData = tile.getData(move);
+                if (moveData.color === pieceData.color) {
+                    moveOption.className += " castling";
+                }
+
                 let movePiece = tile.getPieceElement(move);
                 //if there is an enemy piece on the tile to move to, add the possible move to the piece instead of the tile
                 if (movePiece !== null) {
@@ -168,7 +174,6 @@ const tile = {
         }
         //removing the possible move divs
         let movesExisting = document.getElementsByClassName('possible-move');
-
         while (movesExisting.length > 0) {
             //remove the 'clickable' class from the parent element
             let moveParent = movesExisting[0].parentNode;
