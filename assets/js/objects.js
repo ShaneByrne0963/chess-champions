@@ -547,14 +547,12 @@ const chessPiece = {
 const pieceMovement = {
     //chess move rules:
     // 'normal' means add the following coordinates to the current tile
+    // 'first' means the move is only possible on the piece's first move
     // 'attack' means the piece can only move to the tile if an enemy is on it
     // 'disarmed' means the piece cannot move to the tile if an enemy is on it
     // 'vector' means continue in that direction until an obstacle is reached
     // 'forward' means in the direction of the enemy side, followed by a number which is the number of steps
-    pawn: [['disarmed', 0, 'forward1'], ['attack', -1, 'forward1'], ['attack', 1, 'forward1']],
-
-    //for pawns that have not made a move yet, they can move one step further than ones who have
-    pawnNew: [['disarmed', 0, 'forward1'], ['disarmed', 0, 'forward2'], ['attack', -1, 'forward1'], ['attack', 1, 'forward1']],
+    pawn: [['disarmed', 0, 'forward1'], ['first-disarmed', 0, 'forward2'], ['attack', -1, 'forward1'], ['attack', 1, 'forward1']],
 
     //can only move to the tiles diagonal to it.
     bishop: [['vector', 1, 1], ['vector', -1, 1], ['vector', -1, -1], ['vector', 1, -1]],
@@ -614,6 +612,18 @@ const pieceMovement = {
     getTilesFromMove: (pieceData, move) => {
         //storing all the valid moves in this array
         let moveTiles = [];
+        let moveRule = move[0];
+        //if the move is only available on the first move, only allow it if the piece hasn't moved yet
+        if (moveRule.includes('first')) {
+            //ending the evaluation early if the piece has already moved
+            let pieceElement = chessPiece.findElement(pieceData.x, pieceData.y);
+            if (!pieceElement.classList.contains('not-moved')) {
+                return moveTiles;
+            }
+        }
+        //getting rid of the 'first' part of the rule as it is unnecessary at this point
+        moveRule = moveRule.replace('first-', '');
+
         //declaring the variables storing the coordinates of the tiles to check
         let newX = pieceData.x + move[1]; //the x coordinate is always the second element in a moves array
         let newY = pieceMovement.getYMovement(newX, pieceData.y, pieceData, move); //the y coordinate is always the third element in a moves array
@@ -625,7 +635,7 @@ const pieceMovement = {
             let checkPiece = chessPiece.findData(newX, newY);
 
             //checking the rule for the move set
-            switch (move[0]) {
+            switch (moveRule) {
                 //for moves that add the coordinates to its tile position
                 case 'normal':
                     //cannot move to a tile that has a friendly piece
