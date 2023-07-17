@@ -112,18 +112,24 @@ a:hover {
     font-size: 1.5em;
 }
 
-/* player turn display */
+/* heading showing the player whose turn it is */
 #player-turn {
     padding: 16px;
     grid-column-start: 1;
     grid-column-end: 3;
 }
 
+/* each of the player's uis */
 #player1-ui,
 #player2-ui {
     padding: 16px;
     border: 1px solid black;
     background-color: #76391F;
+    display: grid;
+    grid-template-columns: 1fr;
+    /* each element in the grid will take up the space it needs,
+    and the graveyard div will take the remaining space */
+    grid-template-rows: auto auto 1fr auto;
 }
 
 /* removing the right border of player 2 ui because the ui itself has a border */
