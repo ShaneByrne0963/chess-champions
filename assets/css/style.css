@@ -70,6 +70,8 @@ a:hover {
 /* increasing the space between the castling and en passant checkboxes and the link to their wiki pages */
 #advanced-settings a {
     margin-left: 8px;
+    /* making the style different to differentiate it between normal text and links */
+    font-style: italic;
 }
 
 /* the button that takes the user to the game */
