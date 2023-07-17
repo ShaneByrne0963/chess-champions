@@ -418,7 +418,7 @@ const chessPiece = {
 
         if (!pieceMovement.isCastlingMove(pieceElement, tile.getPieceElement(newTileElement))) {
             //starting the movement animation if it is a normal move
-            pieceAnimation.start(pieceElement, newTileElement);
+            pieceAnimation.start('endTurn', pieceElement, newTileElement,);
         }
     },
 
@@ -427,8 +427,9 @@ const chessPiece = {
      * and destroying any piece that was already on it
      * @param {object} pieceElement The element of the piece that is moving
      * @param {object} newTileElement The element of the tile the piece is moving to
+     * @param {boolean} endTurn If the tile change will end the player's turn
      */
-    changeTile: (pieceElement, newTileElement) => {
+    changeTile: (pieceElement, newTileElement, endTurn) => {
         //checking if the tile has another piece on it, and destroying it if it does
         let otherPiece = tile.getPieceElement(newTileElement);
         if (otherPiece !== null) {
@@ -459,7 +460,7 @@ const chessPiece = {
         //if a pawn has moved to the other side of the board,
         //stop the game until a piece to promote the pawn to has been selected.
         //if not, continue the game as normal
-        if (!pawnPromote) {
+        if (endTurn && !pawnPromote) {
             nextTurn();
         }
     },
@@ -975,9 +976,10 @@ const pieceMovement = {
                 //the rook will always be 1 tile beside the king's original tile, in the king's direction
                 let rookMoveTile = tile.getElement(kingData.x + kingDirection, kingData.y);
 
-                //starting both animations
-                pieceAnimation.start(kingElement, kingMoveTile);
-                pieceAnimation.start(rookElement, rookMoveTile);
+                //starting both animations, with only one animation ending
+                //the turn to prevent nextTurn being called twice
+                pieceAnimation.start('normal', kingElement, kingMoveTile);
+                pieceAnimation.start('endTurn', rookElement, rookMoveTile);
                 return true;
             }
         }
@@ -1190,16 +1192,17 @@ const pieceAnimation = {
 
     /**
      * Starts an animation
+     * @param {string} animType The type of animation ('normal', 'endTurn') that will determine what happens after it finishes
      * @param {object} pieceElement The element of the piece that will move
      * @param {object} endTileElement The element the animation will end on
      */
-    start: (pieceElement, endTileElement) => {
+    start: (animType, pieceElement, endTileElement) => {
         //storing the frame position in the session storage
         sessionStorage.setItem(`animFrame-${pieceAnimation.animationId}`, '0');
 
         //storing the id and function of the animation in an object to be accessed when the animation ends
         let animationData = {
-            interval: setInterval(pieceAnimation.nextFrame, 1, pieceAnimation.animationId, pieceElement, endTileElement),
+            interval: setInterval(pieceAnimation.nextFrame, 1, animType, pieceAnimation.animationId, pieceElement, endTileElement),
             id: pieceAnimation.animationId
         };
 
@@ -1218,18 +1221,19 @@ const pieceAnimation = {
 
     /**
      * Progresses through the animation
+     * @param {string} animType The type of animation, that will determine what happens after it finishes
      * @param {object} animId The animation id used to locate the animation interval
      * @param {object} pieceElement The element undergoing the animation
      * @param {object} endTileElement The tile the animation will finish on
      */
-    nextFrame: (animId, pieceElement, endTileElement) => {
+    nextFrame: (animType, animId, pieceElement, endTileElement) => {
         let frame = parseInt(sessionStorage.getItem(`animFrame-${animId}`));
 
         pieceAnimation.setPosition(pieceElement, endTileElement, frame);
 
         frame++;
         if (frame >= animationTime) {
-            pieceAnimation.end(animId, pieceElement, endTileElement);
+            pieceAnimation.end(animType, animId, pieceElement, endTileElement);
         } else {
             sessionStorage.setItem(`animFrame-${animId}`, frame);
         }
@@ -1304,11 +1308,12 @@ const pieceAnimation = {
 
     /**
      * Calls the end of the piece animation
+     * @param {string} animType The type of animation, that will determine what happens after it finishes
      * @param {object} animId The animation id used to locate the animation interval
      * @param {object} pieceElement The element undergoing the animation
      * @param {object} endTileElement The tile the animation will finish on
      */
-    end: (animId, pieceElement, endTileElement) => {
+    end: (animType, animId, pieceElement, endTileElement) => {
         //removes the frame position from session storage
         sessionStorage.removeItem(`animFrame-${animId}`);
 
@@ -1325,8 +1330,17 @@ const pieceAnimation = {
                 pieceAnimation.activeAnimations.splice(i, 1);
             }
         }
-
-        chessPiece.changeTile(pieceElement, endTileElement);
+        //determining the action at the end of the animation, based on animType
+        switch (animType) {
+            case 'normal':
+                chessPiece.changeTile(pieceElement, endTileElement, false);
+                break;
+            case 'endTurn':
+                chessPiece.changeTile(pieceElement, endTileElement, true);
+                break;
+            default:
+                throw `Error at pieceAnimation.end: Invalid animation type ${animType}. Aborting..`;
+        }
     },
 
     /**
