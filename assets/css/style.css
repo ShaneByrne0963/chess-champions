@@ -37,6 +37,11 @@ a:hover {
     margin: 32px 0;
 }
 
+/* adding a border around the settings element for small screens */
+#settings-container {
+    padding: 0 32px;
+}
+
 /* making the title icon larger */
 #title-homepage i {
     font-size: 2em;
