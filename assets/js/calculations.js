@@ -107,7 +107,14 @@ function getTileScore(pieceData, moveTileData) {
     let tileBattle = simulateBattle(pieceData, tileEval);
     //if the outcome of the battle is negative for the current piece, then remove the piece's value from the score
     if (tileBattle.battleScore < 0) {
-        moveScore -= chessPiece.getValue(pieceData);
+        //get the piece's value based on the tile it will move to, rather than the one it's on. used for pawn movement
+        let newPieceData = {
+            x: pieceData.x,
+            y: moveTileData.y,
+            piece: pieceData.piece,
+            color: pieceData.color
+        };
+        moveScore -= chessPiece.getValue(newPieceData);
     } else {
         //taking targets into consideration if the move is low risk
         moveScore += evaluateTargets(tileEval, tileBattle.battleScore);
