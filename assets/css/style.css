@@ -14,6 +14,12 @@ body {
     color: white;
 }
 
+/* removing the default blue color and underline for links */
+a {
+    color: white;
+    text-decoration: none;
+}
+
 /* most interactables will change the mouse cursor when hovered over */
 .clickable:hover {
     cursor: pointer;
@@ -57,7 +63,7 @@ body {
 }
 
 /* the button that takes the user to the game */
-#menu-settings a {
+#to-game>a {
     display: inline-block;
     margin: 16px auto;
     color: white;
