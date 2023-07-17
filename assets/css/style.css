@@ -20,6 +20,11 @@ a {
     text-decoration: none;
 }
 
+/* adding a golden color to links when hovered over */
+a:hover {
+    color: #dbca72;
+}
+
 /* most interactables will change the mouse cursor when hovered over */
 .clickable:hover {
     cursor: pointer;
