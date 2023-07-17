@@ -67,6 +67,11 @@ a:hover {
     margin-left: 32px;
 }
 
+/* increasing the space between the castling and en passant checkboxes and the link to their wiki pages */
+#advanced-settings a {
+    margin-left: 8px;
+}
+
 /* the button that takes the user to the game */
 #to-game>a {
     display: inline-block;
