@@ -168,10 +168,14 @@ a:hover {
 
 /* announcements */
 #announcements {
-    padding: 16px;
     /* hiding any announcements that escape the div */
     overflow: hidden;
     position: relative;
+    height: 100%;
+}
+
+#announce-container {
+    padding: 16px;
     grid-column-start: 1;
     grid-column-end: 3;
     border-bottom: 1px solid black;
@@ -179,7 +183,7 @@ a:hover {
 
 #announcements>div {
     position: absolute;
-    bottom: 16px;
+    bottom: 0;
     font-size: 1.8rem;
 }
 
