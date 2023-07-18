@@ -454,8 +454,23 @@ const chessPiece = {
     changeTile: (pieceElement, newTileElement, endTurn) => {
         //checking if the tile has another piece on it, and destroying it if it does
         let otherPiece = tile.getPieceElement(newTileElement);
+        console.log(otherPiece);
         if (otherPiece !== null) {
             chessPiece.destroy(otherPiece);
+        } else {
+            //if the move is en passant, remove the pawn that the piece just passed
+            let pieceData = tile.getData(pieceElement.parentNode);
+            if (pieceData.piece === 'pawn') {
+                let newTileData = tile.getData(newTileElement);
+                //if the x coordinates don't match, it is an en passant move
+                //because this block only runs if the tile is empty
+                if (newTileData.x !== pieceData.x) {
+                    //The passant pawn will have the finishing tile's x coordinate and the starting tile's y coordinate
+                    let passantElement = chessPiece.findElement(newTileData.x, pieceData.y);
+                    //destroying the pawn
+                    chessPiece.destroy(passantElement);
+                }
+            }
         }
         //changing the parent of the chess piece to the new tile
         newTileElement.appendChild(pieceElement);

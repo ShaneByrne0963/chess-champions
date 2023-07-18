@@ -115,7 +115,6 @@ function getStartingPiece(x, y) {
         } else {
             piece = 'king';
         }
-
         //setting the color
         if (y === 0) {
             color = topColor;
