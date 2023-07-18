@@ -416,21 +416,23 @@ const chessPiece = {
         //removing the not-moved class from the piece after it makes its first move
         pieceElement.classList.remove('not-moved');
 
-        //clearing all instances of en passant before setting a new one, because en passant
-        //is only possible in the move after it was taken
-        chessPiece.clearPassant();
-        //checking if the piece is a pawn for en passant
-        let pieceType = chessPiece.getTypeFromClass(pieceElement.classList);
-        if (pieceType === 'pawn') {
-            let pieceY = tile.getY(pieceElement.parentNode);
-            let tileY = tile.getY(newTileElement);
+        //setting and removing the passant class from pawns when necessary
+        if (localStorage.getItem('passant') === 'enabled') {
+            //clearing all instances of en passant before setting a new one, because en passant
+            //is only possible in the move after it was taken
+            chessPiece.clearPassant();
+            //checking if the piece is a pawn for en passant
+            let pieceType = chessPiece.getTypeFromClass(pieceElement.classList);
+            if (pieceType === 'pawn') {
+                let pieceY = tile.getY(pieceElement.parentNode);
+                let tileY = tile.getY(newTileElement);
 
-            //if the pawn moves 2 tiles, then it enables en passant
-            if (Math.abs(tileY - pieceY) === 2) {
-                pieceElement.classList.add('passant');
+                //if the pawn moves 2 tiles, then it enables en passant
+                if (Math.abs(tileY - pieceY) === 2) {
+                    pieceElement.classList.add('passant');
+                }
             }
         }
-
         if (!pieceMovement.isCastlingMove(pieceElement, tile.getPieceElement(newTileElement))) {
             //starting the movement animation if it is a normal move
             pieceAnimation.start('endTurn', pieceElement, newTileElement,);
@@ -684,54 +686,66 @@ const pieceMovement = {
         //declaring the variables storing the coordinates of the tiles to check
         let newX = pieceData.x + move[1]; //the x coordinate is always the second element in a moves array
         let newY = pieceMovement.getYMovement(newX, pieceData.y, pieceData, move); //the y coordinate is always the third element in a moves array
-        //getting the enemy's color
-        let enemyColor = (pieceData.color === 'white') ? 'black' : 'white';
 
         if (!isNaN(newY) && tile.inBounds(newX, newY)) {
             //getting the piece information at the checked tile, if any
             let checkPiece = chessPiece.findData(newX, newY);
 
-            //checking the rule for the move set
-            switch (moveRule) {
-                //for moves that add the coordinates to its tile position
-                case 'normal':
-                    //cannot move to a tile that has a friendly piece
-                    if (checkPiece.color !== pieceData.color) {
-                        moveTiles.push(checkPiece);
+            if (moveRule === 'vector') {
+                let vectorTiles = pieceMovement.getTilesFromVector(pieceData, newX, newY, move);
+                //adding all the tiles from this vector to the total tiles this piece can make
+                for (let vectorTile of vectorTiles) {
+                    moveTiles.push(vectorTile);
+                }
+            } else if (moveRule === 'castle') {
+                if (localStorage.getItem('castling') === 'enabled') {
+                    let castlePiece = pieceMovement.getCastle(pieceData, move[1]);
+                    if (castlePiece !== null) {
+                        moveTiles.push(castlePiece);
                     }
-                    break;
-                //for moves that continue to move in a direction until an obstacle is reached
-                case 'vector':
-                    let vectorTiles = pieceMovement.getTilesFromVector(pieceData, newX, newY, move);
-                    //adding all the tiles from this vector to the total tiles this piece can make
-                    for (let vectorTile of vectorTiles) {
-                        moveTiles.push(vectorTile);
-                    }
-                    break;
-                //for moves that are only valid if an enemy is on the tile
-                case 'attack':
-                    if (checkPiece.color === enemyColor) {
-                        moveTiles.push(checkPiece);
-                    }
-                    break;
-                //for moves that are only valid for empty tiles
-                case 'disarmed':
-                    if (checkPiece.color === '') {
-                        moveTiles.push(checkPiece);
-                    }
-                    break;
-                //for castling
-                case 'castle':
-                    if (localStorage.getItem('castling') === 'enabled') {
-                        let castlePiece = pieceMovement.getCastle(pieceData, move[1]);
-                        if (castlePiece !== null) {
-                            moveTiles.push(castlePiece);
-                        }
-                    }
-                    break;
+                }
+            } else if (pieceMovement.canMoveToTile(pieceData, checkPiece, [moveRule, move[1], move[2]])) {
+                moveTiles.push(checkPiece);
             }
         }
         return moveTiles;
+    },
+
+    /**
+     * Gets if a piece is able to move to a certain tile, considering all rules except the 'vector' and 'castle' rule
+     * @param {object} pieceData The data object {x, y, piece, color} of the piece looking to move
+     * @param {object} tileData The data object {x, y, piece, color} of the tile the piece will move to
+     * @param {object} move The move [rule, x, y] the piece will use to get to that tile
+     * @returns {boolean} If the piece can move to the tile
+     */
+    canMoveToTile: (pieceData, tileData, move) => {
+        //getting the enemy's color
+        let enemyColor = (pieceData.color === 'white') ? 'black' : 'white';
+        //checking the rule for the move set
+        switch (move[0]) {
+            //for moves that add the coordinates to its tile position
+            case 'normal':
+                //cannot move to a tile that has a friendly piece
+                if (tileData.color !== pieceData.color) {
+                    return true;
+                }
+                break;
+            //for moves that are only valid if an enemy is on the tile
+            case 'attack':
+                if (tileData.color === enemyColor) {
+                    return true;
+                }
+                break;
+            //for moves that are only valid for empty tiles
+            case 'disarmed':
+                if (tileData.color === '') {
+                    return true;
+                }
+                break;
+            default:
+                throw `Error At canMoveToTile: Invalid input ${move[0]}. Aborting..`;
+        }
+        return false;
     },
 
     /**
@@ -898,7 +912,7 @@ const pieceMovement = {
             //pawns cannot reach the end of the board without a graveyard piece to revive,
             //so if the king is at the end of the board with these conditions it is safe from pawns
             if (!(threat.piece === 'pawn' && chessPiece.isAtBoardEnd(threat.color, kingData.y)
-            && !graveyard.canRevive(threat.color) && pieceValue <= chessPiece.value['pawn'])) {
+                && !graveyard.canRevive(threat.color) && pieceValue <= chessPiece.value['pawn'])) {
                 return true;
             }
         }
