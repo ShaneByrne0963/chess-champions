@@ -294,12 +294,14 @@ function optionTimer() {
     <div>
         <input type="checkbox" id="has-timer">
         <label for="has-timer">Time Limit:</label>
-        <input type="number" id="hours">
-        <label for="hours">Hours</label>
-        <input type="number" id="minutes">
-        <label for="hours">Minutes</label>
-        <input type="number" id="seconds">
-        <label for="hours">Seconds</label>
+        <span class="float-right">
+            <input type="number" id="hours">
+            <label for="hours" class="small-text">Hours</label>
+            <input type="number" id="minutes">
+            <label for="minutes" class="small-text">Minutes</label>
+            <input type="number" id="seconds">
+            <label for="seconds" class="small-text">Seconds</label>
+        </span>
     </div>
     `;
     return htmlString;
