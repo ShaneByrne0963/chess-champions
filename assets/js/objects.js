@@ -181,7 +181,8 @@ const tile = {
             }
             //adding the possible-passant class to the move icon if it is a passant move
             if (pieceData.piece === 'pawn' && pieceData.x !== moveData.x && moveData.color === '') {
-                moveOption.className += " possible-passant";
+                let passantType = (pieceMovement.getForwardDirection(pieceData.color) < 0) ? ' passant-bottom' : ' passant-top';
+                moveOption.className += passantType;
             }
 
             let movePiece = tile.getPieceElement(move);

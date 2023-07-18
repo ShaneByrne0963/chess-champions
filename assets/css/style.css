@@ -273,14 +273,21 @@ input[type="number"] {
 }
 
 /* the move will display a red circle if there is a piece already on the tile */
-.chess-piece>.possible-move,
-.possible-passant {
+.chess-piece>.possible-move {
     background-image: url("../images/move-icons/possible-elimination.png");
 }
 
 /* displaying the arrow swap icon for castling moves */
 .chess-piece>.castling {
     background-image: url("../images/move-icons/possible-castle.png");
+}
+
+/* displaying the en passant icons which differ depending on the side the player is on */
+.tile>.passant-top {
+    background-image: url("../images/move-icons/passant-top.png");
+}
+.tile>.passant-bottom {
+    background-image: url("../images/move-icons/passant-bottom.png");
 }
 
 /* chess pieces */
