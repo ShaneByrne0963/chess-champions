@@ -735,6 +735,12 @@ const pieceMovement = {
                 if (tileData.color === enemyColor) {
                     return true;
                 }
+                //for en passant
+                else if (localStorage.getItem('passant') === 'enabled') {
+                    if (pieceMovement.canPassant(pieceData, move)) {
+                        return true;
+                    }
+                }
                 break;
             //for moves that are only valid for empty tiles
             case 'disarmed':
@@ -871,6 +877,28 @@ const pieceMovement = {
                         || (vector1 !== 0 && vector2 === pieceMovement.getForwardDirection(pieceData.color)
                             && pieceData.piece.includes('pawn')))));
         }
+    },
+
+    /**
+     * Checks if a pawn can en passant another pawn
+     * @param {object} pieceData The data object {x, y, piece, color} of the piece looking to move
+     * @param {object} move The move [rule, x, y] the piece is using to passant
+     * @returns {boolean} If the pawn can successfully en passant another pawn
+     */
+    canPassant: (pieceData, move) => {
+        //getting the enemy's color
+        let enemyColor = (pieceData.color === 'white') ? 'black' : 'white';
+
+        //finding the data object of the piece beside the pawn to see if it is an enemy pawn
+        let besideData = chessPiece.findData(pieceData.x + move[1], pieceData.y);
+        if (besideData.piece === 'pawn' && besideData.color === enemyColor) {
+            //getting the element of this piece to see if it has the passant class
+            let besideElement = chessPiece.findElement(besideData.x, besideData.y);
+            if (besideElement.classList.contains('passant')) {
+                return true;
+            }
+        }
+        return false;
     },
 
     /**
