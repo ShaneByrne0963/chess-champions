@@ -264,7 +264,7 @@ function optionPlayerColor() {
     let htmlString = `
     <div>
         Player Color:
-        <span class="float-right text-right">
+        <span class="float-right">
             <input type="radio" name="player-color" value="white" id="col-white" class="clickable" onchange="updatePlayerColor('white')"
     `;
     //making the radio button checked if the white pieces are at the bottom
@@ -282,8 +282,8 @@ function optionPlayerColor() {
     }
     htmlString += `>
             <label for="col-black" class="clickable small-text">Black</label>
-            <p class="small-text indented">*Note: The player with the white pieces always starts first</p>
         </span>
+        <p class="small-text text-right">*Note: The player with the white pieces always starts first</p>
     </div>`;
 
     return htmlString;

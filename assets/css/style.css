@@ -49,7 +49,7 @@ a:hover {
 
 /* the div that contains all the settings */
 #menu-settings {
-    max-width: 960px;
+    max-width: 720px;
     border: 1px solid black;
     background-color: #76391F;
     margin: 32px auto;
