@@ -76,6 +76,11 @@ option {
     float: right;
 }
 
+/* for text to be aligned to the right */
+.text-right {
+    text-align: right;
+}
+
 /* making the text inputs take up half of the settings div */
 input[type="text"], select {
     width: 50%;

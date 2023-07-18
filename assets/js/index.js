@@ -241,7 +241,7 @@ function optionWhitePosition() {
     }
     //adding the second radio button
     htmlString += `>
-            <label for="pos-bottom" class="clickable">Bottom</label>
+            <label for="pos-bottom" class="clickable small-text">Bottom</label>
             <input type="radio" name="white-pos" value="top" id="pos-top" class="clickable" onchange="updateWhitePosition(value)"
     `;
     //making the radio button checked if the white pieces are at the top
@@ -249,7 +249,7 @@ function optionWhitePosition() {
         htmlString += ` checked`;
     }
     htmlString += `>
-            <label for="pos-top" class="clickable">Top</label>
+            <label for="pos-top" class="clickable small-text">Top</label>
         </span>
     </div>`;
 
@@ -264,7 +264,7 @@ function optionPlayerColor() {
     let htmlString = `
     <div>
         Player Color:
-        <span class="float-right">
+        <span class="float-right text-right">
             <input type="radio" name="player-color" value="white" id="col-white" class="clickable" onchange="updatePlayerColor('white')"
     `;
     //making the radio button checked if the white pieces are at the bottom
@@ -273,7 +273,7 @@ function optionPlayerColor() {
     }
     //adding the second radio button
     htmlString += `>
-            <label for="col-white" class="clickable">White</label>
+            <label for="col-white" class="clickable small-text">White</label>
             <input type="radio" name="player-color" value="black" id="col-black" class="clickable" onchange="updatePlayerColor('black')"
     `;
     //making the radio button checked if the white pieces are at the top
@@ -281,8 +281,8 @@ function optionPlayerColor() {
         htmlString += ` checked`;
     }
     htmlString += `>
-            <label for="col-black" class="clickable">Black</label>
-            <p class="small-text indented">Note: The player with the white pieces always starts first</p>
+            <label for="col-black" class="clickable small-text">Black</label>
+            <p class="small-text indented">*Note: The player with the white pieces always starts first</p>
         </span>
     </div>`;
 
@@ -295,11 +295,11 @@ function optionTimer() {
         <input type="checkbox" id="has-timer">
         <label for="has-timer">Time Limit:</label>
         <span class="float-right">
-            <input type="number" id="hours">
+            <input type="number" id="hours" class="text-right">
             <label for="hours" class="small-text">Hours</label>
-            <input type="number" id="minutes">
+            <input type="number" id="minutes" class="text-right">
             <label for="minutes" class="small-text">Minutes</label>
-            <input type="number" id="seconds">
+            <input type="number" id="seconds" class="text-right">
             <label for="seconds" class="small-text">Seconds</label>
         </span>
     </div>
