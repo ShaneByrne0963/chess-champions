@@ -416,6 +416,9 @@ const chessPiece = {
         //removing the not-moved class from the piece after it makes its first move
         pieceElement.classList.remove('not-moved');
 
+        //clearing all instances of en passant before setting a new one, because en passant
+        //is only possible in the move after it was taken
+        chessPiece.clearPassant();
         //checking if the piece is a pawn for en passant
         let pieceType = chessPiece.getTypeFromClass(pieceElement.classList);
         if (pieceType === 'pawn') {
@@ -582,6 +585,16 @@ const chessPiece = {
 
         return pieces;
     },
+
+    /**
+     * Clears the passant class from all pawns
+     */
+    clearPassant: () => {
+        let pawns = document.getElementsByClassName('passant');
+        for (let pawn of pawns) {
+            pawn.classList.remove('passant');
+        }
+    }
 };
 
 //stores all the functions in relation to the movement of the pieces
