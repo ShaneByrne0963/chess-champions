@@ -103,7 +103,6 @@ function getTileScore(pieceData, moveTileData) {
     if (!(pieceData.x === moveTileData.x && pieceData.y === moveTileData.y) && moveTileData.color === pieceData.color) {
         //for a castling move
         tileEval = evaluateTileCastle(pieceData, moveTileData);
-        moveScore = 15000000;
     } else {
         //for every other move
         tileEval = evaluateTile(moveTileData, pieceData);

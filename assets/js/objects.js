@@ -416,6 +416,18 @@ const chessPiece = {
         //removing the not-moved class from the piece after it makes its first move
         pieceElement.classList.remove('not-moved');
 
+        //checking if the piece is a pawn for en passant
+        let pieceType = chessPiece.getTypeFromClass(pieceElement.classList);
+        if (pieceType === 'pawn') {
+            let pieceY = tile.getY(pieceElement.parentNode);
+            let tileY = tile.getY(newTileElement);
+
+            //if the pawn moves 2 tiles, then it enables en passant
+            if (Math.abs(tileY - pieceY) === 2) {
+                pieceElement.classList.add('passant');
+            }
+        }
+
         if (!pieceMovement.isCastlingMove(pieceElement, tile.getPieceElement(newTileElement))) {
             //starting the movement animation if it is a normal move
             pieceAnimation.start('endTurn', pieceElement, newTileElement,);
