@@ -82,6 +82,7 @@ function buildDynamicSettings(playerType) {
             newHtml += optionPlayerName('Player 1 Name:', 'p1-name');
             newHtml += optionPlayerName('Player 2 Name:', 'p2-name');
             newHtml += optionWhitePosition();
+            newHtml += optionTimer();
             break;
         case 'pve':
             //adding name inputs for the human player
@@ -217,7 +218,7 @@ function optionPlayerName(innerText, inputId) {
     return `
     <div>
         <label for="${inputId}">${innerText}</label>
-        <input type="text" id="${inputId}" onchange="localStorage.setItem('${inputId}', value)" placeholder="${currentPlayerName}" required>
+        <input type="text" id="${inputId}" onchange="localStorage.setItem('${inputId}', value)" placeholder="${currentPlayerName}">
     </div>
     `;
 }
@@ -231,7 +232,7 @@ function optionWhitePosition() {
     let htmlString = `
     <div>
         Position of White:
-        <input type="radio" name="white-pos" value="bottom" id="pos-bottom" class="clickable" onchange="updateWhitePosition(value)"
+        <input type="radio" value="bottom" id="pos-bottom" class="clickable" onchange="updateWhitePosition(value)"
     `;
     //making the radio button checked if the white pieces are at the bottom
     if (localStorage.getItem('topPosition') === 'black') {
@@ -240,7 +241,7 @@ function optionWhitePosition() {
     //adding the second radio button
     htmlString += `>
         <label for="pos-bottom" class="clickable">Bottom</label>
-        <input type="radio" name="white-pos" value="top" id="pos-top" class="clickable" onchange="updateWhitePosition(value)"
+        <input type="radio" value="top" id="pos-top" class="clickable" onchange="updateWhitePosition(value)"
     `;
     //making the radio button checked if the white pieces are at the top
     if (localStorage.getItem('topPosition') === 'white') {
@@ -261,7 +262,7 @@ function optionPlayerColor() {
     let htmlString = `
     <div>
         Player Color:
-        <input type="radio" name="player-color" value="white" id="col-white" class="clickable" onchange="updatePlayerColor('white')"
+        <input type="radio" value="white" id="col-white" class="clickable" onchange="updatePlayerColor('white')"
     `;
     //making the radio button checked if the white pieces are at the bottom
     if (localStorage.getItem('playerColor') === 'white') {
@@ -270,7 +271,7 @@ function optionPlayerColor() {
     //adding the second radio button
     htmlString += `>
         <label for="col-white" class="clickable">White</label>
-        <input type="radio" name="player-color" value="black" id="col-black" class="clickable" onchange="updatePlayerColor('black')"
+        <input type="radio" value="black" id="col-black" class="clickable" onchange="updatePlayerColor('black')"
     `;
     //making the radio button checked if the white pieces are at the top
     if (localStorage.getItem('playerColor') === 'black') {
@@ -281,5 +282,21 @@ function optionPlayerColor() {
         <p class="small-text indented">Note: The player with the white pieces always starts first</p>
     </div>`;
 
+    return htmlString;
+}
+
+function optionTimer() {
+    let htmlString = `
+    <div>
+        <input type="checkbox" id="has-timer">
+        <label for="has-timer">Time Limit:</label>
+        <input type="number" id="hours">
+        <label for="hours">Hours</label>
+        <input type="number" id="minutes">
+        <label for="hours">Minutes</label>
+        <input type="number" id="seconds">
+        <label for="hours">Seconds</label>
+    </div>
+    `;
     return htmlString;
 }
