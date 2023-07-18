@@ -218,7 +218,7 @@ function optionPlayerName(innerText, inputId) {
     return `
     <div>
         <label for="${inputId}">${innerText}</label>
-        <input type="text" id="${inputId}" onchange="localStorage.setItem('${inputId}', value)" placeholder="${currentPlayerName}">
+        <input type="text" id="${inputId}" class="float-right" onchange="localStorage.setItem('${inputId}', value)" placeholder="${currentPlayerName}">
     </div>
     `;
 }
@@ -232,7 +232,8 @@ function optionWhitePosition() {
     let htmlString = `
     <div>
         Position of White:
-        <input type="radio" value="bottom" id="pos-bottom" class="clickable" onchange="updateWhitePosition(value)"
+        <span class="float-right">
+            <input type="radio" name="white-pos" value="bottom" id="pos-bottom" class="clickable" onchange="updateWhitePosition(value)"
     `;
     //making the radio button checked if the white pieces are at the bottom
     if (localStorage.getItem('topPosition') === 'black') {
@@ -240,15 +241,16 @@ function optionWhitePosition() {
     }
     //adding the second radio button
     htmlString += `>
-        <label for="pos-bottom" class="clickable">Bottom</label>
-        <input type="radio" value="top" id="pos-top" class="clickable" onchange="updateWhitePosition(value)"
+            <label for="pos-bottom" class="clickable">Bottom</label>
+            <input type="radio" name="white-pos" value="top" id="pos-top" class="clickable" onchange="updateWhitePosition(value)"
     `;
     //making the radio button checked if the white pieces are at the top
     if (localStorage.getItem('topPosition') === 'white') {
         htmlString += ` checked`;
     }
     htmlString += `>
-        <label for="pos-top" class="clickable">Top</label>
+            <label for="pos-top" class="clickable">Top</label>
+        </span>
     </div>`;
 
     return htmlString;
@@ -262,7 +264,8 @@ function optionPlayerColor() {
     let htmlString = `
     <div>
         Player Color:
-        <input type="radio" value="white" id="col-white" class="clickable" onchange="updatePlayerColor('white')"
+        <span class="float-right">
+            <input type="radio" name="player-color" value="white" id="col-white" class="clickable" onchange="updatePlayerColor('white')"
     `;
     //making the radio button checked if the white pieces are at the bottom
     if (localStorage.getItem('playerColor') === 'white') {
@@ -270,16 +273,17 @@ function optionPlayerColor() {
     }
     //adding the second radio button
     htmlString += `>
-        <label for="col-white" class="clickable">White</label>
-        <input type="radio" value="black" id="col-black" class="clickable" onchange="updatePlayerColor('black')"
+            <label for="col-white" class="clickable">White</label>
+            <input type="radio" name="player-color" value="black" id="col-black" class="clickable" onchange="updatePlayerColor('black')"
     `;
     //making the radio button checked if the white pieces are at the top
     if (localStorage.getItem('playerColor') === 'black') {
         htmlString += ` checked`;
     }
     htmlString += `>
-        <label for="col-black" class="clickable">Black</label>
-        <p class="small-text indented">Note: The player with the white pieces always starts first</p>
+            <label for="col-black" class="clickable">Black</label>
+            <p class="small-text indented">Note: The player with the white pieces always starts first</p>
+        </span>
     </div>`;
 
     return htmlString;

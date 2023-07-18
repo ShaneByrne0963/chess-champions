@@ -71,6 +71,16 @@ option {
     font-weight: bold;
 }
 
+/* setting the inputs to float to the right */
+.float-right {
+    float: right;
+}
+
+/* making the text inputs take up half of the settings div */
+input[type="text"], select {
+    width: 50%;
+}
+
 /* small text used for note about what player starts first */
 .small-text {
     font-size: 0.6em;
