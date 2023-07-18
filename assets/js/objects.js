@@ -179,6 +179,10 @@ const tile = {
             if (moveData.color === pieceData.color) {
                 moveOption.className += " castling";
             }
+            //adding the possible-passant class to the move icon if it is a passant move
+            if (pieceData.piece === 'pawn' && pieceData.x !== moveData.x && moveData.color === '') {
+                moveOption.className += " possible-passant";
+            }
 
             let movePiece = tile.getPieceElement(move);
             //if there is an enemy piece on the tile to move to, add the possible move to the piece instead of the tile

@@ -82,7 +82,8 @@ option {
 }
 
 /* making the text inputs take up half of the settings div */
-input[type="text"], select {
+input[type="text"],
+select {
     width: 50%;
 }
 
@@ -272,7 +273,8 @@ input[type="number"] {
 }
 
 /* the move will display a red circle if there is a piece already on the tile */
-.chess-piece>.possible-move {
+.chess-piece>.possible-move,
+.possible-passant {
     background-image: url("../images/move-icons/possible-elimination.png");
 }
 
