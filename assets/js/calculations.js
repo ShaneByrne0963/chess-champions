@@ -99,7 +99,15 @@ function getTileScore(pieceData, moveTileData) {
     //each move will have a score
     let moveScore = 0;
     //monitoring all the tiles around it for information
-    let tileEval = evaluateTile(moveTileData, pieceData);
+    let tileEval;
+    if (!(pieceData.x === moveTileData.x && pieceData.y === moveTileData.y) && moveTileData.color === pieceData.color) {
+        //for a castling move
+        tileEval = evaluateTileCastle(pieceData, moveTileData);
+        moveScore = 15000000;
+    } else {
+        //for every other move
+        tileEval = evaluateTile(moveTileData, pieceData);
+    }
     //adding the total number of moves the piece could make on this tile multiplied by 1% of it's value to the score
     moveScore += tileEval.availableSpaces * (chessPiece.value[pieceData.piece] / 100);
 
@@ -233,6 +241,47 @@ function evaluateTileWithMove(tileData, evaluatingPiece, pieceFromElement, tileT
         tileToElement.appendChild(pieceTo);
     }
     return tileEvaluation;
+}
+
+/**
+ * Finds the correct coordinates of two pieces performing a castle and evaluates the tile
+ * with a simulated move
+ * @param {object} pieceMoveData The data object {x, y, piece, color} of the piece that is doing the evaluation
+ * @param {object} otherPieceData The data object {x, y, piece, color} of the other piece that will take part in the move
+ * @returns {object} A tile evaluation {availableSpaces, enemyTarget, enemyThreat, allyGuarded}
+ */
+function evaluateTileCastle(pieceMoveData, otherPieceData) {
+    //getting if the king will be moving to the left or right
+    let kingDirection = 1;
+    if ((pieceMoveData.piece === 'king' && pieceMoveData.x > otherPieceData.x)
+        || (pieceMoveData.piece === 'rook' && pieceMoveData.x < otherPieceData.x)) {
+        kingDirection = -1;
+    }
+    //getting the coordinates of where the king and rook will end up after the castle
+    let pieceX, otherX;
+    if (pieceMoveData.piece === 'king') {
+        //the king always moves 2 tiles
+        pieceX = pieceMoveData.x + (kingDirection * 2);
+        //the rook always ends up beside the king's starting tile
+        otherX = pieceMoveData.x + kingDirection;
+    } else {
+        pieceX = otherPieceData.x + kingDirection;
+        otherX = otherPieceData.x + (kingDirection * 2);
+    }
+
+    //tileData is the tile's data object of where the piece doing the evaluation will move
+    //otherTileElement is the element of the tile the other piece will move to
+    let tileData = {
+        x: pieceX,
+        y: pieceMoveData.y,
+        piece: '',
+        color: ''
+    };
+    //getting the elements of the other piece that will move with the current piece to simulate a move
+    let otherPieceElement = chessPiece.findElement(otherPieceData.x, otherPieceData.y);
+    let otherMoveElement = tile.getElement(otherX, otherPieceData.y);
+
+    return evaluateTileWithMove(pieceMoveData, tileData, otherPieceElement, otherMoveElement);
 }
 
 /**
@@ -416,7 +465,7 @@ function simulateBattle(pieceData, tileEval) {
     // 2 - if there is another enemy that can attack this tile, the smallest value of allyGuarded
     //      will be taken from the battle score
     // 3 - this loop will continue until there is no more moves on this tile from either side
-    
+
     //returning the final score of the battle, as well as what pieces will be left standing
     let aftermath = {
         battleScore: 0,
