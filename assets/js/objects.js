@@ -496,7 +496,7 @@ const chessPiece = {
         }
         //if a pawn has moved to the other side of the board,
         //stop the game until a piece to promote the pawn to has been selected.
-        //if not, continue the game as normal
+        //if not, continue the game as normal if specified in the endTurn paramter
         if (endTurn && !pawnPromote) {
             nextTurn();
         }
@@ -756,10 +756,8 @@ const pieceMovement = {
                     return true;
                 }
                 //for en passant
-                else if (localStorage.getItem('passant') === 'enabled') {
-                    if (pieceMovement.canPassant(pieceData, move)) {
-                        return true;
-                    }
+                else if (pieceMovement.canPassant(pieceData, move)) {
+                    return true;
                 }
                 break;
             //for moves that are only valid for empty tiles
@@ -890,12 +888,24 @@ const pieceMovement = {
                 //if neither vectors are 0, then the move is diagonal
                 let isDiagonal = (Math.abs(vector1) === Math.abs(vector2));
 
-                return (pieceData.piece === 'queen'
+                if (pieceData.piece === 'queen'
                     || (isDiagonal && pieceData.piece === 'bishop')
                     || (!isDiagonal && pieceData.piece === 'rook')
-                    || (isBeside && (pieceData.piece === 'king'
-                        || (vector1 !== 0 && vector2 === pieceMovement.getForwardDirection(pieceData.color)
-                            && pieceData.piece.includes('pawn')))));
+                    || (isBeside && pieceData.piece === 'king')) {
+                    return true;
+                } else {
+                    //for pawn attacks and en passant
+                    if (pieceData.piece === 'pawn' && isBeside) {
+                        let pawnDirection = pieceMovement.getForwardDirection(pieceData.color);
+                        if ((vector1 !== 0 && vector2 === pieceMovement.getForwardDirection(pieceData.color))
+                        || (vector2 === 0 && pieceMovement.canPassant(pieceData, ['', move[1], pawnDirection]))) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            default:
+                return false;
         }
     },
 
@@ -906,16 +916,18 @@ const pieceMovement = {
      * @returns {boolean} If the pawn can successfully en passant another pawn
      */
     canPassant: (pieceData, move) => {
-        //getting the enemy's color
-        let enemyColor = (pieceData.color === 'white') ? 'black' : 'white';
+        if (localStorage.getItem('passant') === 'enabled') {
+            //getting the enemy's color
+            let enemyColor = (pieceData.color === 'white') ? 'black' : 'white';
 
-        //finding the data object of the piece beside the pawn to see if it is an enemy pawn
-        let besideData = chessPiece.findData(pieceData.x + move[1], pieceData.y);
-        if (besideData.piece === 'pawn' && besideData.color === enemyColor) {
-            //getting the element of this piece to see if it has the passant class
-            let besideElement = chessPiece.findElement(besideData.x, besideData.y);
-            if (besideElement.classList.contains('passant')) {
-                return true;
+            //finding the data object of the piece beside the pawn to see if it is an enemy pawn
+            let besideData = chessPiece.findData(pieceData.x + move[1], pieceData.y);
+            if (besideData.piece === 'pawn' && besideData.color === enemyColor) {
+                //getting the element of this piece to see if it has the passant class
+                let besideElement = chessPiece.findElement(besideData.x, besideData.y);
+                if (besideElement.classList.contains('passant')) {
+                    return true;
+                }
             }
         }
         return false;
@@ -1431,7 +1443,7 @@ const pieceAnimation = {
     },
 
     /**
-     * Clears all active animations
+     * Stops all active animations
      */
     clear: () => {
         //continue deleting the animations until there are none left

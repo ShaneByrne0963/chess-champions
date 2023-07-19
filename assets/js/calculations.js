@@ -23,7 +23,7 @@ function makeMove(color) {
     let finalTile = movePiece.highestMoves[Math.floor(Math.random() * movePiece.highestMoves.length)];
 
     let movingElement = chessPiece.findElement(movePiece.x, movePiece.y);
-
+    
     chessPiece.move(movingElement, finalTile);
 }
 
@@ -42,6 +42,8 @@ function getBestMoves(pieceDataList, pieceCurrentScores) {
     let highestScorePieces = [];
     for (let i = 0; i < pieceDataList.length; i++) {
         let currentPiece = pieceDataList[i];
+        //only used for adding and removing the 'passant' class
+        let pieceElement = null;
         //if the piece has not yet been added to the high score array
         let added = false;
         //stores any moves that have the same score as the highest score
@@ -52,14 +54,25 @@ function getBestMoves(pieceDataList, pieceCurrentScores) {
         //looping through the moves
         for (let move of tileMoves) {
             let moveData = tile.getData(move);
+            //temporarily adding the 'passant' class to a pawn if it is moving 2 spaces
+            if (localStorage.getItem('passant') === 'enabled' && currentPiece.piece === 'pawn') {
+                if (Math.abs(currentPiece.y - moveData.y) === 2) {
+                    pieceElement = chessPiece.findElement(currentPiece.x, currentPiece.y);
+                    pieceElement.classList.add('passant');
+                }
+            }
             //calculates the score of the tile based on several parameters
             let moveScore = getTileScore(currentPiece, moveData);
             //adding the extra parameters to the total score
             moveScore += getMoveOnlyScore(currentPiece, moveData);
-
             //finally, subtracting the current score from the new score
             moveScore -= pieceCurrentScores[i];
 
+            //removing the 'passant' class and returning the piece element to the way it was
+            if (pieceElement !== null) {
+                pieceElement.classList.remove('passant');
+                pieceElement = null;
+            }
             //if this is the first move of the first tile, then set the highest score to the score of this move
             if (isFirstCheck) {
                 highestScore = moveScore;
