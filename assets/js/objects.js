@@ -1466,16 +1466,27 @@ const pieceAnimation = {
 
 //the object that contains the functions related to the time limit for each player
 const timer = {
+    //storing the interval updating the time remaining every millisecond
+    timerInterval: null,
+    //the time in milliseconds since epoch that the timer started
+    startingTime: 0,
+
     /**
      * Initialises the time limit
      */
     init: () => {
-        //setting the ui displays
+        //getting the time limit the user requested in the settings page
         let timeHours = localStorage.getItem('timeHours');
         let timeMinutes = localStorage.getItem('timeMinutes');
         let timeSeconds = localStorage.getItem('timeSeconds');
+        //setting the time remaining in milliseconds in the session storage for each player
+        sessionStorage.setItem('p1-time', timer.getMilliseconds(timeHours, timeMinutes, timeSeconds));
+        sessionStorage.setItem('p2-time', timer.getMilliseconds(timeHours, timeMinutes, timeSeconds));
+        //setting the ui displays
         timer.setDisplay(1, timeHours, timeMinutes, timeSeconds);
         timer.setDisplay(2, timeHours, timeMinutes, timeSeconds);
+
+        timer.start(1);
     },
 
     /**
@@ -1520,14 +1531,17 @@ const timer = {
         let hours = 0;
         let minutes = 0;
         let seconds = 0;
+        //1 hour = 3600000 milliseconds
         while (milliseconds >= 3600000) {
             hours++;
             milliseconds -= 3600000;
         }
+        //1 minute = 60000 milliseconds
         while (milliseconds >= 60000) {
             minutes++;
             milliseconds -= 60000;
         }
+        //1 second = 1000 milliseconds
         while (milliseconds >= 1000) {
             seconds++;
             milliseconds -= 1000;
@@ -1537,5 +1551,25 @@ const timer = {
             minutes: minutes,
             seconds: seconds
         };
+    },
+
+    /**
+     * Starts the timer for a player
+     * @param {integer} player Either 1 or 2 for the first or second player
+     */
+    start: (player) => {
+        //saves the time when the timer started
+        timer.startingTime = Date.now();
+
+        timer.timerInterval = setInterval(timer.update, 1, player);
+    },
+
+    update: (player) => {
+        let currentTime = timer.getHMS(Date.now() - timer.startingTime);
+        timer.setDisplay(player, currentTime.hours, currentTime.minutes, currentTime.seconds);
+    },
+
+    end: () => {
+
     }
 }
