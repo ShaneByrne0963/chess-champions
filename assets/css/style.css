@@ -385,6 +385,11 @@ input[type="number"] {
 
 /* for medium to large screens */
 @media screen and (max-width: 1400px) {
+    /* adjusting the width of the user interface and chess board */
+    #game {
+        grid-template-columns: auto calc(100vh - 160px);
+    }
+
     /* making each of the player uis take up the full width of the ui section */
     #player1-ui,
     #player2-ui {
@@ -392,9 +397,15 @@ input[type="number"] {
         grid-column-end: 3;
     }
 
+    /* activating the announcement div under the chess board */
     #announce-game {
-        display: visible;
+        display: block;
         padding: 16px;
-        min-height: 256px;
+        min-height: 128px;
+    }
+
+    /* reducing the size of the chess board to allow room for the announcements */
+    #chess-board {
+        height: calc(100vh - 160px);
     }
 }
