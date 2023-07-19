@@ -454,7 +454,6 @@ const chessPiece = {
     changeTile: (pieceElement, newTileElement, endTurn) => {
         //checking if the tile has another piece on it, and destroying it if it does
         let otherPiece = tile.getPieceElement(newTileElement);
-        console.log(otherPiece);
         if (otherPiece !== null) {
             chessPiece.destroy(otherPiece);
         } else {
@@ -897,8 +896,10 @@ const pieceMovement = {
                     //for pawn attacks and en passant
                     if (pieceData.piece === 'pawn' && isBeside) {
                         let pawnDirection = pieceMovement.getForwardDirection(pieceData.color);
-                        if ((vector1 !== 0 && vector2 === pieceMovement.getForwardDirection(pieceData.color))
-                        || (vector2 === 0 && pieceMovement.canPassant(pieceData, ['', move[1], pawnDirection]))) {
+                        if ((vector1 !== 0 && vector2 === pawnDirection)
+                        || (vector2 === 0 && tile.inBounds(pieceData.x + move[1], pawnDirection)
+                        && pieceMovement.canPassant(pieceData, ['', move[1], pawnDirection]))) {
+                            console.log("Can attack!");
                             return true;
                         }
                     }
@@ -921,6 +922,8 @@ const pieceMovement = {
             let enemyColor = (pieceData.color === 'white') ? 'black' : 'white';
 
             //finding the data object of the piece beside the pawn to see if it is an enemy pawn
+            console.clear();
+            console.log(`${pieceData.x} => ${move[1]}, ${pieceData.y}`);
             let besideData = chessPiece.findData(pieceData.x + move[1], pieceData.y);
             if (besideData.piece === 'pawn' && besideData.color === enemyColor) {
                 //getting the element of this piece to see if it has the passant class
