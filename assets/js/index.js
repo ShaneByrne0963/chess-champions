@@ -1,3 +1,6 @@
+//how many hours can be set to the time limit
+const maxHours = 9;
+
 //building the default dynamic settings when the page loads
 window.onload = settingsInit();
 /**
@@ -206,17 +209,57 @@ function updateTimeCheckbox(value) {
 }
 
 function updateTimeValues(timeType, value) {
+    //manipulating the other elements in case the input is lower than the min or higher than the max
+    let hoursNew = parseInt(localStorage.getItem('timeHours'));
+    let minutesNew = parseInt(localStorage.getItem('timeMinutes'));
+    let secondsNew = parseInt(localStorage.getItem('timeSeconds'));
     switch (timeType) {
         case 'hours':
-            localStorage.setItem('timeHours', value);
+            //clamping the hours between 0 and maxHours. The min and max attributes
+            //in html do not work for manually inputted values, so this should fix it
+            if (value > maxHours) {
+                value = maxHours;
+            } else if (value < 0) {
+                value = 0;
+            }
+            hoursNew = value;
             break;
         case 'minutes':
-            localStorage.setItem('timeMinutes', value);
+            //clamping the hours between 0 and 59. If the value is 60 or over then
+            //add one to the value of the hour input if possible
+            while (value >= 60 && hoursNew < maxHours) {
+                //adding one hour
+                hoursNew++;
+                //and subtracting 60 minutes
+                value -= 60;
+            }
+            //if the number of minutes is still over maximum, max out the seconds input as well
+            if (value >= 60) {
+                secondsNew = 59;
+                value = 59;
+            }
+            minutesNew = value;
             break;
         case 'seconds':
-            localStorage.setItem('timeSeconds', value);
+            while (value >= 60 && (hoursNew < maxHours || minutesNew < 59)) {
+                value -= 60;
+                minutesNew++;
+                if (minutesNew >= 60) {
+                    hoursNew++;
+                    minutesNew -= 60;
+                }
+            }
+            secondsNew = value;
             break;
     }
+    //updating all of the inputs
+    localStorage.setItem('timeHours', hoursNew);
+    localStorage.setItem('timeMinutes', minutesNew);
+    localStorage.setItem('timeSeconds', secondsNew);
+    //setting the values in the number inputs to the correct values
+    document.getElementById('hours').value = hoursNew;
+    document.getElementById('minutes').value = minutesNew;
+    document.getElementById('seconds').value = secondsNew;
 }
 
 /**
@@ -352,7 +395,7 @@ function optionTimer() {
     htmlString += `>
             <label for="hours" class="small-text">Hours</label>
             <input type="number" value="${localStorage.getItem('timeMinutes')}" id="minutes"
-            class="text-right" min="0" max="59" onchange="updateTimeValues('minutes', value)"`;
+            class="text-right" onchange="updateTimeValues('minutes', value)"`;
     //making the number input disabled if the time limit checkbox is not checked
     if (localStorage.getItem('timeLimit') === 'disabled') {
         htmlString += ` disabled`;
@@ -360,7 +403,7 @@ function optionTimer() {
     htmlString += `>
             <label for="minutes" class="small-text">Minutes</label>
             <input type="number" value="${localStorage.getItem('timeSeconds')}" id="seconds"
-            class="text-right" min="0" max="59" onchange="updateTimeValues('seconds', value)"`;
+            class="text-right" onchange="updateTimeValues('seconds', value)"`;
     //making the number input disabled if the time limit checkbox is not checked
     if (localStorage.getItem('timeLimit') === 'disabled') {
         htmlString += ` disabled`;

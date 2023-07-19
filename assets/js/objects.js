@@ -1507,8 +1507,8 @@ const timer = {
         if (hours > 0) {
             timeText += `${hours}h `;
         }
-        //only showing the minutes if there is at least 1 remaining
-        if (minutes > 0) {
+        //only showing the minutes if there is at least 1 minute or hour remaining
+        if (minutes > 0 || hours > 0) {
             timeText += `${minutes}m `;
         }
         timeText += `${seconds}s`;
