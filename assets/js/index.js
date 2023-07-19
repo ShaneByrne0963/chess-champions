@@ -1,5 +1,7 @@
 //how many hours can be set to the time limit
 const maxHours = 9;
+//The minimum amount of time limit a player can input
+const minTimeLimit = 30000;
 
 //building the default dynamic settings when the page loads
 window.onload = settingsInit();
@@ -213,84 +215,45 @@ function updateTimeCheckbox(value) {
  */
 function updateTimeValues(timeType, value) {
     //manipulating the other elements in case the input is lower than the min or higher than the max
-    let hoursNew = parseInt(localStorage.getItem('timeHours'));
-    let minutesNew = parseInt(localStorage.getItem('timeMinutes'));
-    let secondsNew = parseInt(localStorage.getItem('timeSeconds'));
+    let hoursPrev = parseInt(localStorage.getItem('timeHours'));
+    let minutesPrev = parseInt(localStorage.getItem('timeMinutes'));
+    let secondsPrev = parseInt(localStorage.getItem('timeSeconds'));
     let input = parseInt(value);
+    //setting the right type to the input
     switch (timeType) {
         case 'hours':
-            //clamping the hours between 0 and maxHours. The min and max attributes
-            //in html do not work for manually inputted values, so this should fix it
-            if (input > maxHours) {
-                input = maxHours;
-                //also maxing out the minutes and seconds
-                minutesNew = 59;
-                secondsNew = 59;
-            } else if (input < 0) {
-                input = 0;
-            }
-            hoursNew = input;
+            hoursPrev = input;
             break;
         case 'minutes':
-            //clamping the hours between 0 and 59. If the value is 60 or over then
-            //add one to the value of the hour input if possible
-            while (input >= 60 && hoursNew < maxHours) {
-                //adding one hour
-                hoursNew++;
-                //and subtracting 60 minutes
-                input -= 60;
-            }
-            //if the number of minutes is still over maximum, max out the seconds input as well
-            if (input >= 60) {
-                secondsNew = 59;
-                input = 59;
-            }
-            while (input < 0 && hoursNew > 0) {
-                //subtracting one hour
-                hoursNew--;
-                //and adding 60 minutes
-                input += 60;
-            }
-            //setting the minutes to 0 if it ends up negative
-            if (input < 0) {
-                input = 0;
-            }
-            minutesNew = input;
+            minutesPrev = input;
             break;
         case 'seconds':
-            while (input >= 60 && (hoursNew < maxHours || minutesNew < 59)) {
-                input -= 60;
-                minutesNew++;
-                if (minutesNew >= 60) {
-                    hoursNew++;
-                    minutesNew -= 60;
-                }
-            }
-            if (input >= 60) {
-                input = 59;
-            }
-            while (input < 0 && (minutesNew > 0 || hoursNew > 0)) {
-                input += 60;
-                minutesNew--;
-                if (minutesNew < 0) {
-                    hoursNew--;
-                    minutesNew += 60;
-                }
-            }
-            if (input < 0) {
-                input = 0;
-            }
-            secondsNew = input;
+            secondsPrev = input;
             break;
     }
+    //converting the times to milliseconds and back again to hms if the minutes or seconds are not between 0 and 59
+    let timeMilliseconds = timer.getMilliseconds(hoursPrev, minutesPrev, secondsPrev);
+    //the time limit is not allowed to go above this value
+    let maxMilliseconds = timer.getMilliseconds(maxHours, 59, 59);
+    let finalTime;
+    if (timeMilliseconds > maxMilliseconds) {
+        //if the input is over the max time, then set the values to the max time
+        finalTime = timer.getHMS(maxMilliseconds);
+    } else if (timeMilliseconds < minTimeLimit) {
+        //if the input is under the min time, then set the values to the min time
+        finalTime = timer.getHMS(minTimeLimit);
+    } else {
+        //converting the milliseconds back to hours, minutes and seconds
+        finalTime = timer.getHMS(timeMilliseconds);
+    }
     //updating all of the inputs
-    localStorage.setItem('timeHours', hoursNew);
-    localStorage.setItem('timeMinutes', minutesNew);
-    localStorage.setItem('timeSeconds', secondsNew);
+    localStorage.setItem('timeHours', finalTime.hours);
+    localStorage.setItem('timeMinutes', finalTime.minutes);
+    localStorage.setItem('timeSeconds', finalTime.seconds);
     //setting the values in the number inputs to the correct values
-    document.getElementById('hours').value = hoursNew;
-    document.getElementById('minutes').value = minutesNew;
-    document.getElementById('seconds').value = secondsNew;
+    document.getElementById('hours').value = finalTime.hours;
+    document.getElementById('minutes').value = finalTime.minutes;
+    document.getElementById('seconds').value = finalTime.seconds;
 }
 
 /**
