@@ -16,6 +16,11 @@ function settingsInit() {
         localStorage.setItem('topPosition', 'black');
         //which color the player will be when against a computer
         localStorage.setItem('playerColor', 'white');
+        //for time limits in pvp games
+        localStorage.setItem('timeLimit', 'disabled');
+        localStorage.setItem('timeHours', '0');
+        localStorage.setItem('timeMinutes', '20');
+        localStorage.setItem('timeSeconds', '0');
         //special moves
         localStorage.setItem('pawnPromotion', 'any');
         localStorage.setItem("castling", 'enabled');
@@ -295,11 +300,11 @@ function optionTimer() {
         <input type="checkbox" id="has-timer">
         <label for="has-timer">Time Limit:</label>
         <span class="float-right">
-            <input type="number" id="hours" class="text-right">
+            <input type="number" id="hours" class="text-right" min="0" max="9">
             <label for="hours" class="small-text">Hours</label>
-            <input type="number" id="minutes" class="text-right">
+            <input type="number" id="minutes" class="text-right" min="0" max="59">
             <label for="minutes" class="small-text">Minutes</label>
-            <input type="number" id="seconds" class="text-right">
+            <input type="number" id="seconds" class="text-right" min="0" max="59">
             <label for="seconds" class="small-text">Seconds</label>
         </span>
     </div>
