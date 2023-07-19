@@ -1498,5 +1498,44 @@ const timer = {
         }
         timeText += `${seconds}s`;
         timeElement.innerText = timeText;
+    },
+
+    /**
+     * Converts hours, minutes and seconds into milliseconds
+     * @param {integer} hours The amount of hours in the timer
+     * @param {integer} minutes The amount of minutes in the timer
+     * @param {integer} seconds The amount of seconds in the timer
+     * @returns {integer} The total time remaining in milliseconds
+     */
+    getMilliseconds: (hours, minutes, seconds) => {
+        return (seconds * 1000) + (minutes * 60000) + (hours * 3600000);
+    },
+
+    /**
+     * Converts milliseconds into hours, minutes and seconds
+     * @param {integer} milliseconds The amount of milliseconds in the timer
+     * @returns {object} {hours, minutes, seconds}
+     */
+    getHMS: (milliseconds) => {
+        let hours = 0;
+        let minutes = 0;
+        let seconds = 0;
+        while (milliseconds >= 3600000) {
+            hours++;
+            milliseconds -= 3600000;
+        }
+        while (milliseconds >= 60000) {
+            minutes++;
+            milliseconds -= 60000;
+        }
+        while (milliseconds >= 1000) {
+            seconds++;
+            milliseconds -= 1000;
+        }
+        return {
+            hours: hours,
+            minutes: minutes,
+            seconds: seconds
+        };
     }
 }
