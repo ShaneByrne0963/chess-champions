@@ -1605,7 +1605,7 @@ const timer = {
         setBanner('Time is Up!', otherPlayerName + ' Wins!', '');
         //removes the checkmate banner after a certain amount of time to allow the user to see the board again
         setTimeout(removeBanner, checkmateBannerTime);
-    }
+    },
 
     /**
      * Ends a timer and updates the time in the session storage
