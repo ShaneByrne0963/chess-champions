@@ -1565,11 +1565,20 @@ const timer = {
     },
 
     update: (player) => {
-        let currentTime = timer.getHMS(Date.now() - timer.startingTime);
-        timer.setDisplay(player, currentTime.hours, currentTime.minutes, currentTime.seconds);
+        //how much time has been taken since the start of the turn
+        let turnTime = Date.now() - timer.startingTime;
+        //the time the player had before the turn started
+        let playerTime = sessionStorage.getItem(`p${player}-time`);
+        //the time that the player has left
+        let timeRemaining = timer.getHMS(playerTime - turnTime);
+        timer.setDisplay(player, timeRemaining.hours, timeRemaining.minutes, timeRemaining.seconds);
     },
 
-    end: () => {
-
+    /**
+     * Stops the active timer
+     */
+    stop: () => {
+        clearInterval(timerInterval);
+        timerInterval = null;
     }
 }
