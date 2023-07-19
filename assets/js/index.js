@@ -185,6 +185,10 @@ function updateEnPassant(value) {
     }
 }
 
+/**
+ * Enables the time limit feature for pvp games, also enabling the number inputs to choose the time limit
+ * @param {boolean} value If the time limit is enabled or disabled
+ */
 function updateTimeCheckbox(value) {
     if (value) {
         localStorage.setItem('timeLimit', 'enabled');
@@ -310,6 +314,10 @@ function optionPlayerColor() {
     return htmlString;
 }
 
+/**
+ * Returns an HTML checkbox and trio of number inputs to allow a time limit for pvp games
+ * @returns {string} The HTML to be added to the dynamic settings
+ */
 function optionTimer() {
     let htmlString = `
     <div>
@@ -321,21 +329,21 @@ function optionTimer() {
     htmlString += `>
         <label for="has-timer">Time Limit:</label>
         <span class="float-right">
-            <input type="number" id="hours" class="text-right" min="0" max="9"`;
+            <input type="number" value="${localStorage.getItem('timeHours')}" id="hours" class="text-right" min="0" max="9"`;
     //making the number input disabled if the time limit checkbox is not checked
     if (localStorage.getItem('timeLimit') === 'disabled') {
         htmlString += ` disabled`;
     }
     htmlString += `>
             <label for="hours" class="small-text">Hours</label>
-            <input type="number" id="minutes" class="text-right" min="0" max="59"`;
+            <input type="number" value="${localStorage.getItem('timeMinutes')}" id="minutes" class="text-right" min="0" max="59"`;
     //making the number input disabled if the time limit checkbox is not checked
     if (localStorage.getItem('timeLimit') === 'disabled') {
         htmlString += ` disabled`;
     }
     htmlString += `>
             <label for="minutes" class="small-text">Minutes</label>
-            <input type="number" id="seconds" class="text-right" min="0" max="59"`;
+            <input type="number" value="${localStorage.getItem('timeSeconds')}" id="seconds" class="text-right" min="0" max="59"`;
     //making the number input disabled if the time limit checkbox is not checked
     if (localStorage.getItem('timeLimit') === 'disabled') {
         htmlString += ` disabled`;
