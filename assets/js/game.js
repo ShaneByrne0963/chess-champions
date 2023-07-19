@@ -390,7 +390,7 @@ function allowTurn(color) {
         pieceMovement.moveWait = setTimeout(makeMove, aiDelay, color);
     }
     //starting the timer
-    if (localStorage.getItem('timeLimit') === 'enabled') {
+    if (getHumanPlayers() === 2 && localStorage.getItem('timeLimit') === 'enabled') {
         let playerTurn = getPlayerTurn();
         timer.start(playerTurn.place);
     }
