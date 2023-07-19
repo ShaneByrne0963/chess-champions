@@ -208,14 +208,15 @@ function updateTimeCheckbox(value) {
     secondsInput.disabled = !value;
 }
 
+/**
+ * Sets the time limit 
+ */
 function updateTimeValues(timeType, value) {
     //manipulating the other elements in case the input is lower than the min or higher than the max
     let hoursNew = parseInt(localStorage.getItem('timeHours'));
     let minutesNew = parseInt(localStorage.getItem('timeMinutes'));
     let secondsNew = parseInt(localStorage.getItem('timeSeconds'));
-
     let input = parseInt(value);
-
     switch (timeType) {
         case 'hours':
             //clamping the hours between 0 and maxHours. The min and max attributes
@@ -244,6 +245,16 @@ function updateTimeValues(timeType, value) {
                 secondsNew = 59;
                 input = 59;
             }
+            while (input < 0 && hoursNew > 0) {
+                //subtracting one hour
+                hoursNew--;
+                //and adding 60 minutes
+                input += 60;
+            }
+            //setting the minutes to 0 if it ends up negative
+            if (input < 0) {
+                input = 0;
+            }
             minutesNew = input;
             break;
         case 'seconds':
@@ -259,7 +270,6 @@ function updateTimeValues(timeType, value) {
                 input = 59;
             }
             while (input < 0 && (minutesNew > 0 || hoursNew > 0)) {
-                console.log(input);
                 input += 60;
                 minutesNew--;
                 if (minutesNew < 0) {
