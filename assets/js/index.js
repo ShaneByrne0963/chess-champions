@@ -313,14 +313,34 @@ function optionPlayerColor() {
 function optionTimer() {
     let htmlString = `
     <div>
-        <input type="checkbox" id="has-timer" onchange="updateTimeCheckbox(checked)">
+        <input type="checkbox" id="has-timer" onchange="updateTimeCheckbox(checked)"`;
+    //enabling the checkbox if the saved time limit option is enabled
+    if (localStorage.getItem('timeLimit') === 'enabled') {
+        htmlString += ` checked`;
+    }
+    htmlString += `>
         <label for="has-timer">Time Limit:</label>
         <span class="float-right">
-            <input type="number" id="hours" class="text-right" min="0" max="9">
+            <input type="number" id="hours" class="text-right" min="0" max="9"`;
+    //making the number input disabled if the time limit checkbox is not checked
+    if (localStorage.getItem('timeLimit') === 'disabled') {
+        htmlString += ` disabled`;
+    }
+    htmlString += `>
             <label for="hours" class="small-text">Hours</label>
-            <input type="number" id="minutes" class="text-right" min="0" max="59">
+            <input type="number" id="minutes" class="text-right" min="0" max="59"`;
+    //making the number input disabled if the time limit checkbox is not checked
+    if (localStorage.getItem('timeLimit') === 'disabled') {
+        htmlString += ` disabled`;
+    }
+    htmlString += `>
             <label for="minutes" class="small-text">Minutes</label>
-            <input type="number" id="seconds" class="text-right" min="0" max="59">
+            <input type="number" id="seconds" class="text-right" min="0" max="59"`;
+    //making the number input disabled if the time limit checkbox is not checked
+    if (localStorage.getItem('timeLimit') === 'disabled') {
+        htmlString += ` disabled`;
+    }
+    htmlString += `>
             <label for="seconds" class="small-text">Seconds</label>
         </span>
     </div>
