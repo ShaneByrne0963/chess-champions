@@ -62,6 +62,9 @@ function startGame() {
     clearAnnouncements();
     removeBanner();
 
+    //removing the interaction from all tiles
+    tile.removeAllInteraction();
+
     //stops any timeouts still active in the game
     pieceMovement.clearDelay();
     timer.clear();
@@ -358,6 +361,8 @@ function nextTurn() {
 
         if (checkmate) {
             checkmate = true;
+            //stopping the timer
+            timer.clear();
             addAnnouncement(`Checkmate! ${lastPlayerName} wins!`);
             setBanner('Checkmate!', lastPlayerName + ' wins!', '');
             //removes the checkmate banner after a certain amount of time to allow the user to see the board again

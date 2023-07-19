@@ -1623,7 +1623,7 @@ const timer = {
     },
 
     /**
-     * 
+     * Removes any active timer interval
      */
     clear: () => {
         //stopping the interval that is updating the time
