@@ -157,6 +157,17 @@ function getMoveOnlyScore(pieceData, moveTileData) {
     //add extra points for pawns to encourage movement
     if (pieceData.piece === 'pawn') {
         moveScore += findPawnScore(pieceData, moveTileData);
+
+        //adding the score of any eliminated pawn from an en passant move
+        if (moveTileData.piece === '') {
+            //finding the move the piece took to get to this tile using the differences between their coordinates
+            let move = ['', moveTileData.x - pieceData.x, moveTileData.y - pieceData.y];
+            if (pieceMovement.canPassant(pieceData, move)) {
+                //finding the pawn that will be eliminated from the passant, which will be to the left or right of the starting tile
+                let passantPiece = chessPiece.findData(moveTileData.x, pieceData.y);
+                moveScore += chessPiece.getValue(passantPiece);
+            }
+        }
     }
     return moveScore;
 }
