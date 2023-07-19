@@ -1578,9 +1578,34 @@ const timer = {
         //the time the player had before the turn started
         let playerTime = parseInt(sessionStorage.getItem(`p${player}-time`));
         //the time that the player has left. Add 1 second for display purposes only
-        let timeRemaining = timer.getHMS(playerTime - turnTime + 1000);
-        timer.setDisplay(player, timeRemaining.hours, timeRemaining.minutes, timeRemaining.seconds);
+        let timeRemaining = playerTime - turnTime;
+        let timeDisplay = timer.getHMS(timeRemaining + 1000);
+        timer.setDisplay(player, timeDisplay.hours, timeDisplay.minutes, timeDisplay.seconds);
+
+        //checking if the player ran out of time
+        if (timeRemaining <= 0) {
+            timer.timeout(player);
+        }
     },
+
+    /**
+     * Is called when a player runs out of time
+     * @param {integer} player The player that ran out of time
+     */
+    timeout: (player) => {
+        timer.clear();
+        //removes any interaction from the game
+        removeAllInteraction();
+        pieceMovement.clearDelay();
+
+        //getting the names of the players
+        let playerName = getPlayerName(player);
+        let otherPlayerName = getPlayerName(3 - player); //3 - 1 = 2 and 3 - 2 = 1, so it results in the opposite player
+        addAnnouncement(`${playerName} ran out of time! ${otherPlayerName} wins!`);
+        setBanner('Time is Up!', otherPlayerName + ' Wins!', '');
+        //removes the checkmate banner after a certain amount of time to allow the user to see the board again
+        setTimeout(removeBanner, checkmateBannerTime);
+    }
 
     /**
      * Ends a timer and updates the time in the session storage
