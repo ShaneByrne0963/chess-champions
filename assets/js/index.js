@@ -213,60 +213,64 @@ function updateTimeValues(timeType, value) {
     let hoursNew = parseInt(localStorage.getItem('timeHours'));
     let minutesNew = parseInt(localStorage.getItem('timeMinutes'));
     let secondsNew = parseInt(localStorage.getItem('timeSeconds'));
+
+    let input = parseInt(value);
+
     switch (timeType) {
         case 'hours':
             //clamping the hours between 0 and maxHours. The min and max attributes
             //in html do not work for manually inputted values, so this should fix it
-            if (value > maxHours) {
-                value = maxHours;
+            if (input > maxHours) {
+                input = maxHours;
                 //also maxing out the minutes and seconds
                 minutesNew = 59;
                 secondsNew = 59;
-            } else if (value < 0) {
-                value = 0;
+            } else if (input < 0) {
+                input = 0;
             }
-            hoursNew = value;
+            hoursNew = input;
             break;
         case 'minutes':
             //clamping the hours between 0 and 59. If the value is 60 or over then
             //add one to the value of the hour input if possible
-            while (value >= 60 && hoursNew < maxHours) {
+            while (input >= 60 && hoursNew < maxHours) {
                 //adding one hour
                 hoursNew++;
                 //and subtracting 60 minutes
-                value -= 60;
+                input -= 60;
             }
             //if the number of minutes is still over maximum, max out the seconds input as well
-            if (value >= 60) {
+            if (input >= 60) {
                 secondsNew = 59;
-                value = 59;
+                input = 59;
             }
-            minutesNew = value;
+            minutesNew = input;
             break;
         case 'seconds':
-            while (value >= 60 && (hoursNew < maxHours || minutesNew < 59)) {
-                value -= 60;
+            while (input >= 60 && (hoursNew < maxHours || minutesNew < 59)) {
+                input -= 60;
                 minutesNew++;
                 if (minutesNew >= 60) {
                     hoursNew++;
                     minutesNew -= 60;
                 }
             }
-            if (value >= 60) {
-                value = 59;
+            if (input >= 60) {
+                input = 59;
             }
-            while (value < 0 && (minutesNew > 0 || hoursNew > 0)) {
-                value += 60;
+            while (input < 0 && (minutesNew > 0 || hoursNew > 0)) {
+                console.log(input);
+                input += 60;
                 minutesNew--;
                 if (minutesNew < 0) {
                     hoursNew--;
                     minutesNew += 60;
                 }
             }
-            if (value < 0) {
-                value = 0;
+            if (input < 0) {
+                input = 0;
             }
-            secondsNew = value;
+            secondsNew = input;
             break;
     }
     //updating all of the inputs
