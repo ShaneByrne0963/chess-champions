@@ -1463,3 +1463,28 @@ const pieceAnimation = {
         pieceAnimation.animationId = 0;
     }
 };
+
+//the object that contains the functions related to the time limit for each player
+const timer = {
+    /**
+     * Sets the display of a player's time limit
+     * @param {integer} player Either 1 or 2 for the first or second player
+     * @param {integer} hours How many hours remain from the time limit
+     * @param {integer} minutes How many minutes remain from the time limit
+     * @param {integer} seconds How many seconds remain from the time limit
+     */
+    setDisplay: (player, hours, minutes, seconds) => {
+        let timeElement = document.getElementById(`player${player}-time`);
+        let timeText = `Time Remaining: `;
+        //only showing the hours if there is at least 1 remaining
+        if (hours > 0) {
+            timeText += `${hours}h `;
+        }
+        //only showing the minutes if there is at least 1 remaining
+        if (minutes > 0) {
+            timeText += `${minutes}m `;
+        }
+        timeText += `${seconds}s`;
+        timeElement.innerText = timeText;
+    }
+}

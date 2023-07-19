@@ -74,8 +74,8 @@ function startGame() {
         let timeHours = localStorage.getItem('timeHours');
         let timeMinutes = localStorage.getItem('timeMinutes');
         let timeSeconds = localStorage.getItem('timeSeconds');
-        setPlayerTime(1, timeHours, timeMinutes, timeSeconds);
-        setPlayerTime(2, timeHours, timeMinutes, timeSeconds);
+        timer.setDisplay(1, timeHours, timeMinutes, timeSeconds);
+        timer.setDisplay(2, timeHours, timeMinutes, timeSeconds);
     }
 
     //iterating through every tile on the board to create chess pieces where necessary
@@ -185,28 +185,6 @@ function setPlayerNames() {
     player2Heading.innerHTML += `
     <span><i class="fa-solid fa-chess-king"></i></span>
     `;
-}
-
-/**
- * Sets the display of a player's time limit
- * @param {integer} player Either 1 or 2 for the first or second player
- * @param {integer} hours How many hours remain from the time limit
- * @param {integer} minutes How many minutes remain from the time limit
- * @param {integer} seconds How many seconds remain from the time limit
- */
-function setPlayerTime(player, hours, minutes, seconds) {
-    let timeElement = document.getElementById(`player${player}-time`);
-    let timeText = `Time Remaining: `;
-    //only showing the hours if there is at least 1 remaining
-    if (hours > 0) {
-        timeText += `${hours}h `;
-    }
-    //only showing the minutes if there is at least 1 remaining
-    if (minutes > 0) {
-        timeText += `${minutes}m `;
-    }
-    timeText += `${seconds}s`;
-    timeElement.innerText = timeText;
 }
 
 /**
