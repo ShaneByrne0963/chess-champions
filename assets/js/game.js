@@ -267,23 +267,26 @@ function getPlayerTurn() {
 
 /**
  * Gets the name of the player that owns a given color
- * @param {*} playerColor The color of the player you wish to retrieve
+ * @param {*} player The color/number of the player you wish to retrieve
  * @returns {string} The name of the player with the specified color
  */
-function getPlayerName(playerColor) {
+function getPlayerName(player) {
     //getting the place on the ui based on the color. 'white' always goes first so it will always be 1
     let playerPlace;
-    switch (playerColor) {
-        case 'white':
-            playerPlace = 1;
-            break;
-        case 'black':
-            playerPlace = 2;
-            break;
-        default:
-            throw `Error at getPlayerName: Invalid color ${playerColor}. Aborting!`;
+    if (typeof player === 'string') {
+        switch (player) {
+            case 'white':
+                playerPlace = 1;
+                break;
+            case 'black':
+                playerPlace = 2;
+                break;
+            default:
+                throw `Error at getPlayerName: Invalid color ${playerColor}. Aborting!`;
+        }
+    } else if (typeof player === 'number') {
+        playerPlace = player;
     }
-
     //finding the ui element that contains the information of the player
     let playerUi = document.getElementById(`player${playerPlace}-ui`);
     let playerChildren = playerUi.children;

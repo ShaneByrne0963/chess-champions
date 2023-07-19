@@ -1595,7 +1595,7 @@ const timer = {
     timeout: (player) => {
         timer.clear();
         //removes any interaction from the game
-        removeAllInteraction();
+        tile.removeAllInteraction();
         pieceMovement.clearDelay();
 
         //getting the names of the players

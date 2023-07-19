@@ -205,6 +205,20 @@ function updateTimeCheckbox(value) {
     secondsInput.disabled = !value;
 }
 
+function updateTimeValues(timeType, value) {
+    switch (timeType) {
+        case 'hours':
+            localStorage.setItem('timeHours', value);
+            break;
+        case 'minutes':
+            localStorage.setItem('timeMinutes', value);
+            break;
+        case 'seconds':
+            localStorage.setItem('timeSeconds', value);
+            break;
+    }
+}
+
 /**
  * Sets which side the white pieces will start on, either top or bottom
  * @param {string} value Either 'top' or 'bottom'
@@ -329,21 +343,24 @@ function optionTimer() {
     htmlString += `>
         <label for="has-timer">Time Limit:</label>
         <span class="float-right">
-            <input type="number" value="${localStorage.getItem('timeHours')}" id="hours" class="text-right" min="0" max="9"`;
+            <input type="number" value="${localStorage.getItem('timeHours')}" id="hours"
+            class="text-right" min="0" max="9" onchange="updateTimeValues('hours', value)"`;
     //making the number input disabled if the time limit checkbox is not checked
     if (localStorage.getItem('timeLimit') === 'disabled') {
         htmlString += ` disabled`;
     }
     htmlString += `>
             <label for="hours" class="small-text">Hours</label>
-            <input type="number" value="${localStorage.getItem('timeMinutes')}" id="minutes" class="text-right" min="0" max="59"`;
+            <input type="number" value="${localStorage.getItem('timeMinutes')}" id="minutes"
+            class="text-right" min="0" max="59" onchange="updateTimeValues('minutes', value)"`;
     //making the number input disabled if the time limit checkbox is not checked
     if (localStorage.getItem('timeLimit') === 'disabled') {
         htmlString += ` disabled`;
     }
     htmlString += `>
             <label for="minutes" class="small-text">Minutes</label>
-            <input type="number" value="${localStorage.getItem('timeSeconds')}" id="seconds" class="text-right" min="0" max="59"`;
+            <input type="number" value="${localStorage.getItem('timeSeconds')}" id="seconds"
+            class="text-right" min="0" max="59" onchange="updateTimeValues('seconds', value)"`;
     //making the number input disabled if the time limit checkbox is not checked
     if (localStorage.getItem('timeLimit') === 'disabled') {
         htmlString += ` disabled`;
