@@ -13,6 +13,8 @@ const checkmateBannerTime = 5000;
 document.onload = gameInit();
 //clearing all intervals when leaving the page
 window.addEventListener('onbeforeunload', clearIntervals);
+//calling the screen resize function every time the screen size changes
+window.addEventListener('resize', resizeScreen);
 
 /**
  * Creates the chess tiles and then starts the game
@@ -20,6 +22,8 @@ window.addEventListener('onbeforeunload', clearIntervals);
 function gameInit() {
     //setting the player names in the player ui
     setPlayerNames();
+    //organizing the elements depending on the screen size
+    resizeScreen();
 
     //Setting up the chess board tiles
     let chessBoard = document.getElementById("chess-board");
@@ -29,23 +33,22 @@ function gameInit() {
     for (let i = 0; i < boardSize; i++) {
         for (let j = 0; j < boardSize; j++) {
             let tileClass;
+            //alternating between light and dark tiles
             if (isWhite) {
                 tileClass = 'tile-light';
             }
             else {
                 tileClass = 'tile-dark';
             }
-
+            //creating the tile div
             chessGrid += `
             <div id="tile-${j}-${i}" class="tile ${tileClass}" onclick="tileClick(${j}, ${i});"></div>`;
-
             //reverses the tile order
             isWhite = !isWhite;
         }
         //reverses the tile order again after each row
         isWhite = !isWhite;
     }
-
     chessBoard.innerHTML = chessGrid;
     startGame();
 }
@@ -96,6 +99,13 @@ function startGame() {
     }
     //allow the player to make it's move, whether it is a player or computer
     allowTurn('white');
+}
+
+/**
+ * Rearranges some of the elements depending on the screen size
+ */
+function resizeScreen() {
+    let width = window.innerWidth;
 }
 
 /**
