@@ -203,17 +203,24 @@ input[type="number"] {
     height: 100%;
 }
 
-#announce-container {
+#announce-ui {
     padding: 16px;
     grid-column-start: 1;
     grid-column-end: 3;
     border-bottom: 1px solid black;
 }
 
+/* each of the individual announcements */
 #announcements>div {
     position: absolute;
     bottom: 0;
     font-size: 1.8rem;
+}
+
+/* where the announcement div will be kept for smaller screen sizes */
+#announce-game {
+    display: none;
+    border: 1px solid black;
 }
 
 /* game options for restarting and returning to the main menu */
@@ -383,5 +390,11 @@ input[type="number"] {
     #player2-ui {
         grid-column-start: 1;
         grid-column-end: 3;
+    }
+
+    #announce-game {
+        display: visible;
+        padding: 16px;
+        min-height: 256px;
     }
 }

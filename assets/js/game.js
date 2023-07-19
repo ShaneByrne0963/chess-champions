@@ -106,6 +106,15 @@ function startGame() {
  */
 function resizeScreen() {
     let width = window.innerWidth;
+    let announceUI = document.getElementById('announce-ui');
+    let announceGame = document.getElementById('announce-game');
+    let announceDiv = document.getElementById('announcements');
+
+    if (width >= 1400) {
+        announceUI.appendChild(announceDiv);
+    } else if (width >= 0) {
+        announceGame.appendChild(announceDiv);
+    }
 }
 
 /**
