@@ -185,6 +185,22 @@ function updateEnPassant(value) {
     }
 }
 
+function updateTimeCheckbox(value) {
+    if (value) {
+        localStorage.setItem('timeLimit', 'enabled');
+    } else {
+        localStorage.setItem('timeLimit', 'disabled');
+    }
+    //enabling or disabling the inputs to get the time limit,
+    //depending on if the user wants a time limit in the game
+    let hoursInput = document.getElementById('hours');
+    let minutesInput = document.getElementById('minutes');
+    let secondsInput = document.getElementById('seconds');
+    hoursInput.disabled = !value;
+    minutesInput.disabled = !value;
+    secondsInput.disabled = !value;
+}
+
 /**
  * Sets which side the white pieces will start on, either top or bottom
  * @param {string} value Either 'top' or 'bottom'
@@ -297,7 +313,7 @@ function optionPlayerColor() {
 function optionTimer() {
     let htmlString = `
     <div>
-        <input type="checkbox" id="has-timer">
+        <input type="checkbox" id="has-timer" onchange="updateTimeCheckbox(checked)">
         <label for="has-timer">Time Limit:</label>
         <span class="float-right">
             <input type="number" id="hours" class="text-right" min="0" max="9">
