@@ -1,6 +1,6 @@
 //how many hours can be set to the time limit
 const maxHours = 9;
-//The minimum amount of time limit a player can input
+//The minimum amount of time limit a player can input, which is 30 seconds
 const minTimeLimit = 30000;
 
 //building the default dynamic settings when the page loads

@@ -11,6 +11,8 @@ const checkmateBannerTime = 5000;
 
 //initializes game when the page loads
 document.onload = gameInit();
+//clearing all intervals when leaving the page
+window.addEventListener('onbeforeunload', clearIntervals);
 
 /**
  * Creates the chess tiles and then starts the game
@@ -70,8 +72,8 @@ function startGame() {
     //removing any piece images from the graveyard
     graveyard.clearAll();
 
-    //resetting the time limits for each player
-    if (localStorage.getItem('timeLimit') === 'enabled') {
+    //resetting the time limits for each player if applicable
+    if (getHumanPlayers() === 2 && localStorage.getItem('timeLimit') === 'enabled') {
         timer.init();
     }
 
@@ -141,6 +143,21 @@ function getStartingPiece(x, y) {
         piece: piece,
         color: color
     };
+}
+
+/**
+ * Gets how many players in the game are controlled manually by the user
+ * @returns {integer} The number of human players in the game
+ */
+function getHumanPlayers() {
+    let humans = 0;
+    if (localStorage.getItem('white') === 'player') {
+        humans++;
+    }
+    if (localStorage.getItem('black') === 'player') {
+        humans++;
+    }
+    return humans;
 }
 
 /**
@@ -555,4 +572,12 @@ function revivePlayer() {
     }
     //continuing the game
     nextTurn();
+}
+
+/**
+ * Clears all intervals running on the page
+ */
+function clearIntervals() {
+    timer.clear();
+    pieceAnimation.clear();
 }

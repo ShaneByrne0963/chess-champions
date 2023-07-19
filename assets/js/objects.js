@@ -417,9 +417,9 @@ const chessPiece = {
      */
     move: (pieceElement, newTileElement) => {
         //stops any countdown timer
-        if (localStorage.getItem('timeLimit') === 'enabled') {
+        if (getHumanPlayers() === 2 && localStorage.getItem('timeLimit') === 'enabled') {
             let playerTurn = getPlayerTurn();
-            timer.stop(getPlayerTurn().place);
+            timer.stop(playerTurn.place);
         }
         
         //first removing the 'clickable' class from all of the pieces to stop player input until it's their turn again
