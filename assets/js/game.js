@@ -71,11 +71,7 @@ function startGame() {
 
     //resetting the time limits for each player
     if (localStorage.getItem('timeLimit') === 'enabled') {
-        let timeHours = localStorage.getItem('timeHours');
-        let timeMinutes = localStorage.getItem('timeMinutes');
-        let timeSeconds = localStorage.getItem('timeSeconds');
-        timer.setDisplay(1, timeHours, timeMinutes, timeSeconds);
-        timer.setDisplay(2, timeHours, timeMinutes, timeSeconds);
+        timer.init();
     }
 
     //iterating through every tile on the board to create chess pieces where necessary

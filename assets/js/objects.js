@@ -1467,6 +1467,18 @@ const pieceAnimation = {
 //the object that contains the functions related to the time limit for each player
 const timer = {
     /**
+     * Initialises the time limit
+     */
+    init: () => {
+        //setting the ui displays
+        let timeHours = localStorage.getItem('timeHours');
+        let timeMinutes = localStorage.getItem('timeMinutes');
+        let timeSeconds = localStorage.getItem('timeSeconds');
+        timer.setDisplay(1, timeHours, timeMinutes, timeSeconds);
+        timer.setDisplay(2, timeHours, timeMinutes, timeSeconds);
+    },
+
+    /**
      * Sets the display of a player's time limit
      * @param {integer} player Either 1 or 2 for the first or second player
      * @param {integer} hours How many hours remain from the time limit
