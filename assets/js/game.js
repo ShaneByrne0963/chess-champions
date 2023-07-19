@@ -62,6 +62,7 @@ function startGame() {
 
     //stops any timeouts still active in the game
     pieceMovement.clearDelay();
+    timer.clear();
 
     //clears the board before creating new pieces
     tile.clearAll();
@@ -370,12 +371,8 @@ function allowTurn(color) {
     }
     //starting the timer
     if (localStorage.getItem('timeLimit') === 'enabled') {
-        //white always starts first
-        if (color === 'white') {
-            timer.start(1);
-        } else {
-            timer.start(2);
-        }
+        elet playerTurn = getPlayerTurn();
+        timer.start(playerTurn.place);
     }
 }
 

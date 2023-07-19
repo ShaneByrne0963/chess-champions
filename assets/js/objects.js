@@ -417,7 +417,11 @@ const chessPiece = {
      */
     move: (pieceElement, newTileElement) => {
         //stops any countdown timer
-        timer.stop();
+        if (localStorage.getItem('timeLimit') === 'enabled') {
+            let playerTurn = getPlayerTurn();
+            timer.stop(getPlayerTurn().place);
+        }
+        
         //first removing the 'clickable' class from all of the pieces to stop player input until it's their turn again
         tile.removeAllInteraction();
         //removing the not-moved class from the piece after it makes its first move
@@ -442,7 +446,7 @@ const chessPiece = {
         }
         if (!pieceMovement.isCastlingMove(pieceElement, tile.getPieceElement(newTileElement))) {
             //starting the movement animation if it is a normal move
-            pieceAnimation.start('endTurn', pieceElement, newTileElement,);
+            pieceAnimation.start('endTurn', pieceElement, newTileElement);
         }
     },
 
@@ -1572,16 +1576,32 @@ const timer = {
         //how much time has been taken since the start of the turn
         let turnTime = Date.now() - timer.startingTime;
         //the time the player had before the turn started
-        let playerTime = sessionStorage.getItem(`p${player}-time`);
+        let playerTime = parseInt(sessionStorage.getItem(`p${player}-time`));
         //the time that the player has left
         let timeRemaining = timer.getHMS(playerTime - turnTime);
         timer.setDisplay(player, timeRemaining.hours, timeRemaining.minutes, timeRemaining.seconds);
     },
 
     /**
-     * Stops the active timer
+     * Ends a timer and updates the time in the session storage
+     * @param {integer} player The player who ended the timer
      */
-    stop: () => {
+    stop: (player) => {
+        //getting how much time the player spent on the move
+        let turnTime = Date.now() - timer.startingTime;
+        //the time the player had before the turn started
+        let playerTime = parseInt(sessionStorage.getItem(`p${player}-time`));
+        //subtracting the time that was taken for the turn from the player's total time
+        sessionStorage.setItem(`p${player}-time`, playerTime - turnTime);
+
+        timer.clear();
+    },
+
+    /**
+     * 
+     */
+    clear: () => {
+        //stopping the interval that is updating the time
         if (timer.timerInterval !== null) {
             clearInterval(timer.timerInterval);
             timer.timerInterval = null;
