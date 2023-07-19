@@ -1577,8 +1577,8 @@ const timer = {
         let turnTime = Date.now() - timer.startingTime;
         //the time the player had before the turn started
         let playerTime = parseInt(sessionStorage.getItem(`p${player}-time`));
-        //the time that the player has left
-        let timeRemaining = timer.getHMS(playerTime - turnTime);
+        //the time that the player has left. Add 1 second for display purposes only
+        let timeRemaining = timer.getHMS(playerTime - turnTime + 1000);
         timer.setDisplay(player, timeRemaining.hours, timeRemaining.minutes, timeRemaining.seconds);
     },
 

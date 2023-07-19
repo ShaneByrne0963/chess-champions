@@ -371,7 +371,7 @@ function allowTurn(color) {
     }
     //starting the timer
     if (localStorage.getItem('timeLimit') === 'enabled') {
-        elet playerTurn = getPlayerTurn();
+        let playerTurn = getPlayerTurn();
         timer.start(playerTurn.place);
     }
 }
