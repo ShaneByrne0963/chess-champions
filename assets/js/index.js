@@ -219,6 +219,9 @@ function updateTimeValues(timeType, value) {
             //in html do not work for manually inputted values, so this should fix it
             if (value > maxHours) {
                 value = maxHours;
+                //also maxing out the minutes and seconds
+                minutesNew = 59;
+                secondsNew = 59;
             } else if (value < 0) {
                 value = 0;
             }
@@ -248,6 +251,20 @@ function updateTimeValues(timeType, value) {
                     hoursNew++;
                     minutesNew -= 60;
                 }
+            }
+            if (value >= 60) {
+                value = 59;
+            }
+            while (value < 0 && (minutesNew > 0 || hoursNew > 0)) {
+                value += 60;
+                minutesNew--;
+                if (minutesNew < 0) {
+                    hoursNew--;
+                    minutesNew += 60;
+                }
+            }
+            if (value < 0) {
+                value = 0;
             }
             secondsNew = value;
             break;
