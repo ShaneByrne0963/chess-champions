@@ -368,6 +368,15 @@ function allowTurn(color) {
         //the ai script running if it is the computer's turn
         pieceMovement.moveWait = setTimeout(makeMove, aiDelay, color);
     }
+    //starting the timer
+    if (localStorage.getItem('timeLimit') === 'enabled') {
+        //white always starts first
+        if (color === 'white') {
+            timer.start(1);
+        } else {
+            timer.start(2);
+        }
+    }
 }
 
 /**

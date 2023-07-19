@@ -416,6 +416,8 @@ const chessPiece = {
      * @param {*} newTileElement The tile element the piece will move to
      */
     move: (pieceElement, newTileElement) => {
+        //stops any countdown timer
+        timer.stop();
         //first removing the 'clickable' class from all of the pieces to stop player input until it's their turn again
         tile.removeAllInteraction();
         //removing the not-moved class from the piece after it makes its first move
@@ -1485,8 +1487,6 @@ const timer = {
         //setting the ui displays
         timer.setDisplay(1, timeHours, timeMinutes, timeSeconds);
         timer.setDisplay(2, timeHours, timeMinutes, timeSeconds);
-
-        timer.start(1);
     },
 
     /**
@@ -1560,10 +1560,14 @@ const timer = {
     start: (player) => {
         //saves the time when the timer started
         timer.startingTime = Date.now();
-
+        //starts the interval to update the time
         timer.timerInterval = setInterval(timer.update, 1, player);
     },
 
+    /**
+     * Keeps track of how much time is left
+     * @param {integer} player The player that is taking the turn
+     */
     update: (player) => {
         //how much time has been taken since the start of the turn
         let turnTime = Date.now() - timer.startingTime;
@@ -1578,7 +1582,9 @@ const timer = {
      * Stops the active timer
      */
     stop: () => {
-        clearInterval(timerInterval);
-        timerInterval = null;
+        if (timer.timerInterval !== null) {
+            clearInterval(timer.timerInterval);
+            timer.timerInterval = null;
+        }
     }
 }
