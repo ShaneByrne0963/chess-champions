@@ -286,6 +286,7 @@ input[type="number"] {
 .tile>.passant-top {
     background-image: url("../images/move-icons/passant-top.png");
 }
+
 .tile>.passant-bottom {
     background-image: url("../images/move-icons/passant-bottom.png");
 }
@@ -371,4 +372,16 @@ input[type="number"] {
 #promote-queen {
     grid-column-start: 8;
     grid-column-end: 9;
+}
+
+/********** MEDIA QUERIES **********/
+
+/* for medium to large screens */
+@media screen and (max-width: 1400px) {
+    /* making each of the player uis take up the full width of the ui section */
+    #player1-ui,
+    #player2-ui {
+        grid-column-start: 1;
+        grid-column-end: 3;
+    }
 }
