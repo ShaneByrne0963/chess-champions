@@ -69,6 +69,15 @@ function startGame() {
     //removing any piece images from the graveyard
     graveyard.clearAll();
 
+    //resetting the time limits for each player
+    if (localStorage.getItem('timeLimit') === 'enabled') {
+        let timeHours = localStorage.getItem('timeHours');
+        let timeMinutes = localStorage.getItem('timeMinutes');
+        let timeSeconds = localStorage.getItem('timeSeconds');
+        setPlayerTime(1, timeHours, timeMinutes, timeSeconds);
+        setPlayerTime(2, timeHours, timeMinutes, timeSeconds);
+    }
+
     //iterating through every tile on the board to create chess pieces where necessary
     for (let i = 0; i < boardSize; i++) {
         for (let j = 0; j < boardSize; j++) {
@@ -176,6 +185,11 @@ function setPlayerNames() {
     player2Heading.innerHTML += `
     <span><i class="fa-solid fa-chess-king"></i></span>
     `;
+}
+
+function setPlayerTime(player, hours, minutes, seconds) {
+    let timeElement = document.getElementById(`player${player}-time`);
+    timeElement.innerText = `Time Remaining: ${hours}h ${minutes}m ${seconds}s`;
 }
 
 /**
