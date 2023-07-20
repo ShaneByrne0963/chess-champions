@@ -238,6 +238,11 @@ input[type="number"] {
     font-size: 1.4rem;
 }
 
+/* setting the game area's position to absolute to position the banner */
+#game-area {
+    position: relative;
+}
+
 /* chess board */
 #chess-board {
     background-color: #3E110B;
@@ -313,7 +318,7 @@ input[type="number"] {
     border-top: 1px solid black;
     border-bottom: 1px solid black;
     background-color: #501818;
-    position: relative;
+    position: absolute;
     text-align: center;
 }
 
@@ -324,13 +329,13 @@ input[type="number"] {
 /* setting specific values of the banner if it is a notification or for pawn promotion */
 .notify {
     height: 400px;
-    bottom: calc(50% + 200px);
+    bottom: calc(50vh + 200px);
 }
 
 /* pawn promotion will include a grid underneath so it will need more space */
 .pawn-pick {
     height: 500px;
-    bottom: calc(50% + 250px);
+    bottom: calc(50vh + 250px);
 }
 
 .notify>h1 {
@@ -391,6 +396,7 @@ input[type="number"] {
         grid-template-columns: auto calc(100vh - 160px);
     }
 
+    /* adding an extra section underneath the chess board for the announcements */
     #game-area {
         display: grid;
         grid-template-columns: auto;
@@ -410,13 +416,14 @@ input[type="number"] {
         padding: 16px;
     }
 
+    /* deactivating the announcement div in the ui */
+    #announce-ui {
+        padding: 0;
+    }
+
     /* reducing the size of the chess board to allow room for the announcements */
     #chess-board {
         height: calc(100vh - 160px);
         padding: 0;
-    }
-
-    .tile {
-        border: 1px solid black;
     }
 }

@@ -836,7 +836,7 @@ const pieceMovement = {
             for (let i = 1; i < forwardAmount && !blockMove; i++) {
                 let tileInfo = chessPiece.findData(xStart, yStart + (i * forwardDirection));
                 //if there is a friendly piece, or any piece at all if the rule 'disarmed' applies, the tile will be considered blocked
-                if (tileInfo.color === pieceData.color || (move[0] === 'disarmed' && tileInfo.color !== '')) {
+                if (tileInfo.color === pieceData.color || (move[0].includes('disarmed') && tileInfo.color !== '')) {
                     y = NaN;
                     break;
                 }
