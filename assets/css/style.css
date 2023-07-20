@@ -227,15 +227,18 @@ input[type="number"] {
 #ui-buttons {
     grid-column-start: 1;
     grid-column-end: 3;
+    height: 96px;
     /* the grid that will separate the two buttons */
     display: grid;
     grid-template-columns: 1fr 1fr;
+    /* creating vertical outer cells in the grid, reulting in the buttons being centered vertically to the div */
+    grid-template-rows: 1fr auto 1fr;
 }
 
 #ui-buttons>button,
 #ui-buttons>a {
     display: inline-block;
-    margin: 16px auto;
+    margin: 0 auto;
     padding: 16px;
     border: 1px solid black;
     background-color: #76391F;
@@ -244,6 +247,8 @@ input[type="number"] {
     text-align: center;
     font-family: 'Roboto Slab', serif;
     font-size: 1.4rem;
+    grid-row-start: 2;
+    grid-row-end: 3;
 }
 
 /* setting the game area's position to absolute to position the banner */
@@ -401,7 +406,7 @@ input[type="number"] {
 @media screen and (max-width: 1400px) {
     /* adjusting the width of the user interface and chess board */
     #game {
-        grid-template-columns: auto calc(100vh - 160px);
+        grid-template-columns: auto calc(100vh - 161px);
     }
 
     /* adding an extra section underneath the chess board for the announcements */
@@ -418,6 +423,11 @@ input[type="number"] {
         grid-column-end: 3;
     }
 
+    /* changing the height of the ui buttons element to match the announcement's height */
+    #ui-buttons {
+        height: 160px;
+    }
+
     /* activating the announcement div under the chess board */
     #announce-game {
         display: block;
@@ -431,7 +441,7 @@ input[type="number"] {
 
     /* reducing the size of the chess board to allow room for the announcements */
     #chess-board {
-        height: calc(100vh - 160px);
+        height: calc(100vh - 161px);
         padding: 0;
     }
 }
