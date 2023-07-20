@@ -251,20 +251,16 @@ input[type="number"] {
     grid-row-end: 3;
 }
 
-/* setting the game area's position to absolute to position the banner */
-#game-area {
-    position: relative;
-}
-
 /* chess board */
 #chess-board {
     background-color: #3E110B;
     padding: 16px;
+    /* setting the board's position to relative for positioning the banner */
+    position: relative;
     /* board takes up 100% of the available space minus the padding */
     /* link to where i learned about calc(): https: //developer.mozilla.org/en-US/docs/Web/CSS/calc */
     height: calc(100% - 32px);
     display: grid;
-
     /* creates the grid cells for each tile */
     /* link to where i learned about repeat(): https: //css-tricks.com/snippets/css/complete-guide-grid/ */
     grid-template-columns: repeat(8, 1fr);
@@ -342,13 +338,13 @@ input[type="number"] {
 /* setting specific values of the banner if it is a notification or for pawn promotion */
 .notify {
     height: 400px;
-    bottom: calc(50vh + 200px);
+    top: calc(50% - 200px);
 }
 
 /* pawn promotion will include a grid underneath so it will need more space */
 .pawn-pick {
     height: 500px;
-    bottom: calc(50vh + 250px);
+    top: calc(50% - 250px);
 }
 
 .notify>h1 {

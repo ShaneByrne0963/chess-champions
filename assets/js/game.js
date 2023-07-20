@@ -49,6 +49,9 @@ function gameInit() {
         //reverses the tile order again after each row
         isWhite = !isWhite;
     }
+    //adding what is already in the chess-board element (which is the banner HTML) to the new innerHTML
+    chessGrid += chessBoard.innerHTML;
+    //setting the new HTML containing the chess tiles
     chessBoard.innerHTML = chessGrid;
     startGame();
 }
