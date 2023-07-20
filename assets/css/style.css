@@ -224,8 +224,16 @@ input[type="number"] {
 }
 
 /* game options for restarting and returning to the main menu */
-#ui-area>button,
-#ui-area a {
+#ui-buttons {
+    grid-column-start: 1;
+    grid-column-end: 3;
+    /* the grid that will separate the two buttons */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+
+#ui-buttons>button,
+#ui-buttons>a {
     display: inline-block;
     margin: 16px auto;
     padding: 16px;
