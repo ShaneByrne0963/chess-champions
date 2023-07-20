@@ -393,7 +393,7 @@ input[type="number"] {
     #game-area {
         display: grid;
         grid-template-columns: auto;
-        grid-template-rows: auto 160px;
+        grid-template-rows: auto 1fr;
     }
 
     /* making each of the player uis take up the full width of the ui section */
@@ -406,7 +406,7 @@ input[type="number"] {
     /* activating the announcement div under the chess board */
     #announce-game {
         display: block;
-        /* padding: 16px; */
+        padding: 16px;
     }
 
     /* reducing the size of the chess board to allow room for the announcements */
