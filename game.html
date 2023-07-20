@@ -60,7 +60,11 @@
         </div>
         <!--where the game takes place. the structure of this div will be implemented in javascript-->
         <div id="game-area">
-            <div id="chess-board"></div>
+            <div id="chess-board">
+                
+            </div>
+            <!--will store the announcements for smaller screen sizes-->
+            <div id="announce-game"></div>
             <!--the banner that will display checkmate and pawn promotion-->
             <!--will store the display style in the tag itself so it can be removed when necessary-->
             <div id="banner" class="pawn-pick" style="display: none;">
@@ -75,8 +79,6 @@
                     <div id="promote-queen" class="clickable" onclick="selectPromotion('queen')"></div>
                 </div>
             </div>
-            <!--will store the announcements for smaller screen sizes-->
-            <div id="announce-game"></div>
         </div>
     </section>
 
