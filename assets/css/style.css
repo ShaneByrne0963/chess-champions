@@ -452,3 +452,20 @@ input[type="number"] {
         height: calc(100vw - 320px);
     }
 }
+/* for small screen sizes such as mobile phones */
+@media screen and (max-width: 800px) {
+    /* the ui will be moved from the left of the board to underneath it */
+    #game {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+    }
+
+    #chess-board {
+        height: 100vw;
+    }
+
+    #ui-area {
+        grid-row-start: 2;
+        grid-row-end: 3;
+    }
+}
