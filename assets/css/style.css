@@ -57,10 +57,6 @@ a:hover {
     padding: 32px;
 }
 
-#settings-dynamic>div {
-    padding: 16px 0;
-}
-
 /* making text in the inputs the same size ans style as everything else */
 input,
 select,
@@ -75,6 +71,11 @@ option {
     display: grid;
     grid-template-columns: 2fr 3fr;
     grid-template-rows: auto;
+}
+
+/* creates a gap between the inputs */
+.input-gap {
+    margin-bottom: 32px;
 }
 
 /* for text to be aligned to the right */

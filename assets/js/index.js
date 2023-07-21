@@ -297,7 +297,7 @@ function optionPlayerName(innerText, inputId) {
     //the old player name will be displayed in the text bar
     let currentPlayerName = localStorage.getItem(inputId);
     return `
-    <div class="input-right">
+    <div class="input-right input-gap">
         <label for="${inputId}">${innerText}</label>
         <input type="text" id="${inputId}" onchange="localStorage.setItem('${inputId}', value)" placeholder="${currentPlayerName}">
     </div>
@@ -311,7 +311,7 @@ function optionPlayerName(innerText, inputId) {
  */
 function optionWhitePosition() {
     let htmlString = `
-    <div class="input-right">
+    <div class="input-right input-gap">
         <p>Position of White:</p>
         <div class="text-right">
             <input type="radio" name="white-pos" value="bottom" id="pos-bottom" class="clickable" onchange="updateWhitePosition(value)"
@@ -365,7 +365,7 @@ function optionPlayerColor() {
             <label for="col-black" class="clickable small-text">Black</label>
         </div>
     </div>
-    <p class="small-text text-right">*Note: The player with the white pieces always starts first</p>`;
+    <p class="small-text input-gap">*Note: The player with the white pieces always starts first</p>`;
 
     return htmlString;
 }
@@ -376,7 +376,7 @@ function optionPlayerColor() {
  */
 function optionTimer() {
     let htmlString = `
-    <div class="input-right">
+    <div class="input-right input-gap">
         <div>
             <input type="checkbox" id="has-timer" onchange="updateTimeCheckbox(checked)"`;
     //enabling the checkbox if the saved time limit option is enabled
