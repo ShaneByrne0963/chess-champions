@@ -1122,6 +1122,9 @@ const pieceMovement = {
 
 //the object that stores functions related to the players' graveyards
 const graveyard = {
+    //used the store the reference to any flashing interval while the user is picking a piece to revive
+    flashInterval: null,
+
     /**
      * Adds a piece to a specified graveyard
      * @param {object} graveyardElement The element of the graveyard that will get the new piece
@@ -1188,6 +1191,8 @@ const graveyard = {
     pickDeadPiece: (graves) => {
         //adds the banner that notifies the player to pick a piece from the graveyard
         setBanner('Pawn Promoted!', 'Select a piece from the graveyard to bring back to the battlefield!', '');
+        //starts the flash animation
+        this.flashInterval = setInterval(graveyard.updateFlash, flashTime); 
         for (let grave of graves) {
             //getting the classes of the piece
             let graveClass = grave.className;
@@ -1255,6 +1260,48 @@ const graveyard = {
             }
         }
         return hasDeadPieces;
+    },
+
+    /**
+     * Creates a flashing effect behind pieces that can be revived to draw the user's attention to them
+     */
+    updateFlash: () => {
+        let flashingElements = document.getElementsByClassName('dead-highlight');
+        if (flashingElements.length > 0) {
+            //removing the 'dead-highlight' class from all graveyard elements
+            while (flashingElements.length > 0) {
+                flashingElements[0].classList.remove('dead-highlight');
+            }
+        } else {
+            //adding the 'dead-highlight' class to any graveyard elements that can be revived
+            let currentPlayer = getPlayerTurn();
+            let graveyardElements = graveyard.getElements(currentPlayer.color);
+            //iterating through all the grave icons to find the ones that are not pawns
+            for (let grave of graveyardElements) {
+                let pieceType = graveyard.getDeadPiece(grave);
+                if (chessPiece.value[pieceType] > 100) {
+                    grave.classList.add('dead-highlight');
+                }
+            }
+        }
+    },
+
+    /**
+     * Stops the piece revive flash animation
+     */
+    stopFlash: () => {
+        //stopping the interval and removing it from memory
+        if (this.flashInterval !== null) {
+            clearInterval(this.flashInterval);
+            this.flashInterval = null;
+        }
+        //removing the 'dead-highlight' class from all graveyard elements
+        let flashingElements = document.getElementsByClassName('dead-highlight');
+        if (flashingElements.length > 0) {
+            while (flashingElements.length > 0) {
+                flashingElements[0].classList.remove('dead-highlight');
+            }
+        }
     },
 
     /**

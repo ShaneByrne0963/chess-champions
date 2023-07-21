@@ -8,6 +8,8 @@ const announcementLimit = 10;
 const aiDelay = 1000;
 //how long the checkmate banner appears on screen before removing itself
 const checkmateBannerTime = 5000;
+//how long it takes to alternate the piece revive flash animation
+const flashTime = 500;
 
 //initializes game when the page loads
 document.onload = gameInit();
@@ -615,6 +617,8 @@ function isCheckmate(color) {
 function revivePlayer() {
     //disables the banner
     removeBanner();
+    //stops the pieces flashing
+    graveyard.stopFlash();
     //replaces the pawn with the piece that was clicked on
     graveyard.replaceWithDead(this);
 

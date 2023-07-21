@@ -201,6 +201,11 @@ input[type="number"] {
     background-size: cover;
 }
 
+/* used for the graveyard icon flash when the player is reviving a dead piece */
+.dead-highlight {
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
 /* announcements */
 #announcements {
     /* hiding any announcements that escape the div */
