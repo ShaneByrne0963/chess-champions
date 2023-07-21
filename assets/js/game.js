@@ -439,6 +439,13 @@ function allowTurn(color) {
  * @param {string} text the test you wish to display in the announcements
  */
 function addAnnouncement(text) {
+    //if the width of the screen is less than 800px, then clear any new announcements.
+    //only one announcement can be displayed at this width, so there can only be one new announcement at a time
+    let width = window.innerWidth;
+    if (width <= 800) {
+        clearNewAnnouncements();
+    }
+    //creating the announcement element
     let announcement = document.getElementById('announcements').children[0];
     let newAnnouncement = document.createElement('div');
     newAnnouncement.innerText = text;

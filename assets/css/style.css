@@ -556,6 +556,17 @@ input[type="number"] {
         height: auto;
         margin: 16px 0;
     }
+
+    /* making only the new announcements visible, as there is only room for one anyway.
+    This will prevent text from other announcements leaking into the announcement div */
+    .announcement {
+        display: none;
+    }
+
+    .announce-new {
+        display: block;
+        color: white;
+    }
 }
 /* at this width the board with a horizontal margin of 16px will touch the edge
 of the screen, so we will set the board to cover the width of the screen at this point */
