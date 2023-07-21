@@ -442,7 +442,7 @@ function addAnnouncement(text) {
     let announcement = document.getElementById('announcements').children[0];
     let newAnnouncement = document.createElement('div');
     newAnnouncement.innerText = text;
-    newAnnouncement.className = 'announcement';
+    newAnnouncement.className = 'announcement announce-new';
 
     announcement.appendChild(newAnnouncement);
 
@@ -468,6 +468,16 @@ function announceElimination(pieceData) {
     displayPiece = firstLetter + displayPiece.slice(1);
 
     addAnnouncement(`${getPlayerName(enemyColor)} eliminated ${getPlayerName(pieceData.color)}'s ${displayPiece}!`);
+}
+
+/**
+ * Removes the announce-new class from all announcements
+ */
+function clearNewAnnouncements() {
+    let newAnnounces = document.getElementsByClassName('announce-new');
+    for (let announce of newAnnounces) {
+        announce.classList.remove('announce-new');
+    }
 }
 
 /**

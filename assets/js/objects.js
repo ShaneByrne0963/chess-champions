@@ -432,6 +432,8 @@ const chessPiece = {
             let playerTurn = getPlayerTurn();
             timer.stop(playerTurn.place);
         }
+        //removes the announce-new class from all announcements
+        clearNewAnnouncements();
         
         //first removing the 'clickable' class from all of the pieces to stop player input until it's their turn again
         tile.removeAllInteraction();
