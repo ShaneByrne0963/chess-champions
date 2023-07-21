@@ -480,7 +480,7 @@ input[type="number"] {
             auto: for the chess board. it will take up the space it needs
             1fr: for the announcement div. it will take up the remaining space
         */
-        grid-template-rows: auto auto auto;
+        grid-template-rows: auto auto 1fr;
     }
 
     #chess-board {
@@ -488,15 +488,33 @@ input[type="number"] {
         height: calc(100vw - 32px);
     }
 
-    /* moving the ui under the board */
-    #ui-area {
-        grid-row-start: 2;
-        grid-row-end: 3;
-    }
-
     /* making the announcement div big enough to fit one announcement */
     #announce-game {
         height: 1.5em;
         padding: 8px 16px;
+    }
+    
+    /* moving the ui under the board */
+    #ui-area {
+        grid-row-start: 2;
+        grid-row-end: 3;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: 1fr auto;
+    }
+    
+    /* disabling the player-turn div as the heading is no longer in it */
+    #player-turn {
+        display: none;
+    }
+
+    /* setting the player uis to take up only half of the grid once again */
+    #player1-ui {
+        grid-column-start: 1;
+        grid-column-end: 2;
+    }
+
+    #player2-ui {
+        grid-column-start: 2;
+        grid-column-end: 3;
     }
 }
