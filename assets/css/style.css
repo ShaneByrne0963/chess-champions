@@ -490,6 +490,11 @@ input[type="number"] {
         font-size: 1em;
     }
 
+    /* reducing the game settings element width */
+    #menu-settings {
+        max-width: 380px;
+    }
+
     /* the game grid will change from horizontal to vertical */
     #game {
         grid-template-columns: 1fr;
