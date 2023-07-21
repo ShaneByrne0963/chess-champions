@@ -155,10 +155,21 @@ const tile = {
         //removing the possible move divs
         let movesExisting = document.getElementsByClassName('possible-move');
         while (movesExisting.length > 0) {
-            //remove the 'clickable' class from the parent element
+            //remove the 'clickable' class from the tile the element is on
             let moveParent = movesExisting[0].parentNode;
-            tile.removeInteraction(moveParent);
+            //if the tile is the direct parent of the possible move icon
+            if (moveParent.classList.contains('clickable')) {
+                tile.removeInteraction(moveParent);
+            } else {
+                //if not, then there is a piece on this tile
+                let pieceData = tile.getData(moveParent.parentNode);
+                let playerTurn = getPlayerTurn();
 
+                //if the piece at this tile does not belong to the player that is making the move, remove it's interaction
+                if (pieceData.color !== playerTurn.color) {
+                    tile.removeInteraction(moveParent.parentNode);
+                }
+            }
             //then remove the possible move div itself
             movesExisting[0].remove();
         }
