@@ -124,6 +124,8 @@ input[type="number"] {
 
 /* main game */
 #game {
+    /* the game takes up 100% of the screen size. it should not go over or under, i.e. no scrollbars or empty space */
+    height: 100vh;
     display: grid;
     grid-template-columns: 1fr 100vh;
     grid-template-rows: auto;
@@ -134,7 +136,6 @@ input[type="number"] {
 #ui-area {
     background-color: #501818;
     border-right: 1px solid black;
-    height: 100vh;
     display: grid;
     grid-template-columns: 1fr 1fr;
     grid-template-rows: auto 1fr 1fr auto;
@@ -468,7 +469,7 @@ input[type="number"] {
     /* the game grid will change from horizontal to vertical */
     #game {
         grid-template-columns: 1fr;
-        grid-template-rows: auto auto 1fr;
+        grid-template-rows: auto 1fr;
     }
 
     /* making room for the player turn heading */
