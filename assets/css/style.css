@@ -461,7 +461,8 @@ input[type="number"] {
     }
 
     #chess-board {
-        height: 100vw;
+        padding: 16px;
+        height: calc(100vw - 32px);
     }
 
     #ui-area {
