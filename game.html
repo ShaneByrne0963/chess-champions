@@ -20,7 +20,7 @@
         <div id="ui-area" onclick="tile.deselectAll();">
             <!--tells the user who's turn it is-->
             <div id="player-turn">
-                <h3>It is Player1's turn</h3>
+                <h3 id="turn-heading">It is Player1's turn</h3>
             </div>
             <!--important information about player 1-->
             <div id="player1-ui">
@@ -62,6 +62,7 @@
         </div>
         <!--where the game takes place. the structure of this div will be implemented in javascript-->
         <div id="game-area">
+            <div id="turn-game"></div>
             <div id="chess-board">
                 <!--the banner that will display checkmate and pawn promotion-->
                 <!--will store the display style in the tag itself so it can be removed when necessary-->

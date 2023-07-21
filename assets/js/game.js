@@ -109,14 +109,25 @@ function startGame() {
  */
 function resizeScreen() {
     let width = window.innerWidth;
+
+    //swapping the announcements element between the ui section and the game section
     let announceUI = document.getElementById('announce-ui');
     let announceGame = document.getElementById('announce-game');
     let announceDiv = document.getElementById('announcements');
-
     if (width >= 1400) {
         announceUI.appendChild(announceDiv);
-    } else if (width >= 0) {
+    } else {
         announceGame.appendChild(announceDiv);
+    }
+
+    //moving the player turn heading above the chess board
+    let turnUi = document.getElementById('player-turn');
+    let turnGame = document.getElementById('turn-game');
+    let turnHeading = document.getElementById('turn-heading');
+    if (width >= 800) {
+        turnUi.appendChild(turnHeading);
+    } else {
+        turnGame.appendChild(turnHeading);
     }
 }
 
@@ -354,7 +365,7 @@ function setPlayerTurn(playerPlace) {
         newTurnDiv.className = 'player-active';
 
         //updating the player turn heading to display the correct player name
-        let turnHeading = document.getElementById('player-turn').children[0]; //the first child is the h2 element
+        let turnHeading = document.getElementById('turn-heading');
         let newHeading = newTurnDiv.children[0].innerText;
         turnHeading.innerText = `It is ${newHeading}'s turn`;
     } else {

@@ -140,16 +140,14 @@ input[type="number"] {
     grid-template-rows: auto 1fr 1fr auto;
 }
 
-/* for the player turn heading on top of the ui */
-#ui-area h3 {
-    font-size: 1.2em;
-}
-
 /* heading showing the player whose turn it is */
 #player-turn {
-    padding: 16px;
     grid-column-start: 1;
     grid-column-end: 3;
+}
+
+#turn-heading {
+    padding: 16px;
 }
 
 /* each of the player's uis */
@@ -417,7 +415,12 @@ input[type="number"] {
     #game-area {
         display: grid;
         grid-template-columns: auto;
-        grid-template-rows: auto 1fr;
+        /* what the rows signify:
+            0: for the div that will contain the player turn heading. it is not in use at this width so set it to 0
+            auto: for the chess board. it will take up the space it needs
+            1fr: for the announcement div. it will take up the remaining space
+        */
+        grid-template-rows: 0 auto 1fr;
     }
 
     /* making each of the player uis take up the full width of the ui section */
@@ -462,10 +465,22 @@ input[type="number"] {
 }
 /* for small screen sizes such as mobile phones */
 @media screen and (max-width: 800px) {
-    /* the ui will be moved from the left of the board to underneath it */
+    /* the game grid will change from horizontal to vertical */
     #game {
         grid-template-columns: 1fr;
-        grid-template-rows: auto 1fr;
+        grid-template-rows: auto auto 1fr;
+    }
+
+    /* making room for the player turn heading */
+    #game-area {
+        display: grid;
+        grid-template-columns: auto;
+        /* what the rows signify:
+            auto: for the div that will contain the player turn heading. it will take up the space it needs
+            auto: for the chess board. it will take up the space it needs
+            1fr: for the announcement div. it will take up the remaining space
+        */
+        grid-template-rows: auto auto auto;
     }
 
     #chess-board {
@@ -473,11 +488,13 @@ input[type="number"] {
         height: calc(100vw - 32px);
     }
 
+    /* moving the ui under the board */
     #ui-area {
         grid-row-start: 2;
         grid-row-end: 3;
     }
 
+    /* making the announcement div big enough to fit one announcement */
     #announce-game {
         height: 1.5em;
         padding: 8px 16px;
