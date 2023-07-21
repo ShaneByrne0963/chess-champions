@@ -350,9 +350,13 @@ input[type="number"] {
     justify-content: center;
 }
 
+/* setting the size of the banner text */
 #banner>h1 {
-    font-size: 3em;
-    width: 100%;
+    font-size: 2.5em;
+}
+
+#banner>h3 {
+    font-size: 0.8em;
 }
 
 /* setting specific values of the banner if it is a notification or for pawn promotion */
