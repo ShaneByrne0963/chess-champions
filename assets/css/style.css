@@ -9,7 +9,7 @@
 body {
     background-color: #501818;
     text-align: center;
-    font-size: 1.4rem;
+    font-size: 1.7rem;
     font-family: 'Roboto Slab', serif;
     color: white;
 }
@@ -32,7 +32,7 @@ a:hover {
 
 /* game settings page */
 #title-homepage {
-    font-size: 2rem;
+    font-size: 1.2em;
     line-height: 80px;
     margin: 32px 0;
 }
@@ -54,7 +54,6 @@ a:hover {
     background-color: #76391F;
     margin: 32px auto;
     text-align: left;
-    font-size: 2rem;
     padding: 32px;
 }
 
@@ -66,7 +65,7 @@ a:hover {
 input,
 select,
 option {
-    font-size: 1.4rem;
+    font-size: 0.8em;
     font-family: 'Roboto Slab', serif;
     font-weight: bold;
 }
@@ -88,12 +87,12 @@ select {
 }
 
 input[type="number"] {
-    width: 64px;
+    width: 2.5em;
 }
 
-/* small text used for note about what player starts first */
+/* for reducing the size of text */
 .small-text {
-    font-size: 0.6em;
+    font-size: 0.8em;
 }
 
 /* for indenting the note as well as the items in the details element */
@@ -143,7 +142,7 @@ input[type="number"] {
 
 /* for the player turn heading on top of the ui */
 #ui-area h3 {
-    font-size: 1.5em;
+    font-size: 1.2em;
 }
 
 /* heading showing the player whose turn it is */
@@ -214,7 +213,6 @@ input[type="number"] {
 #announcements>div {
     position: absolute;
     bottom: 0;
-    font-size: 1.8rem;
 }
 
 /* where the announcement div will be kept for smaller screen sizes */
@@ -245,8 +243,8 @@ input[type="number"] {
     color: white;
     text-decoration: none;
     text-align: center;
+    font-size: 0.8em;
     font-family: 'Roboto Slab', serif;
-    font-size: 1.4rem;
     grid-row-start: 2;
     grid-row-end: 3;
 }
@@ -400,6 +398,11 @@ input[type="number"] {
 
 /* for medium to large screens */
 @media screen and (max-width: 1400px) {
+    /* reducing the size of the text */
+    body {
+        font-size: 1.4em;
+    }
+
     /* adjusting the width of the user interface and chess board */
     #game {
         grid-template-columns: auto calc(100vh - 161px);
