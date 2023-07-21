@@ -49,7 +49,7 @@ a:hover {
 
 /* the div that contains all the settings */
 #menu-settings {
-    max-width: 720px;
+    max-width: 800px;
     border: 1px solid black;
     background-color: #76391F;
     margin: 32px auto;
@@ -427,7 +427,7 @@ input[type="number"] {
 
     /* reducing the game-settings element width */
     #menu-settings {
-        max-width: 520px;
+        max-width: 640px;
     }
 
     /* adjusting the width of the user interface and chess board */
@@ -504,7 +504,7 @@ input[type="number"] {
 
     /* reducing the game settings element width */
     #menu-settings {
-        max-width: 380px;
+        max-width: 480px;
     }
 
     /* the game grid will change from horizontal to vertical */
@@ -590,11 +590,24 @@ input[type="number"] {
     }
 }
 /* at this width the board with a horizontal margin of 16px will touch the edge
-of the screen, so we will set the board to cover the width of the screen at this point */
+of the screen, so we will set the board to cover the width of the screen at this point. */
+
+/* this width also just so happens to be when the settings in the index page start to get
+crushed, so move the inputs onto a separate line from the label */
 @media screen and (max-width: 582px) {
     #chess-board {
         width: calc(100vw - 32px);
         height: calc(100vw - 32px);
         margin: 0 16px;
+    }
+    
+    /* moving the inputs to a separate line from their labels */
+    .input-right {
+        display: block;
+    }
+
+    /* move the right aligned text back to the left */
+    .text-right {
+        text-align: left;
     }
 }
