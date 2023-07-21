@@ -376,15 +376,17 @@ function optionPlayerColor() {
  */
 function optionTimer() {
     let htmlString = `
-    <div>
-        <input type="checkbox" id="has-timer" onchange="updateTimeCheckbox(checked)"`;
+    <div class="input-right">
+        <div>
+            <input type="checkbox" id="has-timer" onchange="updateTimeCheckbox(checked)"`;
     //enabling the checkbox if the saved time limit option is enabled
     if (localStorage.getItem('timeLimit') === 'enabled') {
         htmlString += ` checked`;
     }
     htmlString += `>
-        <label for="has-timer">Time Limit:</label>
-        <span class="float-right">
+            <label for="has-timer">Time Limit:</label>
+        </div>
+        <div class="text-right">
             <input type="number" value="${localStorage.getItem('timeHours')}" id="hours"
             class="text-right" min="0" max="9" onchange="updateTimeValues('hours', value)"`;
     //making the number input disabled if the time limit checkbox is not checked
@@ -409,7 +411,7 @@ function optionTimer() {
     }
     htmlString += `>
             <label for="seconds" class="small-text">Seconds</label>
-        </span>
+        </div>
     </div>
     `;
     return htmlString;
