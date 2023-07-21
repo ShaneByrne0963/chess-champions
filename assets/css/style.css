@@ -503,6 +503,11 @@ input[type="number"] {
         font-size: 1em;
     }
 
+    /* reducing the gap between settings in the index page */
+    .input-gap {
+        margin-bottom: 16px;
+    }
+
     /* reducing the game settings element width */
     #menu-settings {
         max-width: 480px;
