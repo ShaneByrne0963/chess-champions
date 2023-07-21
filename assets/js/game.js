@@ -102,6 +102,7 @@ function startGame() {
     }
     //allow the player to make it's move, whether it is a player or computer
     allowTurn('white');
+    setBanner('test banner', 'test subheading', 'white');
 }
 
 /**

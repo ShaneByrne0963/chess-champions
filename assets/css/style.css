@@ -373,12 +373,14 @@ input[type="number"] {
         1fr: gap in between promotion icons
         2fr: gap on both edges of grid
     */
-    grid-template-columns: 2fr 128px 1fr 128px 1fr 128px 1fr 128px 2fr;
-    grid-template-rows: 128px;
+    grid-template-columns: 2fr 15% 1fr 15% 1fr 15% 1fr 15% 2fr;
     margin-top: 64px;
 }
 
 #promotion-icons>div {
+    /* sets the height of the element as equal to the width */
+    /* where i learned about aspect-ratio: https://developer.mozilla.org/en-US/docs/Web/CSS/aspect-ratio */
+    aspect-ratio: 1 / 1;
     background-size: cover;
     border: 2px solid black;
     background-color: rgb(241, 192, 126);
