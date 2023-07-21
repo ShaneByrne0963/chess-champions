@@ -500,12 +500,26 @@ input[type="number"] {
 @media screen and (max-width: 800px) {
     /* reducing the font size */
     body {
-        font-size: 1em;
+        font-size: 1.2em;
     }
 
     /* reducing the gap between settings in the index page */
     .input-gap {
         margin-bottom: 16px;
+    }
+    
+    /* moving the inputs to a separate line from their labels */
+    .input-right {
+        display: block;
+    }
+
+    /* move the right aligned text back to the left */
+    .text-right {
+        text-align: left;
+    }
+
+    .indented {
+        margin-left: 16px;
     }
 
     /* reducing the game settings element width */
@@ -605,15 +619,5 @@ crushed, so move the inputs onto a separate line from the label */
         width: calc(100vw - 32px);
         height: calc(100vw - 32px);
         margin: 0 16px;
-    }
-    
-    /* moving the inputs to a separate line from their labels */
-    .input-right {
-        display: block;
-    }
-
-    /* move the right aligned text back to the left */
-    .text-right {
-        text-align: left;
     }
 }

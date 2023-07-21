@@ -314,7 +314,7 @@ function optionWhitePosition() {
     <div class="input-right input-gap">
         <p>Position of White:</p>
         <div class="text-right">
-            <input type="radio" name="white-pos" value="bottom" id="pos-bottom" class="clickable" onchange="updateWhitePosition(value)"
+            <input type="radio" name="white-pos" value="bottom" id="pos-bottom" class="clickable indented" onchange="updateWhitePosition(value)"
     `;
     //making the radio button checked if the white pieces are at the bottom
     if (localStorage.getItem('topPosition') === 'black') {
@@ -346,7 +346,7 @@ function optionPlayerColor() {
     <div class="input-right">
         <p>Player Color:</p>
         <div class="text-right">
-            <input type="radio" name="player-color" value="white" id="col-white" class="clickable" onchange="updatePlayerColor('white')"
+            <input type="radio" name="player-color" value="white" id="col-white" class="clickable indented" onchange="updatePlayerColor('white')"
     `;
     //making the radio button checked if the white pieces are at the bottom
     if (localStorage.getItem('playerColor') === 'white') {
