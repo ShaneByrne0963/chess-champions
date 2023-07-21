@@ -338,30 +338,28 @@ input[type="number"] {
     background-color: #501818;
     position: absolute;
     text-align: center;
+    /* aligns the text in the banner to the center */
+    /* source: https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
 
 #banner>h1 {
-    font-size: 5rem;
+    font-size: 3em;
+    width: 100%;
 }
 
 /* setting specific values of the banner if it is a notification or for pawn promotion */
 .notify {
-    height: 400px;
-    top: calc(50% - 200px);
+    height: 40%;
+    top: calc(50% - 20%);
 }
 
 /* pawn promotion will include a grid underneath so it will need more space */
 .pawn-pick {
-    height: 500px;
-    top: calc(50% - 250px);
-}
-
-.notify>h1 {
-    margin: 96px 0 48px 0;
-}
-
-.pawn-pick>h1 {
-    margin: 64px 0 32px 0;
+    height: 60%;
+    top: calc(50% - 30%);
 }
 
 /* the promotion icons grid within the banner */
@@ -374,7 +372,7 @@ input[type="number"] {
         2fr: gap on both edges of grid
     */
     grid-template-columns: 2fr 15% 1fr 15% 1fr 15% 1fr 15% 2fr;
-    margin-top: 64px;
+    margin-top: 1.5em;
 }
 
 #promotion-icons>div {
