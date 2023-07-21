@@ -475,8 +475,9 @@ function announceElimination(pieceData) {
  */
 function clearNewAnnouncements() {
     let newAnnounces = document.getElementsByClassName('announce-new');
-    for (let announce of newAnnounces) {
-        announce.classList.remove('announce-new');
+    //keep removing the class from all the elements until there are none left
+    while (newAnnounces.length > 0) {
+        newAnnounces[0].classList.remove('announce-new');
     }
 }
 

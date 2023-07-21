@@ -137,8 +137,15 @@ input[type="number"] {
     background-color: #501818;
     border-right: 1px solid black;
     display: grid;
+    /* splitting the ui area into 2 for the player uis */
     grid-template-columns: 1fr 1fr;
-    grid-template-rows: auto 1fr 1fr auto;
+    /* the rows are as follows:
+        auto: for the player turn heading. it will take up its required space
+        auto: for the player uis. they will take up their required space
+        1fr: for the announcements. they will take what space is remaining
+        auto: for the ui buttons. they will take up their required space
+    */
+    grid-template-rows: auto auto 1fr auto;
 }
 
 /* heading showing the player whose turn it is */
@@ -154,6 +161,7 @@ input[type="number"] {
 /* each of the player's uis */
 #player1-ui,
 #player2-ui {
+    min-height: 320px;
     padding: 16px;
     border: 1px solid black;
     background-color: #76391F;
@@ -428,11 +436,18 @@ input[type="number"] {
         grid-template-rows: 0 auto 1fr;
     }
 
+    /* making the height of the player uis that are now stacked on top of each other the same height */
+    #ui-area {
+        grid-template-rows: auto 1fr 1fr auto;
+    }
+
     /* making each of the player uis take up the full width of the ui section */
     #player1-ui,
     #player2-ui {
         grid-column-start: 1;
         grid-column-end: 3;
+        /* removing the minimum height */
+        min-height: 0;
     }
 
     /* changing the height of the ui buttons element to match the announcement's height */
