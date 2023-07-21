@@ -82,6 +82,8 @@ function buildDynamicSettings(playerType) {
 
     //finding the div to add the settings html to
     let dynamicDiv = document.getElementById('settings-dynamic');
+    //getting the play game button to change its text
+    let playButton = document.getElementById('to-game').children[0];
 
     //the inner html that will be added to the div
     let newHtml = ``;
@@ -93,15 +95,18 @@ function buildDynamicSettings(playerType) {
             newHtml += optionPlayerName('Player 2 Name:', 'p2-name');
             newHtml += optionWhitePosition();
             newHtml += optionTimer();
+            playButton.innerText = 'Play Game!';
             break;
         case 'pve':
             //adding name inputs for the human player
             newHtml += optionPlayerName('Player Name:', 'p1-name');
             newHtml += optionPlayerColor();
             newHtml += optionWhitePosition();
+            playButton.innerText = 'Play Game!';
             break;
         case 'eve':
             newHtml += optionWhitePosition();
+            playButton.innerText = 'Watch Game!';
             break;
     }
     //adding the new html to the dynamic div
@@ -292,9 +297,9 @@ function optionPlayerName(innerText, inputId) {
     //the old player name will be displayed in the text bar
     let currentPlayerName = localStorage.getItem(inputId);
     return `
-    <div>
+    <div class="input-right">
         <label for="${inputId}">${innerText}</label>
-        <input type="text" id="${inputId}" class="float-right" onchange="localStorage.setItem('${inputId}', value)" placeholder="${currentPlayerName}">
+        <input type="text" id="${inputId}" onchange="localStorage.setItem('${inputId}', value)" placeholder="${currentPlayerName}">
     </div>
     `;
 }
@@ -306,9 +311,9 @@ function optionPlayerName(innerText, inputId) {
  */
 function optionWhitePosition() {
     let htmlString = `
-    <div>
-        Position of White:
-        <span class="float-right">
+    <div class="input-right">
+        <p>Position of White:</p>
+        <div class="text-right">
             <input type="radio" name="white-pos" value="bottom" id="pos-bottom" class="clickable" onchange="updateWhitePosition(value)"
     `;
     //making the radio button checked if the white pieces are at the bottom
@@ -326,7 +331,7 @@ function optionWhitePosition() {
     }
     htmlString += `>
             <label for="pos-top" class="clickable small-text">Top</label>
-        </span>
+        </div>
     </div>`;
 
     return htmlString;
@@ -338,9 +343,9 @@ function optionWhitePosition() {
  */
 function optionPlayerColor() {
     let htmlString = `
-    <div>
-        Player Color:
-        <span class="float-right">
+    <div class="input-right">
+        <p>Player Color:</p>
+        <div class="text-right">
             <input type="radio" name="player-color" value="white" id="col-white" class="clickable" onchange="updatePlayerColor('white')"
     `;
     //making the radio button checked if the white pieces are at the bottom
@@ -358,9 +363,9 @@ function optionPlayerColor() {
     }
     htmlString += `>
             <label for="col-black" class="clickable small-text">Black</label>
-        </span>
-        <p class="small-text text-right">*Note: The player with the white pieces always starts first</p>
-    </div>`;
+        </div>
+    </div>
+    <p class="small-text text-right">*Note: The player with the white pieces always starts first</p>`;
 
     return htmlString;
 }

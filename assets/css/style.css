@@ -70,9 +70,11 @@ option {
     font-weight: bold;
 }
 
-/* setting the inputs to float to the right */
-.float-right {
-    float: right;
+/* for game settings that have the label on the left and input on the right */
+.input-right {
+    display: grid;
+    grid-template-columns: 2fr 3fr;
+    grid-template-rows: auto;
 }
 
 /* for text to be aligned to the right */
@@ -83,7 +85,7 @@ option {
 /* making the text inputs take up half of the settings div */
 input[type="text"],
 select {
-    width: 50%;
+    width: 100%;
 }
 
 input[type="number"] {
