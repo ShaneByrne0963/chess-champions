@@ -187,8 +187,8 @@ input[type="number"] {
 
 /* the icons of eliminated pieces */
 .piece-dead {
-    width: 64px;
-    height: 64px;
+    width: 2.5em;
+    height: 2.5em;
     display: inline-block;
     background-size: cover;
 }
