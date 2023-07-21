@@ -229,7 +229,7 @@ input[type="number"] {
 /* where the announcement div will be kept for smaller screen sizes */
 #announce-game {
     display: none;
-    border: 1px solid black;
+    border-top: 1px solid black;
 }
 
 /* game options for restarting and returning to the main menu */
@@ -453,6 +453,7 @@ input[type="number"] {
     /* changing the height of the ui buttons element to match the announcement's height */
     #ui-buttons {
         height: 160px;
+        border: none;
     }
 
     /* activating the announcement div under the chess board */
@@ -463,7 +464,7 @@ input[type="number"] {
 
     /* deactivating the announcement div in the ui */
     #announce-ui {
-        padding: 0;
+        display: none;
     }
 
     /* reducing the size of the chess board to allow room for the announcements */
@@ -511,11 +512,15 @@ input[type="number"] {
             1fr: for the announcement div. it will take up the remaining space
         */
         grid-template-rows: auto auto 1fr;
+        /*changing the background color to the chess board outline from the default screen size*/
+        background-color: #3E110B;
     }
 
     /* reducing the vertical padding for the player turn heading */
     #turn-heading {
         padding: 8px;
+        background-color: #501818;
+        border: 1px solid black;
     }
 
     #chess-board {
