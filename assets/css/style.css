@@ -441,3 +441,14 @@ input[type="number"] {
         padding: 0;
     }
 }
+/* for medium size screens such as tablets */
+@media screen and (max-width: 1100px) {
+    /* at this screen size, the ui will be the one with the consistent width and the board will change to suit it */
+    #game {
+        grid-template-columns: 320px 1fr;
+    }
+
+    #chess-board {
+        height: calc(100vw - 320px);
+    }
+}
