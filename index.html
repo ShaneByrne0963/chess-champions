@@ -42,12 +42,13 @@
             <div id="advanced-settings">
                 <details>
                     <summary class="clickable">Advanced Moves</summary>
-                    <label for="pawn-promotion" class="small-text indented">Pawn Promotion:</label>
-                    <select id="pawn-promotion" class="clickable float-right small-text" onchange="updatePawnPromotion(value)">
-                        <option value="any">Promote to any piece</option>
-                        <option value="dead">Only promote from eliminated pieces</option>
-                    </select>
-                    <br>
+                    <div class="input-right small-text">
+                        <label for="pawn-promotion" class="indented">Pawn Promotion:</label>
+                        <select id="pawn-promotion" class="clickable float-right" onchange="updatePawnPromotion(value)">
+                            <option value="any">Promote to any piece</option>
+                            <option value="dead">Only promote from eliminated pieces</option>
+                        </select>
+                    </div>
                     <input type="checkbox" id="castling" class="indented clickable" onchange="updateCastling(checked)" checked>
                     <label for="castling" class="small-text clickable">Castling</label>
                     <!--A third party link that explains what castling is-->
