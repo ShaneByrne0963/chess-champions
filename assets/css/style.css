@@ -403,6 +403,11 @@ input[type="number"] {
         font-size: 1.4em;
     }
 
+    /* reducing the game-settings element width */
+    #menu-settings {
+        max-width: 520px;
+    }
+
     /* adjusting the width of the user interface and chess board */
     #game {
         grid-template-columns: auto calc(100vh - 161px);
