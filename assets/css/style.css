@@ -466,6 +466,11 @@ input[type="number"] {
 }
 /* for small screen sizes such as mobile phones */
 @media screen and (max-width: 800px) {
+    /* reducing the font size */
+    body {
+        font-size: 1em;
+    }
+
     /* the game grid will change from horizontal to vertical */
     #game {
         grid-template-columns: 1fr;
@@ -484,15 +489,23 @@ input[type="number"] {
         grid-template-rows: auto auto 1fr;
     }
 
-    #chess-board {
-        padding: 16px;
-        height: calc(100vw - 32px);
+    /* reducing the vertical padding for the player turn heading */
+    #turn-heading {
+        padding: 8px;
     }
 
-    /* making the announcement div big enough to fit one announcement */
+    #chess-board {
+        width: 520px;
+        margin: 0 auto;
+        /* this value is the set width (520px) minus the margin (16px on each side) */
+        height: 520px;
+    }
+
+    /* making the announcement div big enough to fit one announcement, and removing its border */
     #announce-game {
         height: 1.5em;
-        padding: 8px 16px;
+        padding: 8px;
+        border: none;
     }
     
     /* moving the ui under the board */
