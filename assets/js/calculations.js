@@ -5,7 +5,7 @@
 const aiDifficulty = {
     attackPiece: [0, 20],
     addSpaces: [10, 40],
-    considerTargets: [10, 70]
+    considerTargets: [10, 70],
 };
 
 /**
@@ -33,7 +33,7 @@ function makeMove(color) {
     let finalTile = movePiece.highestMoves[Math.floor(Math.random() * movePiece.highestMoves.length)];
 
     let movingElement = chessPiece.findElement(movePiece.x, movePiece.y);
-    
+
     chessPiece.move(movingElement, finalTile);
 }
 
@@ -134,6 +134,8 @@ function getTileScore(pieceData, moveTileData) {
     if (difficultyAllows(aiDifficulty.addSpaces)) {
         moveScore += tileEval.availableSpaces * (chessPiece.value[pieceData.piece] / 100);
     }
+    //adding the total number of spaces the king can safely move to x30 to the score
+    moveScore += getKingSafeTiles(pieceData.color, pieceData, moveTileData) * 30;
 
     //calculates the risk of the piece getting eliminated if it moves to this tile
     let tileBattle = simulateBattle(pieceData, tileEval);
@@ -638,4 +640,61 @@ function evaluateTargets(pieceData, tileEval, battleScore) {
         }
     }
     return targetScore;
+}
+
+/**
+ * Returns how many spaces a king can safely move to
+ * @param {string} color The color of the king
+ * @param {object} pieceFromData The data object {x, y, piece, color} of the piece looking to move
+ * @param {object} tileToData The data object {x, y, piece, color} of the tile the piece will move to
+ * @returns {integer} The number of spaces that would be safe for the king to move to
+ */
+function getKingSafeTiles(color, pieceFromData, tileToData) {
+    let safeTiles = 0;
+    //getting the data object of the king
+    let kingData;
+    if (pieceFromData.piece === 'king') {
+        kingData = pieceFromData;
+    } else {
+        kingData = tile.findKing(color);
+    }
+    //iterating through all the possible moves the king can take
+    for (let move of pieceMovement.king) {
+        //not taking the castling moves into consideration
+        if (move[0] === 'normal') {
+            let tileX, tileY;
+            //adding the move coordinates to where the king will be for this evaluation
+            if (pieceFromData.piece === 'king') {
+                tileX = tileToData.x + move[1];
+                tileY = tileToData.y + move[2];
+            } else {
+                tileX = kingData.x + move[1];
+                tileY = kingData.y + move[2];
+            }
+            //if the king is in a corner, then the amount of spaces it can move to if it's under threat is smaller
+            if (tile.inBounds(tileX, tileY)) {
+                let moveTile = chessPiece.findData(tileX, tileY);
+                //The king can move to a tile if it is empty or has an enemy piece on it
+                if (moveTile.color !== color) {
+                    //evaluating every tile around the king for threats
+                    let tileEval;
+                    if (pieceFromData.piece === 'king' || (pieceFromData.x === tileToData.x && pieceFromData.y === tileToData.y)) {
+                        tileEval = evaluateTile(moveTile, kingData);
+                    } else {
+                        //if another piece is moving, this can affect how many safe spaces the king can
+                        //move to, so we will simulate this move before the evaluation
+                        let pieceFromElement = chessPiece.findElement(pieceFromData.x, pieceFromData.y);
+                        let tileToElement = tile.getElement(tileToData.x, tileToData.y);
+                        tileEval = evaluateTileWithMove(moveTile, kingData, pieceFromElement, tileToElement);
+                    }
+                    //if there is no threat at this tile, or if an ally piece can move in the way
+                    //of an attack, then it is safe
+                    if (tileEval.enemyThreat.length === 0 || tileEval.allyGuarded.length > 0) {
+                        safeTiles++;
+                    }
+                }
+            }
+        }
+    }
+    return safeTiles;
 }
