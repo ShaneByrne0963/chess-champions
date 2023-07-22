@@ -2,7 +2,7 @@
 //if the difficulty is below the value of the first element, then this part of the evaluation will not happen
 //if the difficulty is above the value of the second element, then it will happen 100% of the time
 //if the difficulty is in between these values, then it will have a chance to happen
-const attackPiece = [0, 20];
+const aiAttackPiece = [0, 20];
 
 /**
  * Calculates the move made by an AI
@@ -477,6 +477,36 @@ function addPieceRelationship(tileEvaluation, moveResults) {
         tileEvaluation.enemyThreat.push(moveResults.enemyThreat);
     }
     return tileEvaluation;
+}
+
+/**
+ * May prevent a part of the tile evaluation from happening depending on the difficulty
+ * @param {object} rule The range of difficulty this part will take effect in
+ * @returns {boolean} If the part should continue or not
+ */
+function difficultyAllows(rule) {
+    let difficulty;
+    //if there is only one ai playing the game, it will use the first difficulty
+    if (getHumanPlayers() > 0) {
+        difficulty = localStorage.getItem('difficulty1');
+    } else {
+        //finding which ai is making the move
+        let playerTurn = getPlayerTurn();
+        difficulty = localStorage.getItem(`difficulty${playerTurn.place}`);
+    }
+    if (difficulty < rule[0]) {
+        //if the difficulty falls below the minimum difficulty for this rule, then do not proceed with the rule
+        return false;
+    } else if (difficulty >= rule[1]) {
+        //if the difficulty is higher than the maximum difficulty for this rule, proceed with this rule every time
+        return true;
+    } else {
+        //if the difficulty is in between the min and the max, the higher the difficulty is, the more likely the rule will proceed
+        let ruleDifference = rule[1] - rule[0];
+        let difficultyPos = difficulty - rule[0];
+
+        return (Math.random() * ruleDifference < difficultyPos);
+    }
 }
 
 /**
