@@ -156,8 +156,8 @@ function getTileScore(pieceData, moveTileData) {
  */
 function getMoveOnlyScore(pieceData, moveTileData) {
     let moveScore = 0;
-    //if there is a piece already on the tile, then add that piece's value to the score
-    if (moveTileData.piece !== '') {
+    //if there is an enemy piece already on the tile, then add that piece's value to the score
+    if (moveTileData.color !== '' && moveTileData.color !== pieceData.color) {
         moveScore += chessPiece.getValue(moveTileData);
     }
     //add extra points for pawns to encourage movement
