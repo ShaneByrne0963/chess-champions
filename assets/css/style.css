@@ -99,6 +99,14 @@ input[type="number"] {
     width: 2.5em;
 }
 
+/* making the difficulty sliders take up the full width of the settings element */
+input[type="range"] {
+    width: 100%;
+    /* changing the color of the bar */
+    /* source: https://nikitahl.com/style-range-input-css#:~:text=One%20simple%20way%20to%20customize,of%20the%20track%20and%20thumb. */
+    accent-color: #3E110B;
+}
+
 /* for reducing the size of text */
 .small-text {
     font-size: 0.8em;
