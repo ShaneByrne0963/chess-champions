@@ -5,9 +5,9 @@
 const aiDifficulty = {
     attackPiece: [0, 20],
     addSpaces: [10, 40],
-    considerTargets: [10, 70],
-    protectKing: [40, 60],
-    surroundKing: [40, 60]
+    considerTargets: [40, 90],
+    protectKing: [50, 80],
+    surroundKing: [60, 100]
 };
 
 /**
