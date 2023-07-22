@@ -151,8 +151,8 @@ function getTileScore(pieceData, moveTileData) {
 
     //calculates the risk of the piece getting eliminated if it moves to this tile
     let battleScore = 0;
+    let tileBattle = simulateBattle(pieceData, tileEval);
     if (difficultyAllows(aiDifficulty.checkTileSafety)) {
-        let tileBattle = simulateBattle(pieceData, tileEval);
         battleScore = tileBattle.battleScore;
     }
     //if the outcome of the battle is negative for the current piece, then remove the piece's value from the score
