@@ -242,6 +242,8 @@ function findPawnScore(pieceData, moveTileData) {
  */
 function evaluateTile(tileData, evaluatingPiece) {
     let tileEvaluation = {
+        x: tileData.x,
+        y: tileData.y,
         availableSpaces: 0,
         enemyTarget: [],
         enemyThreat: [],
@@ -616,12 +618,22 @@ function evaluateTargets(pieceData, tileEval, battleScore) {
         //checking which target tiles are safe to attack
         let safeTargets = [];
         //the total value of all targets at this tile. 10% of this will be added to the tile
-        //score if it doesn't 
+        //score if there is no more than 1 target the piece can safely attack
         let totalValue = 0;
+
         //checks if moving to the tile will result in a net gain for the ai
         for (let target of tileEval.enemyTarget) {
             let targetValue = chessPiece.getValue(target);
-            totalValue += targetValue;
+            //if the target is a king, its value will depend on how many spaces it can move to. the fewer the spaces, the higher the score
+            //this should reduce the chance of the ai trying to get checks that can easily be avoided
+            if (targetValue.piece === 'king') {
+                let enemyColor = (pieceData.color === 'white') ? 'black' : 'white';
+                let tileToData = chessPiece.findData(tileEval.x, tileEval.y);
+                totalValue += (8 - getKingSafeTiles(enemyColor, pieceData, tileToData) * 25);
+            } else {
+                //if it is any other piece
+                totalValue += targetValue;
+            }
             //simulating a battle at this tile to get the end result
             let targetEval = evaluateTile(target, pieceData);
             let tileBattle = simulateBattle(pieceData, targetEval);
