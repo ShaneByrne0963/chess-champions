@@ -337,7 +337,9 @@ function optionDifficulty(innerText, inputId) {
     return `
     <div class="input-right">
         <label for="${inputId}">${innerText}</label>
-        <input type="number" id="${inputId}" class="text-right" onchange="updateDifficulty('${inputId}', value)" min="0" max="100">
+        <div class="text-right">
+            <input type="number" id="${inputId}" class="text-right" onchange="updateDifficulty('${inputId}', value)" min="0" max="100">
+        </div>
     </div>
     `;
 }
