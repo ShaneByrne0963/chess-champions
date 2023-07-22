@@ -699,16 +699,23 @@ function getProtectingAllies(pieceData, moveTileData, allies) {
         //protecting the king this way is pointless as the king cannot be eliminated like other pieces
         if (ally.piece !== 'king') {
             //checking if the allied piece is safe at its current tile before the move
-            let evalBefore = evaluateTile(ally, ally);
-            let battleBefore = simulateBattle(ally, evalBefore);
-            if (battleBefore.battleScore < 0) {
-                //if the allied piece is not safe, check if it is after the move
-                let evalAfter = evaluateTileWithMove(ally, ally, pieceElement, tileElement);
-                let battleAfter = simulateBattle(ally, evalAfter);
-                if (battleAfter.battleScore >= 0) {
-                    //if the piece is now safe, then add the value of that piece to the total score
-                    totalScore += chessPiece.getValue(ally);
+            let tileEval = evaluateTileWithMove(ally, ally, pieceElement, tileElement);
+            //getting the score of the battle with the piece protecting it
+            let battleAfter = simulateBattle(ally, tileEval);
+            //removing the moving piece from the ally's allyGuarded array
+            for (let i in tileEval.allyGuarded) {
+                let currentAlly = tileEval.allyGuarded[i];
+                if (currentAlly.x === moveTileData.x && currentAlly.y === moveTileData.y) {
+                    //removing the piece from the array
+                    tileEval.allyGuarded.splice(i, 1);
                 }
+            }
+            //simulating another battle but without the piece protecting it
+            let battleBefore = simulateBattle(ally, tileEval);
+            //if the ally is not safe without the piece but is safe with it
+            if (battleBefore.battleScore < 0 && battleAfter.battleScore >= 0) {
+                //adding the value of that piece to the total score
+                totalScore += chessPiece.getValue(ally);
             }
         }
     }
