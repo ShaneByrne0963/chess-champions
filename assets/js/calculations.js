@@ -694,16 +694,19 @@ function getProtectingAllies(pieceData, moveTileData, allies) {
     let tileElement = tile.getElement(moveTileData.x, moveTileData.y);
     //iterating through all of the allies the piece can protect
     for (let ally of allies) {
-        //checking if the allied piece is safe at its current tile before the move
-        let evalBefore = evaluateTile(ally, ally);
-        let battleBefore = simulateBattle(ally, evalBefore);
-        if (battleBefore.battleScore < 0) {
-            //if the allied piece is not safe, check if it is after the move
-            let evalAfter = evaluateTileWithMove(ally, ally, pieceElement, tileElement);
-            let battleAfter = simulateBattle(ally, evalAfter);
-            if (battleAfter.battleScore >= 0) {
-                //if the piece is now safe, then add the value of that piece to the total score
-                totalScore += chessPiece.getValue(ally);
+        //protecting the king this way is pointless as the king cannot be eliminated like other pieces
+        if (ally.piece !== 'king') {
+            //checking if the allied piece is safe at its current tile before the move
+            let evalBefore = evaluateTile(ally, ally);
+            let battleBefore = simulateBattle(ally, evalBefore);
+            if (battleBefore.battleScore < 0) {
+                //if the allied piece is not safe, check if it is after the move
+                let evalAfter = evaluateTileWithMove(ally, ally, pieceElement, tileElement);
+                let battleAfter = simulateBattle(ally, evalAfter);
+                if (battleAfter.battleScore >= 0) {
+                    //if the piece is now safe, then add the value of that piece to the total score
+                    totalScore += chessPiece.getValue(ally);
+                }
             }
         }
     }
