@@ -518,8 +518,16 @@ input[type="number"] {
         text-align: left;
     }
 
+    /* reducing the indentation in the menu settings */
     .indented {
         margin-left: 16px;
+    }
+
+    /* making the select input in the advanced moves indented */
+    details select {
+        margin-left: 16px;
+        /* subtracting the newly added margin from the width */
+        width: calc(100% - 16px);
     }
 
     /* reducing the game settings element width */
@@ -611,9 +619,6 @@ input[type="number"] {
 }
 /* at this width the board with a horizontal margin of 16px will touch the edge
 of the screen, so we will set the board to cover the width of the screen at this point. */
-
-/* this width also just so happens to be when the settings in the index page start to get
-crushed, so move the inputs onto a separate line from the label */
 @media screen and (max-width: 582px) {
     #chess-board {
         width: calc(100vw - 32px);
