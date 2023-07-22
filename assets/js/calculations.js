@@ -164,7 +164,9 @@ function getTileScore(pieceData, moveTileData) {
         moveScore += evaluateTargets(pieceData, tileEval, tileBattle.battleScore);
     }
     //if another piece relies on this one to guard it, then add that piece's score to this tile
-    if (tileEval.allyGuarding.length > 0) {
+    //only consider this if there is a piece that is already protecting this tile, otherwise the
+    //threat will eliminate the piece that moves here and threaten the allyGuarding piece again
+    if (tileEval.allyGuarding.length > 0 && tileEval.allyGuarded.length > 0) {
         moveScore += getProtectingAllies(pieceData, moveTileData, tileEval.allyGuarding);
     }
     return moveScore;
@@ -276,7 +278,7 @@ function evaluateTile(tileData, evaluatingPiece) {
  * @param {object} evaluatingPiece  The data object {x, y, piece, color} of the tile the piece will move to
  * @param {object} pieceFromElement The piece element that will simulate movement
  * @param {object} tileToElement The element of the tile the piece will simulate to
- * @returns {object} {availableSpaces, enemyTarget, enemyThreat, allyGuarded}
+ * @returns {object} {x, y, availableSpaces, enemyTarget, enemyThreat, allyGuarded, allyGuarding}
  */
 function evaluateTileWithMove(tileData, evaluatingPiece, pieceFromElement, tileToElement) {
     //storing pieceFrom's parent element so it can be returned after the evaluation
@@ -307,7 +309,7 @@ function evaluateTileWithMove(tileData, evaluatingPiece, pieceFromElement, tileT
  * with a simulated move
  * @param {object} pieceMoveData The data object {x, y, piece, color} of the piece that is doing the evaluation
  * @param {object} otherPieceData The data object {x, y, piece, color} of the other piece that will take part in the move
- * @returns {object} A tile evaluation {availableSpaces, enemyTarget, enemyThreat, allyGuarded}
+ * @returns {object} A tile evaluation {x, y, availableSpaces, enemyTarget, enemyThreat, allyGuarded, allyGuarding}
  */
 function evaluateTileCastle(pieceMoveData, otherPieceData) {
     //getting if the king will be moving to the left or right
@@ -348,7 +350,7 @@ function evaluateTileCastle(pieceMoveData, otherPieceData) {
  * @param {object} tileData  The data object {x, y, piece, color} of the piece that will make the move
  * @param {object} evaluatingPiece  The data object {x, y, piece, color} of the tile the piece will move to
  * @param {object} move The specific vector the scan will move along (see pieceMovement.queen for all vectors)
- * @returns {object} {availableSpaces, enemyTarget, enemyThreat, allyGuarded}
+ * @returns {object} {availableSpaces, enemyTarget, enemyThreat, allyGuarded, allyGuarding}
  */
 function evaluateTileVector(tileData, evaluatingPiece, move) {
     //the coordinates the loop will be manipulating
@@ -403,7 +405,7 @@ function evaluateTileVector(tileData, evaluatingPiece, move) {
  * @param {object} tileData  The data object {x, y, piece, color} of the piece that will make the move
  * @param {object} evaluatingPiece  The data object {x, y, piece, color} of the tile the piece will move to
  * @param {object} move The specific point that will be checked (see pieceMovement.knight for the points in question)
- * @returns {object} {availableSpaces, enemyTarget, enemyThreat, allyGuarded}
+ * @returns {object} {availableSpaces, enemyTarget, enemyThreat, allyGuarded, allyGuarding}
  */
 function evaluateTilePoint(tileData, evaluatingPiece, move) {
     let x = tileData.x + move[1];
@@ -446,7 +448,7 @@ function evaluateTilePoint(tileData, evaluatingPiece, move) {
  * @param {object} foundPiece The data object {x, y, piece, color} of the piece that is being evaluated
  * @param {object} move The move that was taken to reach the found piece (see pieceMovement object for moves)
  * @param {boolean} isBeside If the found piece is only one tile away from the evaluating piece
- * @returns {object} {availableSpaces, enemyTarget, enemyThreat, allyGuarded}
+ * @returns {object} {availableSpaces, enemyTarget, enemyThreat, allyGuarded, allyGuarding}
  */
 function getPieceRelationship(evaluatingPiece, foundPiece, move, isBeside) {
     //storing the relationships between the piece that is
