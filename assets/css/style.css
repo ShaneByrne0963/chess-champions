@@ -78,6 +78,12 @@ option {
     margin-bottom: 32px;
 }
 
+/* creates a smaller gap for the advanced moves options */
+summary,
+details .input-gap {
+    margin-bottom: 16px;
+}
+
 /* for text to be aligned to the right */
 .text-right {
     text-align: right;
@@ -421,6 +427,7 @@ input[type="number"] {
 
 /* for medium to large screens */
 @media screen and (max-width: 1400px) {
+
     /* reducing the size of the text */
     body {
         font-size: 1.4em;
@@ -485,8 +492,10 @@ input[type="number"] {
         padding: 0;
     }
 }
+
 /* for medium size screens such as tablets */
 @media screen and (max-width: 1100px) {
+
     /* at this screen size, the ui will be the one with the consistent width and the board will change to suit it */
     #game {
         grid-template-columns: 320px 1fr;
@@ -496,8 +505,10 @@ input[type="number"] {
         height: calc(100vw - 320px);
     }
 }
+
 /* for small screen sizes such as mobile phones */
 @media screen and (max-width: 800px) {
+
     /* reducing the font size */
     body {
         font-size: 1.2em;
@@ -507,7 +518,7 @@ input[type="number"] {
     .input-gap {
         margin-bottom: 16px;
     }
-    
+
     /* moving the inputs to a separate line from their labels */
     .input-right {
         display: block;
@@ -521,6 +532,12 @@ input[type="number"] {
     /* reducing the indentation in the menu settings */
     .indented {
         margin-left: 16px;
+    }
+
+    /* removing the gaps between the options in advanced moves */
+    summary,
+    details .input-gap {
+        margin-bottom: 0;
     }
 
     /* making the select input in the advanced moves indented */
@@ -575,7 +592,7 @@ input[type="number"] {
         padding: 8px;
         border: none;
     }
-    
+
     /* moving the ui under the board */
     #ui-area {
         grid-row-start: 2;
@@ -583,7 +600,7 @@ input[type="number"] {
         grid-template-columns: 1fr 1fr;
         grid-template-rows: 1fr auto;
     }
-    
+
     /* disabling the player-turn div as the heading is no longer in it */
     #player-turn {
         display: none;
@@ -617,6 +634,7 @@ input[type="number"] {
         color: white;
     }
 }
+
 /* at this width the board with a horizontal margin of 16px will touch the edge
 of the screen, so we will set the board to cover the width of the screen at this point. */
 @media screen and (max-width: 582px) {
