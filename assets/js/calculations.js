@@ -4,6 +4,7 @@
 //if the difficulty is in between these values, then it will have a chance to happen
 const aiDifficulty = {
     attackPiece: [0, 20],
+    addSpaces: [10, 40],
     considerTargets: [10, 70]
 };
 
@@ -130,7 +131,9 @@ function getTileScore(pieceData, moveTileData) {
         tileEval = evaluateTile(moveTileData, pieceData);
     }
     //adding the total number of moves the piece could make on this tile multiplied by 1% of it's value to the score
-    moveScore += tileEval.availableSpaces * (chessPiece.value[pieceData.piece] / 100);
+    if (difficultyAllows(aiDifficulty.addSpaces)) {
+        moveScore += tileEval.availableSpaces * (chessPiece.value[pieceData.piece] / 100);
+    }
 
     //calculates the risk of the piece getting eliminated if it moves to this tile
     let tileBattle = simulateBattle(pieceData, tileEval);
@@ -178,8 +181,10 @@ function getMoveOnlyScore(pieceData, moveTileData) {
         }
     }
     //add extra points for pawns to encourage movement
-    if (pieceData.piece === 'pawn') {
-        moveScore += findPawnScore(pieceData, moveTileData);
+    if (difficultyAllows(aiDifficulty.addSpaces)) {
+        if (pieceData.piece === 'pawn') {
+            moveScore += findPawnScore(pieceData, moveTileData);
+        }
     }
     return moveScore;
 }
