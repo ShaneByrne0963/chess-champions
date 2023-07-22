@@ -2,7 +2,9 @@
 //if the difficulty is below the value of the first element, then this part of the evaluation will not happen
 //if the difficulty is above the value of the second element, then it will happen 100% of the time
 //if the difficulty is in between these values, then it will have a chance to happen
-const aiAttackPiece = [0, 20];
+const aiDifficulty = {
+    attackPiece: [0, 20]
+};
 
 /**
  * Calculates the move made by an AI
@@ -157,8 +159,10 @@ function getTileScore(pieceData, moveTileData) {
 function getMoveOnlyScore(pieceData, moveTileData) {
     let moveScore = 0;
     //if there is an enemy piece already on the tile, then add that piece's value to the score
-    if (moveTileData.color !== '' && moveTileData.color !== pieceData.color) {
-        moveScore += chessPiece.getValue(moveTileData);
+    if (difficultyAllows(aiDifficulty.attackPiece)) {
+        if (moveTileData.color !== '' && moveTileData.color !== pieceData.color) {
+            moveScore += chessPiece.getValue(moveTileData);
+        }
     }
     //add extra points for pawns to encourage movement
     if (pieceData.piece === 'pawn') {
@@ -481,7 +485,7 @@ function addPieceRelationship(tileEvaluation, moveResults) {
 
 /**
  * May prevent a part of the tile evaluation from happening depending on the difficulty
- * @param {object} rule The range of difficulty this part will take effect in
+ * @param {object} rule The range of difficulty this part will take effect in (see aiDifficulty object at top of page)
  * @returns {boolean} If the part should continue or not
  */
 function difficultyAllows(rule) {
