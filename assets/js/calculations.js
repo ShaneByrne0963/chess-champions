@@ -3,7 +3,8 @@
 //if the difficulty is above the value of the second element, then it will happen 100% of the time
 //if the difficulty is in between these values, then it will have a chance to happen
 const aiDifficulty = {
-    attackPiece: [0, 20]
+    attackPiece: [0, 20],
+    considerTargets: [10, 70]
 };
 
 /**
@@ -143,9 +144,9 @@ function getTileScore(pieceData, moveTileData) {
             color: pieceData.color
         };
         moveScore -= chessPiece.getValue(newPieceData);
-    } else {
+    } else if (difficultyAllows(aiDifficulty.considerTargets)) {
         //taking targets into consideration if the move is low risk
-        moveScore += evaluateTargets(pieceData,tileEval, tileBattle.battleScore);
+        moveScore += evaluateTargets(pieceData, tileEval, tileBattle.battleScore);
     }
     return moveScore;
 }
@@ -163,21 +164,22 @@ function getMoveOnlyScore(pieceData, moveTileData) {
         if (moveTileData.color !== '' && moveTileData.color !== pieceData.color) {
             moveScore += chessPiece.getValue(moveTileData);
         }
+        //adding the score of any eliminated pawn from an en passant move
+        if (pieceData.piece === 'pawn') {
+            if (moveTileData.piece === '') {
+                //finding the move the piece took to get to this tile using the differences between their coordinates
+                let move = ['', moveTileData.x - pieceData.x, moveTileData.y - pieceData.y];
+                if (pieceMovement.canPassant(pieceData, move)) {
+                    //finding the pawn that will be eliminated from the passant, which will be to the left or right of the starting tile
+                    let passantPiece = chessPiece.findData(moveTileData.x, pieceData.y);
+                    moveScore += chessPiece.getValue(passantPiece);
+                }
+            }
+        }
     }
     //add extra points for pawns to encourage movement
     if (pieceData.piece === 'pawn') {
         moveScore += findPawnScore(pieceData, moveTileData);
-
-        //adding the score of any eliminated pawn from an en passant move
-        if (moveTileData.piece === '') {
-            //finding the move the piece took to get to this tile using the differences between their coordinates
-            let move = ['', moveTileData.x - pieceData.x, moveTileData.y - pieceData.y];
-            if (pieceMovement.canPassant(pieceData, move)) {
-                //finding the pawn that will be eliminated from the passant, which will be to the left or right of the starting tile
-                let passantPiece = chessPiece.findData(moveTileData.x, pieceData.y);
-                moveScore += chessPiece.getValue(passantPiece);
-            }
-        }
     }
     return moveScore;
 }
