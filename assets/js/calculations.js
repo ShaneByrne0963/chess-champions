@@ -6,6 +6,7 @@ const aiDifficulty = {
     attackPiece: [0, 20],
     addSpaces: [10, 40],
     considerTargets: [10, 70],
+    protectKing: [40, 60]
 };
 
 /**
@@ -135,7 +136,9 @@ function getTileScore(pieceData, moveTileData) {
         moveScore += tileEval.availableSpaces * (chessPiece.value[pieceData.piece] / 100);
     }
     //adding the total number of spaces the king can safely move to x30 to the score
-    moveScore += getKingSafeTiles(pieceData.color, pieceData, moveTileData) * 30;
+    if (difficultyAllows(aiDifficulty.protectKing)) {
+        moveScore += getKingSafeTiles(pieceData.color, pieceData, moveTileData) * 30;
+    }
 
     //calculates the risk of the piece getting eliminated if it moves to this tile
     let tileBattle = simulateBattle(pieceData, tileEval);
