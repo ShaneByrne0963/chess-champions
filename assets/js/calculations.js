@@ -6,7 +6,8 @@ const aiDifficulty = {
     attackPiece: [0, 20],
     addSpaces: [10, 40],
     considerTargets: [10, 70],
-    protectKing: [40, 60]
+    protectKing: [40, 60],
+    surroundKing: [40, 60]
 };
 
 /**
@@ -138,6 +139,12 @@ function getTileScore(pieceData, moveTileData) {
     //adding the total number of spaces the king can safely move to x30 to the score
     if (difficultyAllows(aiDifficulty.protectKing)) {
         moveScore += getKingSafeTiles(pieceData.color, pieceData, moveTileData) * 30;
+    }
+    //increasing the score if the enemy king has less spaces to move to
+    if (difficultyAllows(aiDifficulty.surroundKing)) {
+        let enemyColor = (pieceData.color === 'white') ? 'black' : 'white';
+        //the less tiles the enemy king has to move to, the higher the score
+        moveScore += (8 - getKingSafeTiles(enemyColor, pieceData, moveTileData)) * 30;
     }
 
     //calculates the risk of the piece getting eliminated if it moves to this tile
