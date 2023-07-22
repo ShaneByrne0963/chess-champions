@@ -5,6 +5,7 @@
 const aiDifficulty = {
     attackPiece: [0, 20],
     addSpaces: [10, 40],
+    protectAllies: [30, 70],
     considerTargets: [40, 90],
     protectKing: [50, 80],
     surroundKing: [60, 100]
@@ -111,6 +112,7 @@ function getBestMoves(pieceDataList, pieceCurrentScores) {
             }
         }
     }
+    console.log(highestScore);
     return highestScorePieces;
 }
 
@@ -166,8 +168,10 @@ function getTileScore(pieceData, moveTileData) {
     //if another piece relies on this one to guard it, then add that piece's score to this tile
     //only consider this if there is a piece that is already protecting this tile, otherwise the
     //threat will eliminate the piece that moves here and threaten the allyGuarding piece again
-    if (tileEval.allyGuarding.length > 0 && tileEval.allyGuarded.length > 0) {
-        moveScore += getProtectingAllies(pieceData, moveTileData, tileEval.allyGuarding);
+    if (difficultyAllows(aiDifficulty.protectAllies)) {
+        if (tileEval.allyGuarding.length > 0 && tileEval.allyGuarded.length > 0) {
+            moveScore += getProtectingAllies(pieceData, moveTileData, tileEval.allyGuarding);
+        }
     }
     return moveScore;
 }
