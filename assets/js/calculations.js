@@ -137,7 +137,7 @@ function getTileScore(pieceData, moveTileData) {
         moveScore -= chessPiece.getValue(newPieceData);
     } else {
         //taking targets into consideration if the move is low risk
-        moveScore += evaluateTargets(tileEval, tileBattle.battleScore);
+        moveScore += evaluateTargets(pieceData, tileEval, tileBattle.battleScore);
     }
     return moveScore;
 }
@@ -545,26 +545,38 @@ function simulateBattle(pieceData, tileEval) {
     return aftermath;
 }
 
-function isTileSafe() {
-
-}
-
 /**
  * Calculates how much the targets at a tile will add to the total tile score
  * @param {object} tileEval The evaluation done at this tile
  * @param {integer} battleScore The final score after a battle has taken place (see simulateBattle function)
  * @returns {integer} The extra score from the targets
  */
-function evaluateTargets(tileEval, battleScore) {
+function evaluateTargets(pieceData, tileEval, battleScore) {
     let targetScore = 0;
     if (tileEval.enemyTarget.length > 0) {
-        //checking which target tiles are safe to move to
-        let safeTargets = 0;
-        //if there is more than one target, then this makes the enemy consider
-        //whether to lose one of the pieces or start a 'battle' for real
-        if (tileEval.enemyTarget.length > 1) {
+        //checking which target tiles are safe to attack
+        let safeTargets = [];
+        //the total value of all targets at this tile. 10% of this will be added to the tile
+        //score if it doesn't 
+        let totalValue = 0;
+        //checks if moving to the tile will result in a net gain for the ai
+        for (let target of tileEval.enemyTarget) {
+            let targetValue = chessPiece.getValue(target);
+            totalValue += targetValue;
+            //simulating a battle at this tile to get the end result
+            let targetEval = evaluateTile(target, pieceData);
+            let tileBattle = simulateBattle(pieceData, targetEval);
+            //adding the value of the lost piece to the battlescore
+            if (tileBattle.battleScore + targetValue >= 0) {
+                //if the result is positive for the ai, then the tile is considered "safe"
+                safeTargets.push(target);
+            }
+        }
+        //if there is more than one target that is safe to attack, then this tile is a real threat to
+        //the enemy, so give it a high score
+        if (safeTargets.length > 1) {
             //finds the target with the lowest value. The first element in the array is the value
-            let lowestTarget = chessPiece.findLowestValue(tileEval.enemyTarget)[0];
+            let lowestTarget = chessPiece.findLowestValue(tileEval.safeTargets)[0];
             if (tileEval.enemyThreat.length > 0) {
                 //if there are threats at this tile, the enemy may start the battle if it benifits them more
                 targetScore = (lowestTarget < battleScore) ? lowestTarget : battleScore;
@@ -575,7 +587,7 @@ function evaluateTargets(tileEval, battleScore) {
             }
         } else {
             //add 10% of the target's score if there is only one of them
-            targetScore = Math.floor(chessPiece.getValue(tileEval.enemyTarget[0]) / 10);
+            targetScore = Math.floor(totalValue / 10);
         }
     }
     return targetScore;
