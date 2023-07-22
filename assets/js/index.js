@@ -306,8 +306,29 @@ function updatePlayerColor(value) {
     localStorage.setItem(oppositeColor, 'computer');
 }
 
-function updateDifficulty(id, value) {
+function updateDifficulty(id, inputType, value) {
+    //the difficulty setting has 2 different ways to set the input: using a number and using the range slider
+    //we will get both of these to change their values
+    let thisInput = document.getElementById(id + '-' + inputType);
+    let otherInputId = (inputType === 'number') ? id + '-range' : id + '-number';
+    let otherInput = document.getElementById(otherInputId);
 
+    //making sure the value is between 0 and 100, in case the user typed in the number manually
+    if (value > 100) {
+        value = 100;
+    } else if (value < 0) {
+        value = 0;
+    }
+    //updating the values of both inputs
+    thisInput.value = value;
+    otherInput.value = value;
+    //updating the value stored in local storage
+    if (id === 'difficulty2') {
+        localStorage.setItem('difficulty2', value);
+    } else {
+        //'difficulty' and 'difficulty1' will share the same variable in localStorage
+        localStorage.setItem('difficulty1', value);
+    }
 }
 
 /**
@@ -336,12 +357,12 @@ function optionPlayerName(innerText, inputId) {
 function optionDifficulty(innerText, inputId) {
     return `
     <div class="input-right">
-        <label for="${inputId}">${innerText}</label>
+        <label for="${inputId}-number">${innerText}</label>
         <div class="text-right">
-            <input type="number" id="${inputId}" class="text-right" onchange="updateDifficulty('${inputId}', value)" value="50" min="0" max="100">
+            <input type="number" id="${inputId}-number" class="text-right" onchange="updateDifficulty('${inputId}', 'number', value)" value="50" min="0" max="100">
         </div>
     </div>
-    <input type="range" class="input-gap" min="0" max="100" value="50">
+    <input type="range" id="${inputId}-range" class="input-gap" onchange="updateDifficulty('${inputId}', 'range', value)" min="0" max="100" value="50">
     `;
 }
 
