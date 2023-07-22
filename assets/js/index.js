@@ -45,22 +45,6 @@ function settingsInit() {
 }
 
 /**
- * Updates the player name, ensuring it does not contain more than 10 characters
- * @param {string} id The id of the element that is running the function
- * @param {string} value The text that will be set to the player name
- */
-function updatePlayerName(id, value) {
-    if (value.length <= 10) {
-        localStorage.setItem(id, value);
-    } else {
-        alert("Sorry, but the name cannot be longer than 10 characters!");
-        //resetting the input
-        let playerElement = document.getElementById(id);
-        playerElement.value = '';
-    }
-}
-
-/**
  * Gets the Type of game based on the number of human players
  * @returns {string} 'pvp', 'pve' or 'eve'
  */
@@ -118,10 +102,13 @@ function buildDynamicSettings(playerType) {
             newHtml += optionPlayerName('Player Name:', 'p1-name');
             newHtml += optionPlayerColor();
             newHtml += optionWhitePosition();
+            newHtml += optionDifficulty('Computer Difficulty:', 'difficulty');
             playButton.innerText = 'Play Game!';
             break;
         case 'eve':
             newHtml += optionWhitePosition();
+            newHtml += optionDifficulty('Computer 1 Difficulty:', 'difficulty1');
+            newHtml += optionDifficulty('Computer 2 Difficulty:', 'difficulty2');
             playButton.innerText = 'Watch Game!';
             break;
     }
@@ -153,6 +140,22 @@ function updatePlayerVariables(playerType) {
             localStorage.setItem('white', 'computer');
             localStorage.setItem('black', 'computer');
             break;
+    }
+}
+
+/**
+ * Updates the player name, ensuring it does not contain more than 10 characters
+ * @param {string} id The id of the element that is running the function
+ * @param {string} value The text that will be set to the player name
+ */
+function updatePlayerName(id, value) {
+    if (value.length <= 10) {
+        localStorage.setItem(id, value);
+    } else {
+        alert("Sorry, but the name cannot be longer than 10 characters!");
+        //resetting the input
+        let playerElement = document.getElementById(id);
+        playerElement.value = '';
     }
 }
 
@@ -303,6 +306,10 @@ function updatePlayerColor(value) {
     localStorage.setItem(oppositeColor, 'computer');
 }
 
+function updateDifficulty(id, value) {
+
+}
+
 /**
  * Returns an HTML text input and it's label for setting a player name
  * @param {string} innerText The text the label will display
@@ -316,6 +323,21 @@ function optionPlayerName(innerText, inputId) {
     <div class="input-right input-gap">
         <label for="${inputId}">${innerText}</label>
         <input type="text" id="${inputId}" onchange="updatePlayerName('${inputId}', value)" placeholder="${currentPlayerName}">
+    </div>
+    `;
+}
+
+/**
+ * Returns an HTML number input, it's label and a slider underneath for setting a computer's difficulty
+ * @param {string} innerText The text the label will display
+ * @param {string} inputId The ID of the input
+ * @returns The HTML to create the input
+ */
+function optionDifficulty(innerText, inputId) {
+    return `
+    <div class="input-right">
+        <label for="${inputId}">${innerText}</label>
+        <input type="number" id="${inputId}" class="text-right" onchange="updateDifficulty('${inputId}', value)" min="0" max="100">
     </div>
     `;
 }

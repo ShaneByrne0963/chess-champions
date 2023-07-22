@@ -1,3 +1,9 @@
+//score evaluation ranges that will affect the ai based on the difficulty
+//if the difficulty is below the value of the first element, then this part of the evaluation will not happen
+//if the difficulty is above the value of the second element, then it will happen 100% of the time
+//if the difficulty is in between these values, then it will have a chance to happen
+const attackPiece = [0, 20];
+
 /**
  * Calculates the move made by an AI
  * @param {string} color The color of the AI making the move
@@ -137,7 +143,7 @@ function getTileScore(pieceData, moveTileData) {
         moveScore -= chessPiece.getValue(newPieceData);
     } else {
         //taking targets into consideration if the move is low risk
-        moveScore += evaluateTargets(pieceData, tileEval, tileBattle.battleScore);
+        moveScore += evaluateTargets(pieceData,tileEval, tileBattle.battleScore);
     }
     return moveScore;
 }
