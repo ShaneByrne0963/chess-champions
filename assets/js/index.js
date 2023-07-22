@@ -21,6 +21,9 @@ function settingsInit() {
         localStorage.setItem('topPosition', 'black');
         //which color the player will be when against a computer
         localStorage.setItem('playerColor', 'white');
+        //setting the computer difficulties
+        localStorage.setItem('difficulty1', 50);
+        localStorage.setItem('difficulty2', 50);
         //for time limits in pvp games
         localStorage.setItem('timeLimit', 'disabled');
         localStorage.setItem('timeHours', '0');
@@ -102,7 +105,7 @@ function buildDynamicSettings(playerType) {
             newHtml += optionPlayerName('Player Name:', 'p1-name');
             newHtml += optionPlayerColor();
             newHtml += optionWhitePosition();
-            newHtml += optionDifficulty('Computer Difficulty:', 'difficulty');
+            newHtml += optionDifficulty('Computer Difficulty:', 'difficulty1');
             playButton.innerText = 'Play Game!';
             break;
         case 'eve':
@@ -327,12 +330,7 @@ function updateDifficulty(id, value) {
     numberInput.value = value;
     rangeInput.value = value;
     //updating the value stored in local storage
-    if (id === 'difficulty2') {
-        localStorage.setItem('difficulty2', value);
-    } else {
-        //'difficulty' and 'difficulty1' will share the same variable in localStorage
-        localStorage.setItem('difficulty1', value);
-    }
+    localStorage.setItem(id, value);
 }
 
 /**
@@ -359,14 +357,16 @@ function optionPlayerName(innerText, inputId) {
  * @returns The HTML to create the input
  */
 function optionDifficulty(innerText, inputId) {
+    //getting the previously inputted difficulty to set the default value of the inputs to
+    let currentDiff = localStorage.getItem(inputId);
     return `
     <div class="input-right">
         <label for="${inputId}-number">${innerText}</label>
         <div class="text-right">
-            <input type="number" id="${inputId}-number" class="text-right" onchange="updateDifficulty('${inputId}', value)" value="50" min="0" max="100">
+            <input type="number" id="${inputId}-number" class="text-right" onchange="updateDifficulty('${inputId}', value)" value="${currentDiff}" min="0" max="100">
         </div>
     </div>
-    <input type="range" id="${inputId}-range" class="input-gap" onchange="updateDifficulty('${inputId}', value)" min="0" max="100" value="50">
+    <input type="range" id="${inputId}-range" class="input-gap" onchange="updateDifficulty('${inputId}', value)" min="0" max="100" value="${currentDiff}">
     `;
 }
 
