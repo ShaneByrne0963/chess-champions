@@ -163,6 +163,10 @@ function getTileScore(pieceData, moveTileData) {
         //taking targets into consideration if the move is low risk
         moveScore += evaluateTargets(pieceData, tileEval, tileBattle.battleScore);
     }
+    //if another piece relies on this one to guard it, then add that piece's score to this tile
+    if (tileEval.allyGuarding.length > 0) {
+        moveScore += getProtectingAllies(pieceData, moveTileData, tileEval.allyGuarding);
+    }
     return moveScore;
 }
 
@@ -238,7 +242,7 @@ function findPawnScore(pieceData, moveTileData) {
  * Scans a tile's surroundings for targets, threats and allies
  * @param {object} tileData  The data object {x, y, piece, color} of the tile the piece will move to
  * @param {object} evaluatingPiece  The data object {x, y, piece, color} of the piece that will make the move
- * @returns {object} {availableSpaces, enemyTarget, enemyThreat, allyGuarded}
+ * @returns {object} {x, y, availableSpaces, enemyTarget, enemyThreat, allyGuarded, allyGuarding}
  */
 function evaluateTile(tileData, evaluatingPiece) {
     let tileEvaluation = {
@@ -247,7 +251,8 @@ function evaluateTile(tileData, evaluatingPiece) {
         availableSpaces: 0,
         enemyTarget: [],
         enemyThreat: [],
-        allyGuarded: []
+        allyGuarded: [],
+        allyGuarding: []
     };
 
     //the tile will be evaluated using the moves of the queen and the knight, as that will cover all the possible move types
@@ -359,7 +364,8 @@ function evaluateTileVector(tileData, evaluatingPiece, move) {
         availableSpaces: 0,
         enemyTarget: null,
         enemyThreat: null,
-        allyGuarded: null
+        allyGuarded: null,
+        allyGuarding: null
     };
     //if neither of the vectors are 0 then the piece is moving diagonally
     let isDiagonal = (Math.abs(vector1) === Math.abs(vector2));
@@ -409,7 +415,8 @@ function evaluateTilePoint(tileData, evaluatingPiece, move) {
         availableSpaces: 0,
         enemyTarget: null,
         enemyThreat: null,
-        allyGuarded: null
+        allyGuarded: null,
+        allyGuarding: null
     };
 
     //keep moving in the direction of the vector until it goes out of bounds, or it hits a piece (evaluated inside the loop)
@@ -448,7 +455,8 @@ function getPieceRelationship(evaluatingPiece, foundPiece, move, isBeside) {
         availableSpaces: 0,
         enemyTarget: null,
         enemyThreat: null,
-        allyGuarded: null
+        allyGuarded: null,
+        allyGuarding: null
     };
     //finds the color of the opponent
     enemyColor = (evaluatingPiece.color === 'white') ? 'black' : 'white';
@@ -463,6 +471,10 @@ function getPieceRelationship(evaluatingPiece, foundPiece, move, isBeside) {
     let moveReverse = [moveRule, -move[1], -move[2]];
 
     if (foundPiece.color === evaluatingPiece.color) { //if the evaluation runs into a friendly piece
+        //if the current piece can attack the friendly piece tile if an enemy moves to it
+        if (pieceMovement.canAttack(evaluatingPiece, moveForward, isBeside)) {
+            tileEval.allyGuarding = foundPiece;
+        }
         //if the friendly piece can attack the tile if an enemy moves to it
         if (pieceMovement.canAttack(foundPiece, moveReverse, isBeside)) {
             tileEval.allyGuarded = foundPiece;
@@ -489,6 +501,10 @@ function getPieceRelationship(evaluatingPiece, foundPiece, move, isBeside) {
 function addPieceRelationship(tileEvaluation, moveResults) {
     //adding the available spaces to the total evaluation
     tileEvaluation.availableSpaces += moveResults.availableSpaces;
+    //adding the allyGuarding results to the total evaluation
+    if (moveResults.allyGuarding !== null) {
+        tileEvaluation.allyGuarding.push(moveResults.allyGuarding);
+    }
     //adding the allyGuarded results to the total evaluation
     if (moveResults.allyGuarded !== null) {
         tileEvaluation.allyGuarded.push(moveResults.allyGuarded);
@@ -662,6 +678,36 @@ function evaluateTargets(pieceData, tileEval, battleScore) {
         }
     }
     return targetScore;
+}
+
+/**
+ * Gets the score of a tile based on how many pieces the moving piece can protect
+ * @param {object} pieceData The data object {x, y, piece, color} of the piece looking to move
+ * @param {object} moveTileData The data object {x, y, piece, color} of the tile the piece will move to
+ * @param {object} allies A list of all the allied pieces the piece can protect
+ * @returns {integer} The total values of all pieces that will rely on this piece moving here
+ */
+function getProtectingAllies(pieceData, moveTileData, allies) {
+    let totalScore = 0;
+    //getting the element of the piece and the tile it is moving to to simulate the move in the evaluation
+    let pieceElement = chessPiece.findElement(pieceData.x, pieceData.y);
+    let tileElement = tile.getElement(moveTileData.x, moveTileData.y);
+    //iterating through all of the allies the piece can protect
+    for (let ally of allies) {
+        //checking if the allied piece is safe at its current tile before the move
+        let evalBefore = evaluateTile(ally, ally);
+        let battleBefore = simulateBattle(ally, evalBefore);
+        if (battleBefore.battleScore < 0) {
+            //if the allied piece is not safe, check if it is after the move
+            let evalAfter = evaluateTileWithMove(ally, ally, pieceElement, tileElement);
+            let battleAfter = simulateBattle(ally, evalAfter);
+            if (battleAfter.battleScore >= 0) {
+                //if the piece is now safe, then add the value of that piece to the total score
+                totalScore += chessPiece.getValue(ally);
+            }
+        }
+    }
+    return totalScore;
 }
 
 /**
