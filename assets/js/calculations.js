@@ -492,9 +492,17 @@ function simulateBattle(pieceData, tileEval) {
     //returning the final score of the battle, as well as what pieces will be left standing
     let aftermath = {
         battleScore: 0,
-        remainingAllies: tileEval.allyGuarded,
-        remainingEnemies: tileEval.enemyThreat
+        remainingAllies: [],
+        remainingEnemies: []
     };
+    //adding all the allies to the battle
+    for (let ally of tileEval.allyGuarded) {
+        aftermath.remainingAllies.push(ally);
+    }
+    //adding all the enemies to the battle
+    for (let enemy of tileEval.enemyThreat) {
+        aftermath.remainingEnemies.push(enemy);
+    }
     //if there are enemies that can attack this tile
     if (tileEval.enemyThreat.length > 0) {
         //finding the values of the current piece and the piece with the lowest value that is threatening it
@@ -537,6 +545,10 @@ function simulateBattle(pieceData, tileEval) {
     return aftermath;
 }
 
+function isTileSafe() {
+
+}
+
 /**
  * Calculates how much the targets at a tile will add to the total tile score
  * @param {object} tileEval The evaluation done at this tile
@@ -546,6 +558,8 @@ function simulateBattle(pieceData, tileEval) {
 function evaluateTargets(tileEval, battleScore) {
     let targetScore = 0;
     if (tileEval.enemyTarget.length > 0) {
+        //checking which target tiles are safe to move to
+        let safeTargets = 0;
         //if there is more than one target, then this makes the enemy consider
         //whether to lose one of the pieces or start a 'battle' for real
         if (tileEval.enemyTarget.length > 1) {
