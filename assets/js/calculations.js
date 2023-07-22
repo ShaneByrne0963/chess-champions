@@ -618,7 +618,7 @@ function evaluateTargets(pieceData, tileEval, battleScore) {
         //the enemy, so give it a high score
         if (safeTargets.length > 1) {
             //finds the target with the lowest value. The first element in the array is the value
-            let lowestTarget = chessPiece.findLowestValue(tileEval.safeTargets)[0];
+            let lowestTarget = chessPiece.findLowestValue(safeTargets)[0];
             if (tileEval.enemyThreat.length > 0) {
                 //if there are threats at this tile, the enemy may start the battle if it benifits them more
                 targetScore = (lowestTarget < battleScore) ? lowestTarget : battleScore;
