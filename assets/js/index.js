@@ -306,12 +306,16 @@ function updatePlayerColor(value) {
     localStorage.setItem(oppositeColor, 'computer');
 }
 
-function updateDifficulty(id, inputType, value) {
+/**
+ * Updates the difficulty of a computer player
+ * @param {string} id The id of the input element
+ * @param {integer} value The value to set the difficulty to
+ */
+function updateDifficulty(id, value) {
     //the difficulty setting has 2 different ways to set the input: using a number and using the range slider
     //we will get both of these to change their values
-    let thisInput = document.getElementById(id + '-' + inputType);
-    let otherInputId = (inputType === 'number') ? id + '-range' : id + '-number';
-    let otherInput = document.getElementById(otherInputId);
+    let numberInput = document.getElementById(id + '-number');
+    let rangeInput = document.getElementById(id + '-range');
 
     //making sure the value is between 0 and 100, in case the user typed in the number manually
     if (value > 100) {
@@ -320,8 +324,8 @@ function updateDifficulty(id, inputType, value) {
         value = 0;
     }
     //updating the values of both inputs
-    thisInput.value = value;
-    otherInput.value = value;
+    numberInput.value = value;
+    rangeInput.value = value;
     //updating the value stored in local storage
     if (id === 'difficulty2') {
         localStorage.setItem('difficulty2', value);
@@ -359,10 +363,10 @@ function optionDifficulty(innerText, inputId) {
     <div class="input-right">
         <label for="${inputId}-number">${innerText}</label>
         <div class="text-right">
-            <input type="number" id="${inputId}-number" class="text-right" onchange="updateDifficulty('${inputId}', 'number', value)" value="50" min="0" max="100">
+            <input type="number" id="${inputId}-number" class="text-right" onchange="updateDifficulty('${inputId}', value)" value="50" min="0" max="100">
         </div>
     </div>
-    <input type="range" id="${inputId}-range" class="input-gap" onchange="updateDifficulty('${inputId}', 'range', value)" min="0" max="100" value="50">
+    <input type="range" id="${inputId}-range" class="input-gap" onchange="updateDifficulty('${inputId}', value)" min="0" max="100" value="50">
     `;
 }
 
