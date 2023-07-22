@@ -3,11 +3,12 @@
 //if the difficulty is above the value of the second element, then it will happen 100% of the time
 //if the difficulty is in between these values, then it will have a chance to happen
 const aiDifficulty = {
-    attackPiece: [0, 20],
+    attackPiece: [0, 30],
     addSpaces: [10, 40],
-    protectAllies: [30, 70],
+    checkTileSafety: [25, 100],
+    protectAllies: [30, 85],
     considerTargets: [40, 90],
-    protectKing: [50, 80],
+    protectKing: [45, 90],
     surroundKing: [60, 100]
 };
 
@@ -112,7 +113,6 @@ function getBestMoves(pieceDataList, pieceCurrentScores) {
             }
         }
     }
-    console.log(highestScore);
     return highestScorePieces;
 }
 
@@ -150,9 +150,13 @@ function getTileScore(pieceData, moveTileData) {
     }
 
     //calculates the risk of the piece getting eliminated if it moves to this tile
-    let tileBattle = simulateBattle(pieceData, tileEval);
+    let battleScore = 0;
+    if (difficultyAllows(aiDifficulty.checkTileSafety)) {
+        let tileBattle = simulateBattle(pieceData, tileEval);
+        battleScore = tileBattle.battleScore;
+    }
     //if the outcome of the battle is negative for the current piece, then remove the piece's value from the score
-    if (tileBattle.battleScore < 0) {
+    if (battleScore < 0) {
         //get the piece's value based on the tile it will move to, rather than the one it's on. used for pawn movement
         let newPieceData = {
             x: pieceData.x,
