@@ -361,13 +361,6 @@ function evaluateTileCastle(pieceMoveData, otherPieceData) {
  * @returns {object} {availableSpaces, enemyTarget, enemyThreat, allyGuarded, allyGuarding}
  */
 function evaluateTileVector(tileData, evaluatingPiece, move) {
-    //the coordinates the loop will be manipulating
-    let x = tileData.x;
-    let y = tileData.y;
-    let vector1 = move[1]; //because move[0] is the rule 'vector'
-    let vector2 = move[2];
-    let isFirstMove = true;
-
     //storing the relationships between the piece that is
     //doing the checking and any piece it hits
     let tileEval = {
@@ -378,7 +371,37 @@ function evaluateTileVector(tileData, evaluatingPiece, move) {
         allyGuarding: null
     };
     //if neither of the vectors are 0 then the piece is moving diagonally
-    let isDiagonal = (Math.abs(vector1) === Math.abs(vector2));
+    let isDiagonal = (Math.abs(move[1]) === Math.abs(move[2]));
+    
+    let foundPiece = getPieceFromVector(tileData, evaluatingPiece, move);
+    if (foundPiece[0] !== null) {
+        //if there is only one tile between the pieces, then they are beside each other
+        let isFirstMove = (foundPiece[1] === 1);
+        tileEval = getPieceRelationship(evaluatingPiece, foundPiece[0], move, isFirstMove);
+    }
+    if (evaluatingPiece.piece === 'queen'
+        || (isDiagonal && evaluatingPiece.piece === 'bishop')
+        || (!isDiagonal && evaluatingPiece.piece === 'rook')) {
+        tileEval.availableSpaces += foundPiece[1];
+    }
+    return tileEval;
+}
+
+/**
+ * Returns a piece found by moving in a vector
+ * @param {object} tileData The data object {x, y, piece, color} of the tile where the vector will start
+ * @param {object} evaluatingPiece The data object {x, y, piece, color} of the piece looking to move to this tile
+ * @param {object} move The vector ['rule', x, y] that is used
+ * @returns {object} An array with the data object {x, y, piece, color} of the piece found in this vector, and the distance from the tile
+ */
+function getPieceFromVector(tileData, evaluatingPiece, move) {
+    //the coordinates the loop will be manipulating
+    let x = tileData.x;
+    let y = tileData.y;
+    let vector1 = move[1]; //because move[0] is the rule 'vector'
+    let vector2 = move[2];
+    //the distance between the piece and the starting tile
+    let tileDistance = 1;
 
     //taking the first step in the vector
     x += vector1;
@@ -390,22 +413,15 @@ function evaluateTileVector(tileData, evaluatingPiece, move) {
         if (!(x === evaluatingPiece.x && y === evaluatingPiece.y)) {
             let foundPiece = chessPiece.findData(x, y);
             if (foundPiece.piece !== '') {
-                tileEval = getPieceRelationship(evaluatingPiece, foundPiece, move, isFirstMove);
-                break;
+                return [foundPiece, tileDistance];
             }
-        }
-        //if the tile can be moved to in the move after this one, it will increase availableSpaces
-        if (evaluatingPiece.piece === 'queen'
-            || (isDiagonal && evaluatingPiece.piece === 'bishop')
-            || (!isDiagonal && evaluatingPiece.piece === 'rook')) {
-            tileEval.availableSpaces++;
         }
         //keep adding the vector to the coordinates until an obstacle is reached
         x += vector1;
         y += vector2;
-        isFirstMove = false;
+        tileDistance++;
     }
-    return tileEval;
+    return [null, tileDistance];
 }
 
 /**
