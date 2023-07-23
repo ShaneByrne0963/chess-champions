@@ -360,6 +360,7 @@ input[type="range"] {
     background-color: #501818;
     position: absolute;
     text-align: center;
+    overflow: hidden;
     /* aligns the text in the banner to the center */
     /* source: https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
     display: flex;
@@ -514,7 +515,7 @@ input[type="range"] {
     }
 }
 
-/* for small screen sizes such as mobile phones */
+/* for medium to small screen sizes such as tablets and mobile phones */
 @media screen and (max-width: 800px) {
 
     /* reducing the font size */
@@ -652,5 +653,16 @@ of the screen, so we will set the board to cover the width of the screen at this
         width: calc(100vw - 32px);
         height: calc(100vw - 32px);
         margin: 0 16px;
+    }
+}
+/* for small screen sizes such as mobile phones */
+@media screen and (max-width: 440px) {
+    /* reducing the size of the banner text */
+    #banner>h1 {
+        font-size: 1.5em;
+    }
+
+    #banner>h3 {
+        font-size: 0.6em;
     }
 }
