@@ -53,15 +53,20 @@ The website is deployed to Github Pages and can be found here: <https://shanebyr
         - An optional time limit with a minimum time of 30 seconds and a maximum time of 10 hours (Player vs. Player only)
         - The difficulty of the computer, with a range from 0 (easy) to 100 (hard)
         - If a pawn moving to the other side of the board can be promoted to any piece or if they can only bring back eliminated pieces
-        - If the [castling](https://en.wikipedia.org/wiki/Castling) move is allowed in the game
-        - If the [en passant](https://en.wikipedia.org/wiki/En_passant) move is allowed in the game
+        - If the castling move is allowed in the game
+        - If the en passant move is allowed in the game
     - These settings are stored in localStorage so they will be remembered when the user returns to the site
 
 - **Game Page**
     - On entering the game page, the game immediately starts, following the rules you would expect in a normal game of chess:
-    - *Game Rules*
-        - There are 6 different pieces present on the board: The pawn, knight, bishop, rook, queen and king
+    - *Game Rules* ([Click here to get a more in-depth description](https://en.wikipedia.org/wiki/Rules_of_chess))
+        - There are 6 different pieces present on the board: The pawn, knight, bishop, rook, queen and king, each with a different set of moves
+        - Both players start with 8 pawns, 2 knights, 2 bishops, 2 rooks, 1 queen and 1 king
+        - ![Layout of a chess board](assets/images/readme/content/board-layout.PNG)
         - The aim of the game is to checkmate the opponent's king, leaving them with no other moves that will result in the king surviving
+    - *Advanced Moves*
+        - The game has support for the lesser known advanced moves ["Castling"](https://en.wikipedia.org/wiki/Castling) and ["En passant"](https://en.wikipedia.org/wiki/En_passant)
+        - These moves are not used by everyone, which is why there are options to disable them
 
 ### User Interface
 

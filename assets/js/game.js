@@ -391,6 +391,7 @@ function nextTurn() {
     playerTurn = getPlayerTurn();
     let checkmate = isCheckmate(playerTurn.color);
 
+    
     //alerting the player if there is a check this round
     if (isCheck(playerTurn.color)) {
         //if the player has no legal moves to take
