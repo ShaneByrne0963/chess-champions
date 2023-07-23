@@ -1562,7 +1562,7 @@ const timer = {
      */
     setDisplay: (player, hours, minutes, seconds) => {
         let timeElement = document.getElementById(`player${player}-time`);
-        let timeText = `Time Remaining: `;
+        let timeText = `<i class="fa-regular fa-clock"></i> `;
         //only showing the hours if there is at least 1 remaining
         if (hours > 0) {
             timeText += `${hours}h `;
@@ -1572,7 +1572,7 @@ const timer = {
             timeText += `${minutes}m `;
         }
         timeText += `${seconds}s`;
-        timeElement.innerText = timeText;
+        timeElement.innerHTML = timeText;
     },
 
     /**
