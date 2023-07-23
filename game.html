@@ -10,7 +10,7 @@
     <meta name="keywords" content="chess, check, checkmate, pawn, knight, bishop, rook, queen, king">
 
     <!--adding the favicon-->
-    <link rel='shortcut icon' type='image/x-icon' href='favicon.ico'/>
+    <link rel='shortcut icon' type='image/x-icon' href='favicon.ico'>
     <!--css file-->
     <link href="assets/css/style.css" rel="stylesheet">
     <!--font awesome script for setting up icons-->
@@ -21,7 +21,7 @@
 
 <body>
     <!--user interface-->
-    <section id="game">
+    <div id="game">
         <div id="ui-area" onclick="tile.deselectAll();">
             <!--tells the user who's turn it is-->
             <div id="player-turn">
@@ -72,8 +72,8 @@
                 <!--the banner that will display checkmate and pawn promotion-->
                 <!--will store the display style in the tag itself so it can be removed when necessary-->
                 <div id="banner" class="pawn-pick" style="display: none;">
-                    <h1></h1>
-                    <h3></h3>
+                    <h1>Banner Heading</h1>
+                    <h3>Banner Subheading</h3>
                     <!--The grid that will have the pawn promotion icons-->
                     <div id="promotion-icons" style="display: none;">
                         <!--Each div represents a pawn promotion icons-->
@@ -87,7 +87,7 @@
             <!--will store the announcements for smaller screen sizes-->
             <div id="announce-game"></div>
         </div>
-    </section>
+    </div>
 
     <!--javascript for game objects-->
     <script src="assets/js/objects.js"></script>
