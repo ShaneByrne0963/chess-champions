@@ -519,7 +519,6 @@ input[type="range"] {
 
 /* for medium size screens such as tablets */
 @media screen and (max-width: 1100px) {
-
     /* at this screen size, the ui will be the one with the consistent width and the board will change to suit it */
     #game {
         grid-template-columns: 320px 1fr;
@@ -527,6 +526,15 @@ input[type="range"] {
 
     #chess-board {
         height: calc(100vw - 320px);
+    }
+    
+    /* reducing the size of the banner text */
+    #banner>h1 {
+        font-size: 1.5em;
+    }
+
+    #banner>h3 {
+        font-size: 0.6em;
     }
 }
 
@@ -676,14 +684,5 @@ of the screen, so we will set the board to cover the width of the screen at this
     /* reducing the font size */
     body {
         font-size: 1em;
-    }
-
-    /* reducing the size of the banner text */
-    #banner>h1 {
-        font-size: 1.5em;
-    }
-
-    #banner>h3 {
-        font-size: 0.6em;
     }
 }
