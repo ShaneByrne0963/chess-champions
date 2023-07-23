@@ -59,12 +59,30 @@ The website is deployed to Github Pages and can be found here: <https://shanebyr
     - ![The anchor go to the game page](assets/images/readme/user-interface/game-anchor.PNG)
 
 - **Game Page**
-    -The game page is made up of several UI elements:
+    
+    - The game page is made up of several UI elements:
         - The chess board
         - The player turn heading
         - 2 player user interfaces
         - An announcements section
         - A game options section
+        - A banner over the chess board
+    - ![The user interface elements put together on a desktop screen](assets/images/readme/user-interface/game.PNG)
+    - *Chess Board:*
+        - This is where the main gameplay happens.
+        - The board is made up of an 8x8 grid of tiles.
+        - The user can click on their pieces to select them when it is their turn, and can click on any tile the selected piece can move to
+        - The possible moves are represented by icons that appear over the tile. There are different icons for different moves
+    - ![The chess board showing the possible moves of the rook](assets/images/readme/user-interface/chess-board.PNG)
+    - *Player Turn Heading*
+        - Displays which player is currently taking their turn
+        - Always situated on the top-left corner of the screen
+    - ![The player turn heading notifying the player it is their turn](assets/images/readme/user-interface/turn-heading.PNG)
+    - *Player User Interfaces*
+    - *Announcements*
+    - *Game Options*
+    - *Banner*
+
 
 ### Content
 
