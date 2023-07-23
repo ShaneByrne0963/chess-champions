@@ -169,13 +169,15 @@ function getTileScore(pieceData, moveTileData) {
         //taking targets into consideration if the move is low risk
         moveScore += evaluateTargets(pieceData, tileEval, tileBattle.battleScore);
     }
-    //if another piece relies on this one to guard it, then add that piece's score to this tile
-    //only consider this if there is a piece that is already protecting this tile, otherwise the
-    //threat will eliminate the piece that moves here and threaten the allyGuarding piece again
+    //adding all the values of allies this tile will protect to the total score
     if (difficultyAllows(aiDifficulty.protectAllies)) {
+        //adding the values of all the pieces this piece can move to on an enemy attack
         if (tileEval.allyGuarded.length > 0) {
             moveScore += getProtectingAllies(pieceData, moveTileData, tileEval.allyGuarding, false);
         }
+        //adding all the values of all the pieces where this tile will block an enemy attack.
+        //only do this if there are ally pieces that can attack this tile, in order to prevent pieces
+        //from moving into positions where the enemy can just attack and leave the ally piece vulnerable again
         if (tileEval.allyProtect.length > 0 && tileEval.allyGuarding.length > 0) {
             moveScore += getProtectingAllies(pieceData, moveTileData, tileEval.allyGuarding, true);
         }
