@@ -618,11 +618,13 @@ input[type="range"] {
     #player1-ui {
         grid-column-start: 1;
         grid-column-end: 2;
+        padding: 8px;
     }
 
     #player2-ui {
         grid-column-start: 2;
         grid-column-end: 3;
+        padding: 8px;
     }
 
     /* removing the large vertical spacing from the ui buttons */
