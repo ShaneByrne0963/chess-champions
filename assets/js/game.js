@@ -78,6 +78,7 @@ function startGame() {
     timer.clear();
 
     //clears the board before creating new pieces
+    tile.deselectAll();
     tile.clearAll();
 
     //removing any piece images from the graveyard
