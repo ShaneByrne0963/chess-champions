@@ -37,7 +37,7 @@ a:hover {
     margin: 32px 0;
 }
 
-/* adding a border around the settings element for small screens */
+/* padding outside of the settings element for small screens */
 #settings-container {
     padding: 0 32px;
 }
