@@ -41,6 +41,28 @@ The website is deployed to Github Pages and can be found here: <https://shanebyr
 
 ## Features
 
+### Content
+
+- **Game Settings Page**
+    - The game settings page is the first page the user is presented with, and provides a wide range of settings for them to customize the game to their liking
+    - The user can change the following:
+        - Types of players playing the game (Player vs. Player, Player vs. Computer, Computer vs. Computer)
+        - Each of the player names (Up to 2)
+        - Which side the two different colors will start on
+        - The color of the player (Player vs. Computer only)
+        - An optional time limit with a minimum time of 30 seconds and a maximum time of 10 hours (Player vs. Player only)
+        - The difficulty of the computer, with a range from 0 (easy) to 100 (hard)
+        - If a pawn moving to the other side of the board can be promoted to any piece or if they can only bring back eliminated pieces
+        - If the [castling](https://en.wikipedia.org/wiki/Castling) move is allowed in the game
+        - If the [en passant](https://en.wikipedia.org/wiki/En_passant) move is allowed in the game
+    - These settings are stored in localStorage so they will be remembered when the user returns to the site
+
+- **Game Page**
+    - On entering the game page, the game immediately starts, following the rules you would expect in a normal game of chess:
+    - *Game Rules*
+        - There are 6 different pieces present on the board: The pawn, knight, bishop, rook, queen and king
+        - The aim of the game is to checkmate the opponent's king, leaving them with no other moves that will result in the king surviving
+
 ### User Interface
 
 - **Game Settings Page**
@@ -108,8 +130,6 @@ The website is deployed to Github Pages and can be found here: <https://shanebyr
         - On game end, the banner will disappear after 5 seconds to allow the user to see the board again, if they desire
         - Because the banner appears over the chess board, it is a very effective way of informing the player of the steps they need to take to continue the game, without leaving the user wondering what to do next
     - ![The banner over the chess board](assets/images/readme/user-interface/banner.PNG)
-
-### Content
 
 ## Testing
 
