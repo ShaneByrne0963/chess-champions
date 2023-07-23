@@ -393,10 +393,8 @@ function nextTurn() {
 
     //alerting the player if there is a check this round
     if (isCheck(playerTurn.color)) {
-        //looking for a checkmate
-
+        //if the player has no legal moves to take
         if (checkmate) {
-            checkmate = true;
             //stopping the timer
             timer.clear();
             addAnnouncement(`Checkmate! ${lastPlayerName} wins!`);
@@ -405,6 +403,16 @@ function nextTurn() {
             setTimeout(removeBanner, checkmateBannerTime);
         } else {
             addAnnouncement("Check");
+        }
+    } else {
+        //checking if the player is in stalemate, i.e. has no legal moves but is not in check
+        if (checkmate) {
+            //stopping the timer
+            timer.clear();
+            addAnnouncement(`Stalemate! It's a draw!`);
+            setBanner('Checkmate!', `It's a draw!`, '');
+            //removes the checkmate banner after a certain amount of time to allow the user to see the board again
+            setTimeout(removeBanner, checkmateBannerTime);
         }
     }
 
