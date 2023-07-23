@@ -173,8 +173,11 @@ function getTileScore(pieceData, moveTileData) {
     //only consider this if there is a piece that is already protecting this tile, otherwise the
     //threat will eliminate the piece that moves here and threaten the allyGuarding piece again
     if (difficultyAllows(aiDifficulty.protectAllies)) {
-        if (tileEval.allyGuarding.length > 0 && tileEval.allyGuarded.length > 0) {
-            moveScore += getProtectingAllies(pieceData, moveTileData, tileEval.allyGuarding);
+        if (tileEval.allyGuarded.length > 0) {
+            moveScore += getProtectingAllies(pieceData, moveTileData, tileEval.allyGuarding, false);
+        }
+        if (tileEval.allyProtect.length > 0 && tileEval.allyGuarding.length > 0) {
+            moveScore += getProtectingAllies(pieceData, moveTileData, tileEval.allyGuarding, true);
         }
     }
     return moveScore;
@@ -433,8 +436,8 @@ function getPieceFromVector(tileData, evaluatingPiece, move) {
 
 /**
  * Scans a single point for targets, threats, and allies
- * @param {object} tileData  The data object {x, y, piece, color} of the piece that will make the move
- * @param {object} evaluatingPiece  The data object {x, y, piece, color} of the tile the piece will move to
+ * @param {object} tileData  The data object {x, y, piece, color} of the tile the piece will move to
+ * @param {object} evaluatingPiece  The data object {x, y, piece, color} of the piece that will make the move
  * @param {object} move The specific point that will be checked (see pieceMovement.knight for the points in question)
  * @returns {object} {availableSpaces, enemyTarget, enemyThreat, allyGuarded, allyGuarding, allyProtect}
  */
@@ -476,6 +479,7 @@ function evaluateTilePoint(tileData, evaluatingPiece, move) {
 /**
  * Determines whether the piece at an evaluated tile is a target, threat or
  * ally in relation to the piece doing the evaluation
+ * @param {object} tileData  The data object {x, y, piece, color} of the tile the piece will move to
  * @param {object} evaluatingPiece The data object {x, y, piece, color} of the piece that is doing the evaluation
  * @param {object} foundPiece The data object {x, y, piece, color} of the piece that is being evaluated
  * @param {object} move The move that was taken to reach the found piece (see pieceMovement object for moves)
@@ -506,14 +510,14 @@ function getPieceRelationship(tileData, evaluatingPiece, foundPiece, move, isBes
     let moveReverse = [moveRule, -move[1], -move[2]];
 
     if (foundPiece.color === evaluatingPiece.color) { //if the evaluation runs into a friendly piece
-        //if the current piece can attack the friendly piece tile if an enemy moves to it
-        if (pieceMovement.canAttack(evaluatingPiece, moveForward, isBeside)) {
-            tileEval.allyGuarding = foundPiece;
+        //checking if the piece at this tile is blocking an enemy from attacking another piece
+        let oppositePiece = getPieceFromVector(tileData, evaluatingPiece, moveReverse);
+        if (oppositePiece[0] !== null && pieceMovement.canAttack(oppositePiece[0], moveForward, false)) {
+            //if this piece will block an enemy from attacking another piece, it is guarding that piece
+            tileEval.allyProtect = foundPiece;
         } else {
-            //checking if the piece at this tile is blocking an enemy from attacking another piece
-            let oppositePiece = getPieceFromVector(tileData, evaluatingPiece, moveReverse);
-            if (oppositePiece[0] !== null && pieceMovement.canAttack(oppositePiece[0], moveForward, false)) {
-                //if this piece will block an enemy from attacking another piece, it is guarding that piece
+            //if the current piece can attack the friendly piece tile if an enemy moves to it
+            if (pieceMovement.canAttack(evaluatingPiece, moveForward, isBeside)) {
                 tileEval.allyGuarding = foundPiece;
             }
         }
@@ -731,9 +735,10 @@ function evaluateTargets(pieceData, tileEval, battleScore) {
  * @param {object} pieceData The data object {x, y, piece, color} of the piece looking to move
  * @param {object} moveTileData The data object {x, y, piece, color} of the tile the piece will move to
  * @param {object} allies A list of all the allied pieces the piece can protect
+ * @param {boolean} isBlocking Wether the piece is protecting the ally by blocking an enemy move
  * @returns {integer} The total values of all pieces that will rely on this piece moving here
  */
-function getProtectingAllies(pieceData, moveTileData, allies) {
+function getProtectingAllies(pieceData, moveTileData, allies, isBlocking) {
     let totalScore = 0;
     //getting the element of the piece and the tile it is moving to to simulate the move in the evaluation
     let pieceElement = chessPiece.findElement(pieceData.x, pieceData.y);
@@ -741,7 +746,8 @@ function getProtectingAllies(pieceData, moveTileData, allies) {
     //iterating through all of the allies the piece can protect
     for (let ally of allies) {
         //protecting the king this way is pointless as the king cannot be eliminated like other pieces
-        if (ally.piece !== 'king') {
+        //however, if the piece is in the way of the enemy attacking the king, then the protect is valid
+        if (isBlocking || ally.piece !== 'king') {
             //checking if the allied piece is safe at its current tile before the move
             let tileEval = evaluateTileWithMove(ally, ally, pieceElement, tileElement);
             //getting the score of the battle with the piece protecting it
