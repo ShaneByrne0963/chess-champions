@@ -10,7 +10,7 @@
     <meta name="keywords" content="chess, check, checkmate, pawn, knight, bishop, rook, queen, king">
 
     <!--adding the favicon-->
-    <link rel='shortcut icon' type='image/x-icon' href='favicon.ico'/>
+    <link rel='shortcut icon' type='image/x-icon' href='favicon.ico'>
     <!--css file-->
     <link href="assets/css/style.css" rel="stylesheet">
     <!--font awesome script for setting up icons-->
@@ -24,12 +24,13 @@
     <header id="title-homepage">
         <h1>
             <i class="fa-solid fa-chess-king"></i>
-            <p>Chess Champions</p>
+            <br>
+            Chess Champions
         </h1>
     </header>
 
     <!--game settings form-->
-    <section id="settings-container">
+    <div id="settings-container">
         <div id="menu-settings">
             <!--dropdown menu for player selection-->
             <div class="input-right input-gap">
@@ -54,13 +55,15 @@
                             <option value="dead">Only promote from eliminated pieces</option>
                         </select>
                     </div>
-                    <input type="checkbox" id="castling" class="indented clickable input-gap onchange="updateCastling(checked)" checked>
+                    <input type="checkbox" id="castling" class="indented clickable input-gap"
+                        onchange="updateCastling(checked)" checked>
                     <label for="castling" class="small-text clickable">Castling</label>
                     <!--A third party link that explains what castling is-->
                     <a href="https://en.wikipedia.org/wiki/Castling" target="_blank" class="small-text" rel="noopener"
                         aria-label="Go to the Wikipedia page about Castling (Opens in a new tab)">(What is this?)</a>
                     <br>
-                    <input type="checkbox" id="en-passant" class="indented clickable input-gap" onchange="updateEnPassant(checked)" checked>
+                    <input type="checkbox" id="en-passant" class="indented clickable input-gap"
+                        onchange="updateEnPassant(checked)" checked>
                     <label for="en-passant" class="small-text clickable">En Passant</label>
                     <a href="https://en.wikipedia.org/wiki/En_passant" target="_blank" class="small-text" rel="noopener"
                         aria-label="Go to the Wikipedia page about En Passant (Opens in a new tab)">(What is this?)</a>
@@ -72,7 +75,7 @@
                 <a href="game.html" aria-label="Go to the gameplay page">Play Game!</a>
             </div>
         </div>
-    </section>
+    </div>
 
     <!--import objects.js to get the timer functions-->
     <script src="assets/js/objects.js"></script>
