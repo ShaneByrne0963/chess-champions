@@ -57,7 +57,7 @@ a:hover {
     padding: 32px;
 }
 
-/* making text in the inputs the same size ans style as everything else */
+/* making text in the inputs the same style as everything else */
 input,
 select,
 option {
@@ -78,7 +78,7 @@ option {
     margin-bottom: 32px;
 }
 
-/* creates a smaller gap for the advanced moves options */
+/* creates a smaller gap for the advanced moves dropdown */
 summary,
 details .input-gap {
     margin-bottom: 16px;
@@ -89,12 +89,13 @@ details .input-gap {
     text-align: right;
 }
 
-/* making the text inputs take up half of the settings div */
+/* making the text inputs take up 100% of their half of the settings element */
 input[type="text"],
 select {
     width: 100%;
 }
 
+/* setting the width of all number inputs */
 input[type="number"] {
     width: 2.5em;
 }
@@ -112,7 +113,7 @@ input[type="range"] {
     font-size: 0.8em;
 }
 
-/* for indenting the note as well as the items in the details element */
+/* for indenting text */
 .indented {
     margin-left: 32px;
 }
@@ -171,6 +172,7 @@ input[type="range"] {
     grid-column-end: 3;
 }
 
+/* padding for the outer element of the player turn heading */
 #turn-heading {
     padding: 16px;
 }
@@ -185,11 +187,11 @@ input[type="range"] {
     display: grid;
     grid-template-columns: 1fr;
     /* each element in the grid will take up the space it needs,
-    and the graveyard div will take the remaining space */
+    and the graveyard div (1fr) will take the remaining space */
     grid-template-rows: auto auto 1fr auto;
 }
 
-/* removing the right border of player 2 ui because the ui itself has a border */
+/* removing the right border of player 2 ui to prevent a double border with the ui */
 #ui-area>#player2-ui {
     border-right: none;
 }
@@ -197,11 +199,13 @@ input[type="range"] {
 /* The chess icons representing the player color */
 #player1-ui span {
     float: right;
+    /* player 1 is always white */
     color: white;
 }
 
 #player2-ui span {
     float: right;
+    /* player 2 is always black */
     color: black;
 }
 
@@ -223,7 +227,7 @@ input[type="range"] {
     background-color: rgba(255, 255, 255, 0.5);
 }
 
-/* announcements */
+/* the div that will contain the announcements */
 #announcements {
     /* hiding any announcements that escape the div */
     overflow: hidden;
@@ -231,21 +235,23 @@ input[type="range"] {
     height: 100%;
 }
 
+/* each of the individual announcements */
+#announcements>div {
+    position: absolute;
+    bottom: 0;
+}
+
+/* new announcements will be gold in color for the remainder of the turn */
 .announce-new {
     color: #dbca72;
 }
 
+/* where the announcement div will be kept for larger screen sizes */
 #announce-ui {
     padding: 16px;
     grid-column-start: 1;
     grid-column-end: 3;
     border-bottom: 1px solid black;
-}
-
-/* each of the individual announcements */
-#announcements>div {
-    position: absolute;
-    bottom: 0;
 }
 
 /* where the announcement div will be kept for smaller screen sizes */
@@ -256,6 +262,7 @@ input[type="range"] {
 
 /* game options for restarting and returning to the main menu */
 #ui-buttons {
+    /* this div will take up the full width of the user interface */
     grid-column-start: 1;
     grid-column-end: 3;
     height: 96px;
@@ -266,6 +273,7 @@ input[type="range"] {
     grid-template-rows: 1fr auto 1fr;
 }
 
+/* the button to reset the game and the anchor to take the user to the home page will share the same attributes */
 #ui-buttons>button,
 #ui-buttons>a {
     display: inline-block;
@@ -298,6 +306,7 @@ input[type="range"] {
     grid-template-rows: repeat(8, 1fr);
 }
 
+/* the tiles on the chess board */
 .tile {
     /* taking the border into consideration when calculating the tile size */
     width: calc(100% - 2px);
@@ -315,7 +324,7 @@ input[type="range"] {
 
 #tile-selected {
     height: 100%;
-    background-color: rgba(255, 128, 255, 0.5);
+    background-color: rgba(255, 128, 192, 0.6);
 }
 
 /* visually displaying the possible moves a selected piece can take */
