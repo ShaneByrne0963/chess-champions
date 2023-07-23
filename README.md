@@ -24,6 +24,21 @@ The website is deployed to Github Pages and can be found here: <https://shanebyr
 
 ### Wireframes
 
+- For desktop screen sizes:
+    - index.html
+        - ![Desktop wireframe for index.html](assets/images/readme/wireframes/index-desktop.jpg)
+    - game.html
+        - ![Desktop wireframe for game.html](assets/images/readme/wireframes/game-desktop.jpg)
+- For tablet screen sizes:
+    - index.html structure remains the same as on desktop
+    - game.html
+        - ![Tablet wireframe for game.html](assets/images/readme/wireframes/game-tablet.jpg)
+- For mobile screen sizes:
+    - index.html
+        - ![Mobile wireframe for index.html](assets/images/readme/wireframes/index-mobile.jpg)
+    - game.html
+        - ![Mobile wireframe for game.html](assets/images/readme/wireframes/game-mobile.jpg)
+
 ## Features
 
 ### User Interface
