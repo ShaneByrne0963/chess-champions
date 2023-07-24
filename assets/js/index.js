@@ -482,3 +482,13 @@ function optionTimer() {
     `;
     return htmlString;
 }
+
+/**
+ * Goes to the game page, if all the required inputs are filled
+ * @param {object} event The event the user caused. In this case it is clicking the form submission button (Play game)
+ */
+function playGame(event) {
+    event.preventDefault();
+
+    window.location.href = "game.html";
+}

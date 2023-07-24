@@ -31,7 +31,7 @@
 
     <!--game settings form-->
     <div id="settings-container">
-        <div id="menu-settings">
+        <form id="menu-settings" action="game.html" method="post" onsubmit="playGame(event)">
             <!--dropdown menu for player selection-->
             <div class="input-right input-gap">
                 <label for="settings-players">Players:</label>
@@ -73,7 +73,7 @@
 
             <!--the button that takes the user to the game-->
             <div id="to-game">
-                <a href="game.html" aria-label="Go to the gameplay page">Play Game!</a>
+                <input type="submit" value="Play Game!" aria-label="Go to the gameplay page">
             </div>
         </div>
     </div>
