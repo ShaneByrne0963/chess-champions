@@ -171,6 +171,124 @@ The website is deployed to Github Pages and can be found here: <https://shanebyr
 ## Testing
 
 ### Bugs
+- **Bug #1 (28/6/23) Chess pieces not rendering on board**
+    - Expected result: Chess pieces to be visible on the board
+	- Solution: Incorrect directory to locate the images. Used url("assets/images/chess-pieces/black-pawn.png"); in css file.
+	Should have used url("../images/chess-pieces/black-pawn.png");
+
+- **Bug #2 (29/6/23) Applied an onclick function to the document to deselect all tiles when the user clicks on something that's**
+	not their chess piece. However it deselects everything even when a piece is clicked
+	- Expected result: I wanted the document's onclick function to run first, deselecting everything first and then selecting
+	the clicked tile, but JavaScript does not work that way
+	- Solution: Approach the deselection in a different way: add onclick listeners for all tiles instead of just the
+	player tiles, as well as adding a separate onclick listener for the UI div. This allows the deselect function to be called
+	when the user clicks on certain points rather than call it every time the user clicks on the screen
+
+- **Bug #3 (30/6/23) List of possible moves for AI is not added to the designated array**
+	- Expected result: All of the possible moves should be added to the array
+	- Solution: I used square brackets [] instead of parentheses () for the array.push() method
+
+- **Bug #4 (1/7/23) Tile evaluation stops at empty space**
+	- Expected result: Tile evaluation loop should stop when it encounters a piece
+	- Solution: The loop ends when it encounters a piece with the same color. However it is comparing the color with the
+	blank tile that's being evaluated, rather than the piece that's evaluating the tile. To fix this, add a second argument
+	to tile.evaluate containing the information of the evaluating tile
+
+- **Bug #5 (1/7/23) Pawn threats are sometimes ignored and AI pieces move into positions where they can be destroyed**
+	- Expected result: The AI should take all pawns into consideration when making a move
+	- Solution: The AI only checked the 'pawn' piece name. This check wouldn't count for 'pawnNew' pieces that haven't made
+	a move yet. To fix this, instead of checking if the piece name equals 'pawn', check if the string.includes('pawn')
+
+- **Bug #6 (1/7/23) Sometimes the AI moves pieces into dangerous positions**
+	- Expected result: The AI shouldn't move into a vulnerable position unless it is guarded by another piece
+	- Solution: The piece was including itself before the move as a guard. To fix this just ignore the tile if it's the
+	same as the original position
+
+- **Bug #7 (2/7/23) Knight is putting itself in a vulnerable position to attack a Pawn**
+	- Expected result: The AI shouldn't move into a vulnerable position unless it is guarded by another piece
+	- Solution: The Knight was eliminating a Pawn and putting the king in check. Those scores (eliminating Pawn: 100 and
+	targeting King: 200) were summing up to be equal to the Knight's value of 300, so it thought sacrificing itself for
+	a check and a Pawn kill was worth it. To fix this, bring down the value of the King from 2000 to 1500
+	-> This wasn't the best solution, because if there are a lot of targets within that tile the total score will go above
+		300 anyway. A better solution would be for the AI to only take targets into consideration if the tile is safe
+
+- **Bug #8 (4/7/23) When the computer is to make the first move, it doesn't move**
+	- Expected result: The ai should run through the function as normal when first
+	- Solution: The calculations script file is loaded last, so the game script is calling the calculations script before
+	it is even loaded. Move the calculations file above the game file in the html to fix
+
+- **Bug #9 (4/7/23) Some tiles have the 'clickable' class in their class list multiple times**
+	- Expected result: Every element in the entire DOM should only have the 'clickable' at most once
+	- Solution: The 'possible-move' tiles were not removing their clickable class when deleted. Add code to remove the class
+	in deselectAll to fix this
+
+- **Bug #10 (4/7/23) Pieces cannot be clicked on once they make a move**
+    - Expected result: Any friendly piece can move once it is the player's turn
+    - Solution: the deselectAll fix above removes the class after the piece makes a move. Since I moved the nextTurn function into the tile.move function, deselectAll is called after the ai makes a move. To fix this, call deselectAll before tile.move
+
+- **Bug #11 (4/7/23) When a player makes a move, only some pieces have their interaction taken away**
+	- Expected result: When the player makes a move, all interaction should be taken away until it is their turn again or
+	they have selected a piece from the graveyard to revive
+	- Solution: To deselect, I was looping through an array containing all the elements with the 'clickable' class, then
+	removing the ones that also have the 'tile' class. However, when I removed the 'clickable' class, it was also getting
+	removed from the array, so the loop was skipping over some elements. To fix this, only increment through the loop if
+	the element with the 'clickable' class does NOT also have the 'tile' class
+
+- **Bug #12 (5/7/23) Some valid moves are not permitted when preventing a check**
+	- Expected result: Any valid move should be able to be taken
+	- Solution: The variable for checking if a move is valid is set outside the loop, and does not reset each iteration
+	like it should. That means that once an invalid tile is found, then all other tiles will be declared as invalid for that
+	move. To fix, move the variable declaration inside the loop
+
+- **Bug #13 (6/7/23) Animation piece not setting the size or position**
+	- Expected result: The animation should have the same size and position as the starting tile
+	- Solution: Include "px" at the end of the css style strings when setting them
+
+- **Bug #14 (11/7/23) Pawns are seen as unable to attack in the ai tile evaluation**
+	- Expected result: Pawns should be seen as threats by pieces in their sights, and pawns should be able to attack other pieces
+	- Solution: The pawn can only attack one space diagonal to them. The loop gets this space by moving in a diagonal direction and
+	checking the first tile in the loop. However, the loop starts at the tile itself, instead of the first tile in the diagonal
+	directions. To fix this, add the vector to the coordinates before checking if a pawn is there
+
+- **Bug #15 (12/7/23) Checkmate is called even though there are pieces that can prevent it**
+	- Expected result: If there are moves the player can take, the game should still continue
+	- Solution: evaluateTileWithMove was not working because I was setting the parent node of the chess piece to move it to
+	another tile. tile.appendChild seemed to fix this problem
+
+- **Bug #16 (12/7/23) Multiple pieces moving at the same time when the game is restarted**
+	- Expected result: On game restart, the animations should play one by one
+	- Solution: Clear the timeout for the ai waiting to make a move when the game resets
+
+- **Bug #17 (16/7/23) Castling move turns into a vector move after first use**
+	- Expected result: The piece moves should never change
+	- Solution: When passing the move into evaluateTileVector, I was changing the rule from 'first-castle' to 'vector', thinking
+	that passing an array into a function creates a copy of an array. However, instead it creates a reference to that array. To fix,
+	create a new array inside the function and assign the move elements to it, except the ones I want to change
+
+- **Bug #18 (17/7/23) Pawns will put themselves in vulnerable positions to attack other pawns**
+	- Expected Result: Pawns should be more cautious of their moves
+	- Solution: If moving to a tile is considered to be a bad move, then the score was being subtracted based on where the pawn was before
+	the move, instead of after. This may have caused insufficient point reduction to deter the pawn from moving there. To fix,
+	subtract the score based on the tile the pawn will move to
+
+- **Bug #19 (21/7/23) Sometimes enemy pieces can be clicked on and moved by the player**
+	- Expected result: The player should only be able to interact with their own pieces
+	- Solution:
+        - When the player clicks on an empty tile the piece cannot move to, all tiles will be deselected.
+        - This involves removing the interaction from all empty tiles, but leaving the interaction on pieces so the player can click on them again.
+        - However, the logic did not consider if the piece with the interaction was an enemy piece, which occurs when a piece can attack an enemy.
+        - This meant that when the deselect tile function was called, the enemy that could be attacked kept it's interaction and was treated like a player piece when clicked on afterwards.
+        - To fix, remove the interaction from the piece if the its color does not match the current turn's color
+
+- **Bug #20 (23/7/23) Sometimes player pieces cannot be selected on the player turn**
+	- Expected result: When it is the player's turn, they should be able to select any of their pieces
+	- Solution: If the player clicks on the button to restart the game while a piece is selected, the possible move elements aren't
+	properly deleted, and there is no attempt to delete them on game restart. To fix this, deselect all tiles when the game starts/restarts
+
+- **Bug #21 (23/7/23) On very rare occasions, the game stops before checkmate or timeout**
+	- Expected result: The game should continue until checkmate or a player's time runs out
+	- Solution: What happened was a stalemate, i.e. when there is no legal moves for the player to take but they are not in check. The
+	code did not have an if statement for this happening, so put one in to fix it.
 
 ### Manual Testing
 
