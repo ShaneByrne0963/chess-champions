@@ -52,7 +52,7 @@ The website is deployed to Github Pages and can be found here: <https://shanebyr
         - The color of the player (Player vs. Computer only)
         - An optional time limit with a minimum time of 30 seconds and a maximum time of 10 hours (Player vs. Player only)
         - The difficulty of the computer, with a range from 0 (easy) to 100 (hard)
-        - If a pawn moving to the other side of the board can be promoted to any piece or if they can only bring back eliminated pieces
+        - If a pawn moving to the other side of the board can be promoted to any piece or if they can only bring back pieces removed from the board
         - If the castling move is allowed in the game
         - If the en passant move is allowed in the game
     - These settings are stored in localStorage so they will be remembered when the user returns to the site
@@ -66,7 +66,39 @@ The website is deployed to Github Pages and can be found here: <https://shanebyr
         - The aim of the game is to checkmate the opponent's king, leaving them with no other moves that will result in the king surviving
     - *Advanced Moves*
         - The game has support for the lesser known advanced moves ["Castling"](https://en.wikipedia.org/wiki/Castling) and ["En passant"](https://en.wikipedia.org/wiki/En_passant)
-        - These moves are not used by everyone, which is why there are options to disable them
+        - These moves are not known by everyone, and there is a chance the user may wish to play the game without these moves, which is why there are options to disable them
+    - *Pawn Promotion*
+        - If a pawn moves to the end of the board where its enemy started, it will be promoted to any piece other than a pawn or a king
+        - When playing chess on a real board, players are limited to taking one of their pieces that was removed from the board. Some users may be accustomed to this, so there is an option to play the game with either of these rules
+        - When this event happens to the user, a banner will appear over the board, giving the user clear instructions on how to promote their piece
+    - *Check*
+        - Check is called when a player's king is under threat if being attacked by an enemy piece on their turn
+        - The user cannot make any moves that will not result in this attack being prevented
+    - *Checkmate*
+        - Checkmate is when a player's king is checked, and there are no other moves they can take to prevent this check
+        - When this happens, the game will end, displaying a banner over the board announcing the winner of the game
+        - The user can then click on one of the game options to start the game over or return to the game settings page
+    - *Stalemate*
+        - Stalemate is when a player has no moves to make that will not result in checking their king, but the king is not in check
+        - When this happens, the game will end, displaying a banner over the board announcing the stalemate and that the game is a draw
+    - *Time Limit*
+        - If the game involves two users playing the game against each other, they have an option to include a time limit
+        - Each player has their own time limit, which only counts down when it is their turn
+        - The timer does not reset every turn
+        - If the time counts down to 0, the game will end, and a banner will appear announcing the other player as the winner
+        - This option is not available when there is a computer playing the game, because the computer only takes 1 second to make a move, making this timer redundant
+    - *Chess Bot*
+        - The user has an option to play against the computer, or watch 2 computers play against each other
+        - If this option is selected, on the computer's turn, the user will not be able to select or move any of the pieces and one piece will automatically move, moving on to the next turn
+        - The outcome of this automatic move depends on the difficulty, a setting the user can change in the game settings page
+        - This difficulty is a number with a range from 0 to 100
+        - At 0, the computer picks a move at random, taking nothing into consideration
+        - At 100, the computer carefully evaluates the board and takes many factors into consideration:
+            - If a move is unsafe for the chess piece, this move will be less likely to happen
+            - If the move will leave their king exposed, this move will be less likely to happen
+            - If an enemy piece can be eliminated, this move will be more likely to happen
+            - If the move will surround the enemy king, this move will be more likely to happen
+        - In between 0 and 100, thre will be a chance for these parameters into consideration when making the move. The higher the difficulty, the more likely they will be considered
 
 ### User Interface
 

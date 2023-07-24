@@ -408,7 +408,7 @@ function nextTurn() {
     } else {
         //checking if the player is in stalemate, i.e. has no legal moves but is not in check
         if (checkmate) {
-            //stopping the timer
+            //ending the game
             timer.clear();
             addAnnouncement(`Stalemate! It's a draw!`);
             setBanner('Checkmate!', `It's a draw!`, '');
@@ -416,7 +416,6 @@ function nextTurn() {
             setTimeout(removeBanner, checkmateBannerTime);
         }
     }
-
     //if there isn't a checkmate, then continue the game
     if (!checkmate) {
         allowTurn(playerTurn.color);
