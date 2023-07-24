@@ -15,8 +15,8 @@ function settingsInit() {
         localStorage.setItem('white', 'player');
         localStorage.setItem('black', 'player');
         //the names for each of the players
-        localStorage.setItem('p1-name', 'Player 1');
-        localStorage.setItem('p2-name', 'Player 2');
+        localStorage.setItem('p1-name', '');
+        localStorage.setItem('p2-name', '');
         //dictates which color will start on top of the board
         localStorage.setItem('topPosition', 'black');
         //which color the player will be when against a computer
@@ -320,16 +320,14 @@ function updateDifficulty(id, value) {
     let numberInput = document.getElementById(id + '-number');
     let rangeInput = document.getElementById(id + '-range');
 
-    //making sure the value is between 0 and 100, in case the user typed in the number manually
     if (value > 100) {
         value = 100;
     } else if (value < 0) {
         value = 0;
     }
-    //updating the values of both inputs
+    //updating the values of both inputs and setting it in local storage
     numberInput.value = value;
     rangeInput.value = value;
-    //updating the value stored in local storage
     localStorage.setItem(id, value);
 }
 
@@ -342,10 +340,18 @@ function updateDifficulty(id, value) {
 function optionPlayerName(innerText, inputId) {
     //the old player name will be displayed in the text bar
     let currentPlayerName = localStorage.getItem(inputId);
+    let inputType = 'value'; //autofills the name input if a name was already put in
+    if (currentPlayerName === '') {
+        //setting the placeholder if the name is empty
+        inputType = 'placeholder';
+        let playerNumber = inputId[1]; //is either 1 or 2
+        currentPlayerName = 'Player ' + playerNumber;
+    }
+
     return `
     <div class="input-right input-gap">
         <label for="${inputId}">${innerText}</label>
-        <input type="text" id="${inputId}" onchange="updatePlayerName('${inputId}', value)" value="${currentPlayerName}" required>
+        <input type="text" id="${inputId}" onchange="updatePlayerName('${inputId}', value)" ${inputType}="${currentPlayerName}" required>
     </div>
     `;
 }
