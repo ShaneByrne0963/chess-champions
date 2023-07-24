@@ -53,9 +53,8 @@
                 <!--will display the player's remaining time, if applicable-->
                 <div id="player2-time" class="small-text text-right"></div>
             </div>
-            <!--Will create the padding around the announcements div that won't display any text-->
+            <!--will display announcements like "check" or "checkmate"-->
             <div id="announce-ui">
-                <!--reserved for information like "check" or "checkmate"-->
                 <div id="announcements">
                     <!--the elements for the announcements are stored in this div-->
                     <div></div>
@@ -71,8 +70,8 @@
         <div id="game-area">
             <div id="turn-game"></div>
             <div id="chess-board">
-                <!--the banner that will display checkmate and pawn promotion-->
-                <!--will store the display style in the tag itself so it can be removed when necessary-->
+                <!--the banner that will display checkmate and pawn promotion.
+                    will store the display style in the tag itself so it can be removed when necessary-->
                 <div id="banner" class="pawn-pick" style="display: none;">
                     <h1>Banner Heading</h1>
                     <h3>Banner Subheading</h3>
@@ -91,11 +90,9 @@
         </div>
     </div>
 
-    <!--javascript for game objects-->
+    <!--javascript files-->
     <script src="assets/js/objects.js"></script>
-    <!--javascript for ai mechanics-->
     <script src="assets/js/calculations.js"></script>
-    <!--javascript for game mechanics-->
     <script src="assets/js/game.js"></script>
 </body>
 

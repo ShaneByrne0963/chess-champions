@@ -345,7 +345,7 @@ function optionPlayerName(innerText, inputId) {
     return `
     <div class="input-right input-gap">
         <label for="${inputId}">${innerText}</label>
-        <input type="text" id="${inputId}" onchange="updatePlayerName('${inputId}', value)" placeholder="${currentPlayerName}">
+        <input type="text" id="${inputId}" onchange="updatePlayerName('${inputId}', value)" value="${currentPlayerName}" required>
     </div>
     `;
 }
@@ -363,7 +363,7 @@ function optionDifficulty(innerText, inputId) {
     <div class="input-right">
         <label for="${inputId}-number">${innerText}</label>
         <div class="text-right">
-            <input type="number" id="${inputId}-number" class="text-right" onchange="updateDifficulty('${inputId}', value)" value="${currentDiff}" min="0" max="100">
+            <input type="number" id="${inputId}-number" class="text-right" onchange="updateDifficulty('${inputId}', value)" value="${currentDiff}" min="0" max="100" required>
         </div>
     </div>
     <input type="range" id="${inputId}-range" class="input-gap" onchange="updateDifficulty('${inputId}', value)" min="0" max="100" value="${currentDiff}">
@@ -387,7 +387,7 @@ function optionWhitePosition() {
         htmlString += ` checked`;
     }
     //adding the second radio button
-    htmlString += `>
+    htmlString += ` required>
             <label for="pos-bottom" class="clickable small-text">Bottom</label>
             <input type="radio" name="white-pos" value="top" id="pos-top" class="clickable" onchange="updateWhitePosition(value)"
     `;
@@ -419,7 +419,7 @@ function optionPlayerColor() {
         htmlString += ` checked`;
     }
     //adding the second radio button
-    htmlString += `>
+    htmlString += ` required>
             <label for="col-white" class="clickable small-text">White</label>
             <input type="radio" name="player-color" value="black" id="col-black" class="clickable" onchange="updatePlayerColor('black')"
     `;
