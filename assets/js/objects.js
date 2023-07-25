@@ -6,10 +6,6 @@ const tile = {
      * @returns The element of the piece on the tile, or null if there is none
      */
     getPieceElement: (tileElement) => {
-        //assuming the tile doesn't have a piece until it finds one
-        let tilePiece = null;
-
-        //getting all the children of the tile
         let tileChildren = tileElement.children;
 
         //looping through each child element to check if it is a chess piece
@@ -18,11 +14,10 @@ const tile = {
             let childClass = child.classList;
             if (childClass.contains('chess-piece')) {
                 //getting the information of the piece that was found
-                tilePiece = child;
-                break;
+                return child;
             }
         }
-        return tilePiece;
+        return null;
     },
 
     /**
@@ -89,6 +84,7 @@ const tile = {
         let kings = document.getElementsByClassName('king');
         let kingData;
         for (let king of kings) {
+            //checking if the king's color matches the specified color
             kingData = tile.getData(king.parentNode);
             if (kingData.color === color) {
                 break;
@@ -104,7 +100,7 @@ const tile = {
         //getting all the chess piece elements
         let pieces = document.getElementsByClassName('chess-piece');
 
-        //keep removing the elements from the DOM until there is none left
+        //keep removing the elements from the DOM until there are none left
         while (pieces.length > 0) {
             pieces[0].remove();
         }
@@ -130,21 +126,21 @@ const tile = {
         let pieceElement = tile.getPieceElement(tileElement);
         let pieceData = tile.getData(tileElement);
 
+        //only select the tile if the player making the turn is a human
         if (localStorage.getItem(pieceData.color) === 'player') {
-            //creates another div to be set as a child of the selected piece
+            //creates another div that will display the highlighted color
             let selectDiv = document.createElement('div');
             selectDiv.id = 'tile-selected';
             pieceElement.appendChild(selectDiv);
 
-            //get all the available moves the selected piece can take
-            let possibleMoves = pieceMovement.getAllMoveTiles(pieceData);
             //adding move icons to each possible move
+            let possibleMoves = pieceMovement.getAllMoveTiles(pieceData);
             tile.addMoveIcons(pieceData, possibleMoves);
         }
     },
 
     /**
-     * Removes the selected div from the tile that is selected and any tiles showing possible moves
+     * Removes the highlight from the selected tile and any possible move icons
      */
     deselectAll: () => {
         //removing the selected tile highlight
@@ -152,16 +148,14 @@ const tile = {
         if (selectExisting) {
             selectExisting.remove();
         }
-        //removing the possible move divs
+        //removing the possible move icons
         let movesExisting = document.getElementsByClassName('possible-move');
         while (movesExisting.length > 0) {
-            //remove the 'clickable' class from the tile the element is on
+            //removing the 'clickable' class from the tile the move icon is on
             let moveParent = movesExisting[0].parentNode;
-            //if the tile is the direct parent of the possible move icon
             if (moveParent.classList.contains('clickable')) {
                 tile.removeInteraction(moveParent);
             } else {
-                //if not, then there is a piece on this tile
                 let pieceData = tile.getData(moveParent.parentNode);
                 let playerTurn = getPlayerTurn();
 
@@ -170,7 +164,6 @@ const tile = {
                     tile.removeInteraction(moveParent.parentNode);
                 }
             }
-            //then remove the possible move div itself
             movesExisting[0].remove();
         }
     },
