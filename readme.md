@@ -292,6 +292,12 @@ The website is deployed to Github Pages and can be found here: <https://shanebyr
 
 ### Manual Testing
 
+- **Form Inputs**
+- **User Interaction**
+- **Anchors and Buttons**
+- **Media Queries**
+- **Other Browsers**
+
 ### Validator Testing
 
 ### Unfixed Bugs
