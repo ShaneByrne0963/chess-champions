@@ -100,20 +100,20 @@ function buildDynamicSettings(playerType) {
             newHtml += optionPlayerName('Player 2 Name:', 'p2-name');
             newHtml += optionWhitePosition();
             newHtml += optionTimer();
-            playButton.innerText = 'Play Game!';
+            playButton.value = 'Play Game!';
             break;
         case 'pve':
             newHtml += optionPlayerName('Player Name:', 'p1-name');
             newHtml += optionPlayerColor();
             newHtml += optionWhitePosition();
             newHtml += optionDifficulty('Computer Difficulty:', 'difficulty1');
-            playButton.innerText = 'Play Game!';
+            playButton.value = 'Play Game!';
             break;
         case 'eve':
             newHtml += optionWhitePosition();
             newHtml += optionDifficulty('Computer 1 Difficulty:', 'difficulty1');
             newHtml += optionDifficulty('Computer 2 Difficulty:', 'difficulty2');
-            playButton.innerText = 'Watch Game!';
+            playButton.value = 'Watch Game!';
             break;
     }
     //adding the new html to the dynamic div

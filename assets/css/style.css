@@ -126,7 +126,8 @@ input[type="range"] {
 }
 
 /* the button that takes the user to the game */
-#to-game>a {
+#to-game>input {
+    font-size: 1em;
     display: inline-block;
     margin: 16px auto;
     color: white;
