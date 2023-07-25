@@ -244,7 +244,7 @@ function updateTimeValues(timeType, value) {
     let hoursPrev = parseInt(localStorage.getItem('timeHours'));
     let minutesPrev = parseInt(localStorage.getItem('timeMinutes'));
     let secondsPrev = parseInt(localStorage.getItem('timeSeconds'));
-    let = validateNumber(value, 0);
+    let input = validateNumber(value, 0);
     //setting the right type to the input
     switch (timeType) {
         case 'hours':
