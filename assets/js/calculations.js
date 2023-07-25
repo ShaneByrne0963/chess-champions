@@ -3,13 +3,13 @@
     - if the difficulty is above the value of the second element, then it will happen 100% of the time
     - if the difficulty is in between these values, then it will have a chance to happen*/
 const aiDifficulty = {
-    attackPiece: [0, 30],
-    addSpaces: [10, 40],
-    checkTileSafety: [25, 100],
-    protectAllies: [30, 85],
-    considerTargets: [40, 90],
-    protectKing: [45, 90],
-    surroundKing: [60, 100]
+    attackPiece: [0, 20],
+    addSpaces: [10, 75],
+    checkTileSafety: [0, 70],
+    protectAllies: [20, 85],
+    considerTargets: [30, 90],
+    protectKing: [20, 90],
+    surroundKing: [40, 100]
 };
 
 /**
