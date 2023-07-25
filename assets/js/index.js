@@ -244,7 +244,14 @@ function updateTimeValues(timeType, value) {
     let hoursPrev = parseInt(localStorage.getItem('timeHours'));
     let minutesPrev = parseInt(localStorage.getItem('timeMinutes'));
     let secondsPrev = parseInt(localStorage.getItem('timeSeconds'));
-    let input = parseInt(value);
+    let valueNum = parseInt(value);
+    let input;
+    if (isNaN(valueNum)) {
+        input = 0;
+    } else {
+        input = valueNum;
+    }
+    console.log(value + ' => ' + input);
     //setting the right type to the input
     switch (timeType) {
         case 'hours':

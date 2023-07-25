@@ -293,7 +293,9 @@ The website is deployed to Github Pages and can be found here: <https://shanebyr
 ### Manual Testing
 
 - **Form Inputs**
-    - Where relevant, the player name inputs, 
+    - Any player name input, checkbox or number input displayed on the menu settings page is required and the form will not submit unless they are filled out
+    - If the player names are more than 10 characters long, an alert will appear telling the user the name has to be smaller and remove the value
+    - If 
 - **User Interaction**
 - **Anchors and Buttons**
 - **Media Queries**
