@@ -300,7 +300,29 @@ The website is deployed to Github Pages and can be found here: <https://shanebyr
 
 ### Validator Testing
 
+- All HTML files have been passed through the W3C Markup Validator and produced no issues
+
+![Results for index.html validation](assets/images/readme/validators/w3c-index.PNG)
+
+- All CSS files have been passed through the Jigsaw W3C Validator and produced no issues
+
+![Results for style.css validation](assets/images/readme/validators/w3c-index.PNG)
+
+- All Javascript files have been passed through the JsHint Validator and produced no warnings
+
+![Results for calculations.js validation](assets/images/readme/validators/jshint.PNG)
+
+- All background colors have been tested against the website's white font for contrast and each one passed
+
+![Results for webaim contrast evaluation](assets/images/readme/validators/webaim-contrast.PNG)
+
+- Each page has been tested using the Lighthouse developer tool and produced high results
+
+![Results for lighthouse analysis for index.html](assets/images/readme/validators/lighthouse.PNG)
+
 ### Unfixed Bugs
+
+No unfixed bugs
 
 ## Deployment and Local Development
 

@@ -1356,7 +1356,7 @@ const pieceAnimation = {
         //iterates through all the elements in the activeAnimations array until the piece they are looking for is found
         if (pieceAnimation.activeAnimations.length > 0) {
             for (let i = 0; i < pieceAnimation.activeAnimations.length; i++) {
-                let anim = pieceAnimation.activeAnimations[i]
+                let anim = pieceAnimation.activeAnimations[i];
                 if (anim.id === animId) {
                     return i;
                 }

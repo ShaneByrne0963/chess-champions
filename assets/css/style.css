@@ -687,6 +687,7 @@ of the screen, so we will set the board to cover the width of the screen at this
         font-size: 1em;
     }
 
+    /* increase space for content in menu settings */
     #settings-container {
         padding: 0 8px;
     }
