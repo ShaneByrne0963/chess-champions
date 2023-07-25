@@ -1353,6 +1353,7 @@ const pieceAnimation = {
      * @returns {integer} The position of this animation in the array
      */
     getIntervalPosition: (animId) => {
+        //iterates through all the elements in the activeAnimations array until the piece they are looking for is found
         if (pieceAnimation.activeAnimations.length > 0) {
             for (let i = 0; i < pieceAnimation.activeAnimations.length; i++) {
                 let anim = pieceAnimation.activeAnimations[i]
@@ -1379,20 +1380,18 @@ const pieceAnimation = {
         let startPosition = startingTile.getBoundingClientRect();
         let endPosition = endTileElement.getBoundingClientRect();
 
-        //gets the start and end positions of the animation
+        //finds the distance between the start and end position
         let xStart = startPosition.left;
         let yStart = startPosition.top;
         let xEnd = endPosition.left;
         let yEnd = endPosition.top;
-
-        //finds the distance between the start and end position
         let xDistance = xEnd - xStart;
         let yDistance = yEnd - yStart;
 
-        //the animation speeds up until it reaches the halfway point and then slows down to a stop
-        //think of it like a point moving around a circle from one side to the other,
-        //but remove one axis so it moves in a straight line
-        //in this case "frame" is the angle of the point on this theoretical circle
+        /*the animation speeds up until it reaches the halfway point and then slows down to a stop
+            think of it like a point moving around a circle from one side to the other,
+            but remove one axis so it moves in a straight line
+            in this case "frame" is the angle of the point on this theoretical circle*/
         let frameRadians = (frame / animationTime) * Math.PI; //pi radians is equal to 180 degrees, which would be the full length of the circle
 
         //using "cos" for both x and y as we are only interested in one axis
@@ -1412,7 +1411,7 @@ const pieceAnimation = {
      * @param {object} endTileElement The tile the animation will finish on
      */
     end: (animType, animId, pieceElement, endTileElement) => {
-        //removes the frame position from session storage
+        //removes the frame starting time from session storage
         sessionStorage.removeItem(`anim-${animId}`);
 
         //removing the z index style
@@ -1448,9 +1447,7 @@ const pieceAnimation = {
         //continue deleting the animations until there are none left
         while (pieceAnimation.activeAnimations.length > 0) {
             let animate = pieceAnimation.activeAnimations[0];
-            //stopping the interval
             clearTimeout(animate.interval);
-            //removing the animation from activeAnimations
             pieceAnimation.activeAnimations.shift();
         }
         //resetting the animation id
@@ -1602,9 +1599,7 @@ const timer = {
     stop: (player) => {
         //getting how much time the player spent on the move
         let turnTime = Date.now() - timer.startingTime;
-        //the time the player had before the turn started
         let playerTime = parseInt(sessionStorage.getItem(`p${player}-time`));
-        //subtracting the time that was taken for the turn from the player's total time
         sessionStorage.setItem(`p${player}-time`, playerTime - turnTime);
 
         timer.clear();

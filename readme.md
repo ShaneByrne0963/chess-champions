@@ -339,7 +339,6 @@ The website is deployed to Github Pages and can be found here: <https://shanebyr
 - [Local storage tutorial](https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage)
 - [Session storage tutorial](https://developer.mozilla.org/en-US/docs/Web/API/Window/sessionStorage)
 - [Animate element movement](https://www.w3schools.com/howto/howto_js_animate.asp)
-- [Getting the width of an element](https://softauthor.com/javascript-get-width-of-an-html-element/#using-innerwidth)
 - [Getting the position of an element](https://stackoverflow.com/questions/442404/retrieve-the-position-x-y-of-an-html-element)
 - [Window resize event](https://stackoverflow.com/questions/641857/javascript-window-resize-event)
 - [CSS aspect-ratio attribute](https://developer.mozilla.org/en-US/docs/Web/CSS/aspect-ratio)
