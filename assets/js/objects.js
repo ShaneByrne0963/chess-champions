@@ -1080,6 +1080,7 @@ const graveyard = {
     /**
      * Adds a piece to a specified graveyard
      * @param {object} graveyardElement The element of the graveyard that will get the new piece
+     * @param {string} piece The type of piece to be added
      */
     add: (graveyardElement, piece) => {
         //the first graveyard always has black pieces in it, and the second always has white
@@ -1087,8 +1088,6 @@ const graveyard = {
 
         //creating the element to be put in the graveyard
         let deadPiece = document.createElement('div');
-
-        //creating the classes to style and access the piece
         deadPiece.className = `piece-dead dead-${piece}`;
         //creating the image url to access the particular piece
         deadPiece.style.backgroundImage = `url(assets/images/chess-pieces/${color}-${piece}.png)`;
@@ -1119,7 +1118,7 @@ const graveyard = {
         //getting the information about the pawn
         let pawnData = tile.getData(pawnElement.parentNode);
 
-        //getting the appropriate graveyard for the player
+        //getting the appropriate graveyard icons for the player
         let graves = graveyard.getElements(pawnData.color);
 
         //if the pawn that moved to the other side belongs to a player, then initiate the ui for reviving a piece
@@ -1129,9 +1128,7 @@ const graveyard = {
         } else {
             //finds the best piece it can revive in the graveyard
             let bestPiece = graveyard.findBestDeadPiece(graves);
-            //replacing the pawn with the best piece
             graveyard.replaceWithDead(bestPiece);
-            //continuing on with the game after a decision has been made
             nextTurn();
         }
     },
@@ -1144,16 +1141,13 @@ const graveyard = {
         //adds the banner that notifies the player to pick a piece from the graveyard
         setBanner('Pawn Promoted!', 'Select a piece from the graveyard to bring back to the battlefield!', '');
         //starts the flash animation
-        this.flashInterval = setInterval(graveyard.updateFlash, flashTime);
+        graveyard.flashInterval = setInterval(graveyard.updateFlash, flashTime);
         for (let grave of graves) {
-            //getting the classes of the piece
             let graveClass = grave.className;
             //the player can only revive pieces that are not pawns
             if (!graveClass.includes('dead-pawn')) {
                 //adding the function to bring the selected piece back when the player clicks on the graveyard element
                 grave.addEventListener('click', revivePlayer);
-
-                //adding the clickable class to the graveyard pieces to change the mouse cursor when you hover over it
                 grave.classList.add('clickable');
             }
         }
@@ -1165,9 +1159,7 @@ const graveyard = {
      * @returns {object} The element of the graveyard piece best suited for revival
      */
     findBestDeadPiece: (graves) => {
-        //finding the piece with the highest value
         let highestValue = 0;
-        //getting a list of pieces with the highest value and picking one at random
         let highestPieces = [];
         for (let grave of graves) {
             //getting the name of the current piece in the graveyard
@@ -1180,7 +1172,7 @@ const graveyard = {
                     highestValue = chessPiece.value[gravePiece];
                 }
                 highestPieces.push(grave);
-                //stopping the loop if the piece is a queen because it has the best value
+                //stopping the loop if the piece is a queen because it has the highest value
                 if (gravePiece === 'queen') {
                     break;
                 }
@@ -1200,18 +1192,16 @@ const graveyard = {
         if (localStorage.getItem('pawnPromotion') === 'any') {
             return true;
         }
-        let hasDeadPieces = false;
+        //if there is a piece in the graveyard the player can revive
         let graves = graveyard.getElements(color);
-
         for (let grave of graves) {
             let gravePiece = graveyard.getDeadPiece(grave);
             //pawns don't count as they cannot be revived
             if (gravePiece !== 'pawn') {
-                hasDeadPieces = true;
-                break;
+                return true;
             }
         }
-        return hasDeadPieces;
+        return false;
     },
 
     /**
@@ -1243,9 +1233,9 @@ const graveyard = {
      */
     stopFlash: () => {
         //stopping the interval and removing it from memory
-        if (this.flashInterval !== null) {
-            clearInterval(this.flashInterval);
-            this.flashInterval = null;
+        if (graveyard.flashInterval !== null) {
+            clearInterval(graveyard.flashInterval);
+            graveyard.flashInterval = null;
         }
         //removing the 'dead-highlight' class from all graveyard elements
         let flashingElements = document.getElementsByClassName('dead-highlight');
@@ -1281,13 +1271,9 @@ const graveyard = {
      * @param {object} deadPiece The element of the dead piece you wish to replace the pawn with
      */
     replaceWithDead: (deadPiece) => {
-        //finds the piece name of the clicked on element
         let pieceName = graveyard.getDeadPiece(deadPiece);
-
         //promoting the pawn that has moved to the end of the board
         chessPiece.promotePlayerPawn(pieceName);
-
-        //removing the grave piece from the graveyard
         deadPiece.remove();
     },
 
@@ -1297,7 +1283,6 @@ const graveyard = {
     clearAll: () => {
         //finds every graveyard piece on both sides
         let graveyardPieces = document.getElementsByClassName('piece-dead');
-        //removing them one by one
         while (graveyardPieces.length > 0) {
             graveyardPieces[0].remove();
         }
