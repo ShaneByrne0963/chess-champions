@@ -333,8 +333,7 @@ function evaluateTileWithMove(tileData, evaluatingPiece, pieceFromElement, tileT
 function evaluateTileCastle(pieceMoveData, otherPieceData) {
     //getting if the king will be moving to the left or right
     let kingDirection = 1;
-    if ((pieceMoveData.piece === 'king' && pieceMoveData.x > otherPieceData.x)
-        || (pieceMoveData.piece === 'rook' && pieceMoveData.x < otherPieceData.x)) {
+    if ((pieceMoveData.piece === 'king' && pieceMoveData.x > otherPieceData.x) || (pieceMoveData.piece === 'rook' && pieceMoveData.x < otherPieceData.x)) {
         kingDirection = -1;
     }
     //getting the coordinates of where the king and rook will end up after the castle
@@ -391,9 +390,7 @@ function evaluateTileVector(tileData, evaluatingPiece, move) {
         let isFirstMove = (foundPiece[1] === 1);
         tileEval = getPieceRelationship(tileData, evaluatingPiece, foundPiece[0], move, isFirstMove);
     }
-    if (evaluatingPiece.piece === 'queen'
-        || (isDiagonal && evaluatingPiece.piece === 'bishop')
-        || (!isDiagonal && evaluatingPiece.piece === 'rook')) {
+    if (evaluatingPiece.piece === 'queen' || (isDiagonal && evaluatingPiece.piece === 'bishop') || (!isDiagonal && evaluatingPiece.piece === 'rook')) {
         tileEval.availableSpaces += foundPiece[1];
     }
     return tileEval;
@@ -470,8 +467,7 @@ function evaluateTilePoint(tileData, evaluatingPiece, move) {
         }
         //if the tile can be moved to in the move after this one, it will increase availableSpaces
         //we will include the the tile the piece is already on because it can always move back to it's original position
-        if (evaluatingPiece.piece === 'knight'
-            && (foundPiece.color !== evaluatingPiece.color || (x === evaluatingPiece.x && y === evaluatingPiece.y))) {
+        if (evaluatingPiece.piece === 'knight' && (foundPiece.color !== evaluatingPiece.color || (x === evaluatingPiece.x && y === evaluatingPiece.y))) {
             tileEval.availableSpaces++;
         }
     }
@@ -500,7 +496,7 @@ function getPieceRelationship(tileData, evaluatingPiece, foundPiece, move, isBes
         allyProtect: null
     };
     //finds the color of the opponent
-    enemyColor = (evaluatingPiece.color === 'white') ? 'black' : 'white';
+    let enemyColor = (evaluatingPiece.color === 'white') ? 'black' : 'white';
     //treating the 'castle' move rule like a vector
     let moveRule = move[0];
     if (moveRule === 'first-castle') {
@@ -755,7 +751,7 @@ function getProtectingAllies(pieceData, moveTileData, allies, isBlocking) {
             //getting the score of the battle with the piece protecting it
             let battleAfter = simulateBattle(ally, tileEval);
             //removing the moving piece from the ally's allyGuarded array
-            for (let i in tileEval.allyGuarded) {
+            for (let i = 0; i < tileEval.allyGuarded.length; i++) {
                 let currentAlly = tileEval.allyGuarded[i];
                 if (currentAlly.x === moveTileData.x && currentAlly.y === moveTileData.y) {
                     //removing the piece from the array

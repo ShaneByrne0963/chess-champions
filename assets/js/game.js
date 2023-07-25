@@ -284,7 +284,7 @@ function canMoveHere(tileElement) {
     let childDivs = tileElement.children;
     for (let child of childDivs) {
         if (child.classList.contains('possible-move')) {
-            return true
+            return true;
         } else if (child.classList.contains('chess-piece')) {
             //if there is a piece already on the tile, then check within the piece element if there is a move icon
             let pieceChildren = child.children;
@@ -338,7 +338,7 @@ function getPlayerName(player) {
                 playerPlace = 2;
                 break;
             default:
-                throw `Error at getPlayerName: Invalid color ${playerColor}. Aborting!`;
+                throw `Error at getPlayerName: Invalid color ${player}. Aborting!`;
         }
     } else if (typeof player === 'number') {
         playerPlace = player;

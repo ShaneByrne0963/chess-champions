@@ -473,7 +473,7 @@ function optionTimer() {
     if (localStorage.getItem('timeLimit') === 'disabled') {
         htmlString += ` disabled`;
     }
-    htmlString += `>
+    htmlString += ` onkeypress="return !pressedEnter()">
             <label for="minutes" class="small-text">Minutes</label>
             <input type="number" value="${localStorage.getItem('timeSeconds')}" id="seconds"
             class="text-right" onchange="updateTimeValues('seconds', value)"`;
@@ -495,6 +495,15 @@ function optionTimer() {
  */
 function playGame(event) {
     event.preventDefault();
-
+    
     window.location.href = "game.html";
+    
+}
+
+/**
+ * Used to prevent the form from submitting when the user presses enter
+ * @returns {boolean} True if the user pressed enter
+ */
+function pressedEnter() {
+    return (window.event && window.event.keyCode == 13);
 }

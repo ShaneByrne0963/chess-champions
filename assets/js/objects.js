@@ -322,7 +322,7 @@ const chessPiece = {
     getType: (pieceElement) => {
         let piece = '';
         if (pieceElement !== null) {
-            tileClass = pieceElement.classList;
+            let tileClass = pieceElement.classList;
             //searching through all the classes until one matches one of the piece types
             piece = chessPiece.getTypeFromClass(tileClass);
         }
@@ -434,7 +434,7 @@ const chessPiece = {
         }
         //removes the announce-new class from all announcements
         clearNewAnnouncements();
-        
+
         //first removing the 'clickable' class from all of the pieces to stop player input until it's their turn again
         tile.removeAllInteraction();
         //removing the not-moved class from the piece after it makes its first move
@@ -804,7 +804,7 @@ const pieceMovement = {
         //storing all the tiles 
         let moveTiles = [];
         do {
-            checkPiece = chessPiece.findData(x, y);
+            let checkPiece = chessPiece.findData(x, y);
             //adding the move to the array if the tile is not occupied by a friendly piece
             if (checkPiece.color !== pieceData.color) {
                 moveTiles.push(checkPiece);
@@ -906,23 +906,18 @@ const pieceMovement = {
                 //if neither vectors are 0, then the move is diagonal
                 let isDiagonal = (Math.abs(vector1) === Math.abs(vector2));
 
-                if (pieceData.piece === 'queen'
-                    || (isDiagonal && pieceData.piece === 'bishop')
-                    || (!isDiagonal && pieceData.piece === 'rook')
-                    || (isBeside && pieceData.piece === 'king')) {
+                if (pieceData.piece === 'queen' || (isDiagonal && pieceData.piece === 'bishop') || (!isDiagonal && pieceData.piece === 'rook') || (isBeside && pieceData.piece === 'king')) {
                     return true;
                 } else {
                     //for pawn attacks and en passant
                     if (pieceData.piece === 'pawn' && isBeside) {
-                        //getting which direction the pawn moves in
                         let pawnDirection = pieceMovement.getForwardDirection(pieceData.color);
                         //for regular pawn attacks
                         if (vector1 !== 0 && vector2 === pawnDirection) {
                             return true;
                         }
                         //for en passant pawn attacks
-                        else if (vector2 === 0 && tile.inBounds(pieceData.x + move[1], pawnDirection)
-                        && pieceMovement.canPassant(pieceData, ['', move[1], pawnDirection])) {
+                        else if (vector2 === 0 && tile.inBounds(pieceData.x + move[1], pawnDirection) && pieceMovement.canPassant(pieceData, ['', move[1], pawnDirection])) {
                             return true;
                         }
                     }
@@ -941,7 +936,6 @@ const pieceMovement = {
      */
     canPassant: (pieceData, move) => {
         if (localStorage.getItem('passant') === 'enabled') {
-            //getting the enemy's color
             let enemyColor = (pieceData.color === 'white') ? 'black' : 'white';
 
             //finding the data object of the piece beside the pawn to see if it is an enemy pawn
@@ -965,9 +959,7 @@ const pieceMovement = {
      */
     isKingThreatened: (tileData, pieceMovingData) => {
         let tileEval;
-        //the king's data object {x, y, piece, color}
         let kingData;
-
         if (pieceMovingData.piece !== 'king') {
             //finding the king if it isn't the piece that will move
             kingData = tile.findKing(pieceMovingData.color);
@@ -986,17 +978,15 @@ const pieceMovement = {
             return true;
         }
         for (let threat of tileEval.enemyThreat) {
-            //if there is a piece at the tile with a high value about to be eliminated, then the
-            //enemy pawns will be able to move to the end of the board, possibly making the king vulnerable
+            /*if there is a piece at the tile with a high value that will be eliminated with this move, then the
+            enemy pawns will be able to move to the end of the board, possibly making the king vulnerable*/
             let pieceValue = 0;
-            //if there is a piece at the tile that is not the piece doing the evaluation, then get its value
             if (tileData.piece !== '' && (tileData.x !== pieceMovingData.x || tileData.y !== pieceMovingData.y)) {
                 pieceValue = chessPiece.value[tileData.piece];
             }
             //pawns cannot reach the end of the board without a graveyard piece to revive,
             //so if the king is at the end of the board with these conditions it is safe from pawns
-            if (!(threat.piece === 'pawn' && chessPiece.isAtBoardEnd(threat.color, kingData.y)
-                && !graveyard.canRevive(threat.color) && pieceValue <= chessPiece.value['pawn'])) {
+            if (!(threat.piece === 'pawn' && chessPiece.isAtBoardEnd(threat.color, kingData.y) && !graveyard.canRevive(threat.color) && pieceValue <= chessPiece.value.pawn)) {
                 return true;
             }
         }
@@ -1040,8 +1030,7 @@ const pieceMovement = {
             if (xCurrent !== pieceData.x && checkingTile.piece !== '') {
                 if (checkingTile.color === pieceData.color) {
                     //one piece has to be a king and the other has to be a rook
-                    if ((checkingTile.piece === 'rook' && pieceData.piece === 'king')
-                        || (checkingTile.piece === 'king' && pieceData.piece === 'rook')) {
+                    if ((checkingTile.piece === 'rook' && pieceData.piece === 'king') || (checkingTile.piece === 'king' && pieceData.piece === 'rook')) {
                         //getting the elements of each piece to check if either piece has moved
                         //if any of the pieces have already moved, then the castle is not valid
                         let pieceElement = chessPiece.findElement(pieceData.x, pieceData.y);
@@ -1192,7 +1181,7 @@ const graveyard = {
         //adds the banner that notifies the player to pick a piece from the graveyard
         setBanner('Pawn Promoted!', 'Select a piece from the graveyard to bring back to the battlefield!', '');
         //starts the flash animation
-        this.flashInterval = setInterval(graveyard.updateFlash, flashTime); 
+        this.flashInterval = setInterval(graveyard.updateFlash, flashTime);
         for (let grave of graves) {
             //getting the classes of the piece
             let graveClass = grave.className;
@@ -1491,7 +1480,7 @@ const pieceAnimation = {
         pieceElement.style.removeProperty('z-index');
 
         //finding the function of this specific animation in activeAnimations using the id
-        for (let i in pieceAnimation.activeAnimations) {
+        for (let i = 0; i < pieceAnimation.activeAnimations.length; i++) {
             let animate = pieceAnimation.activeAnimations[i];
             if (animate.id === animId) {
                 //stopping the interval
@@ -1692,4 +1681,4 @@ const timer = {
             timer.timerInterval = null;
         }
     }
-}
+};
