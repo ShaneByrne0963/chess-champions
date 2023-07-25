@@ -193,11 +193,13 @@ function getMoveOnlyScore(pieceData, moveTileData) {
             moveScore += chessPiece.getValue(moveTileData);
 
             //if the enemy at this tile could have attacked another piece, increase the score at this tile
-            let enemyEval = evaluateTile(pieceData, moveTileData);
-            /*checking how good this tile was for the enemy, and adding that score to this tile
-                - the battleScore is set to a very high value because it is usually compared to see if it is smaller than the target score
-                - but in this case it is irrelevant so we set it to a very high number for it to be ignored */
-            moveScore += evaluateTargets(pieceData, enemyEval, 100000);
+            if (difficultyAllows(aiDifficulty.protectAllies)) {
+                let enemyEval = evaluateTile(pieceData, moveTileData);
+                /*checking how good this tile was for the enemy, and adding that score to this tile
+                    - the battleScore is set to a very high value because it is usually compared to see if it is smaller than the target score
+                    - but in this case it is irrelevant so we set it to a very high number for it to be ignored */
+                moveScore += evaluateTargets(pieceData, enemyEval, 100000);
+            }
         }
         //adding the score of any eliminated pawn from an en passant move
         if (pieceData.piece === 'pawn') {
