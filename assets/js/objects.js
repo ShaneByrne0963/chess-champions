@@ -1361,7 +1361,7 @@ const pieceAnimation = {
 
         //storing the id and function of the animation in an object to be accessed when the animation ends
         let animationData = {
-            interval: setInterval(pieceAnimation.nextFrame, 1, animType, pieceAnimation.animationId, pieceElement, endTileElement),
+            interval: setTimeout(pieceAnimation.nextFrame, 1, animType, pieceAnimation.animationId, pieceElement, endTileElement),
             id: pieceAnimation.animationId
         };
 
@@ -1387,7 +1387,6 @@ const pieceAnimation = {
      */
     nextFrame: (animType, animId, pieceElement, endTileElement) => {
         let frame = parseInt(sessionStorage.getItem(`animFrame-${animId}`));
-
         pieceAnimation.setPosition(pieceElement, endTileElement, frame);
 
         frame++;
@@ -1395,34 +1394,27 @@ const pieceAnimation = {
             pieceAnimation.end(animType, animId, pieceElement, endTileElement);
         } else {
             sessionStorage.setItem(`animFrame-${animId}`, frame);
+            //starting another timeout to resemble an interval
+            let animData = pieceAnimation.activeAnimations[pieceAnimation.getIntervalPosition(animId)];
+            animData.interval = setTimeout(pieceAnimation.nextFrame, 1, animType, animId, pieceElement, endTileElement);
         }
     },
 
     /**
-     * Sets the size and position of the animation piece, based on the frame
-     * @param {object} tileStart The tile the animation started on
-     * @param {object} tileEnd The tile the animation will finish on
-     * @param {integer} frame The frame the animation is currently on
+     * Gets the position of a certain interval in the pieceAnimation.activeAnimations array
+     * @param {integer} animId The id of the animation
+     * @returns {integer} The position of this animation in the array
      */
-    set: (pieceElement, endTileElement, frame) => {
-        //changing the width and height
-        //pieceAnimation.setSize(tileStart);
-
-        //changing the position
-        pieceAnimation.setPosition(pieceElement, endTileElement, frame);
-    },
-
-    /**
-     * Sets the size of the animation piece to match it's starting tile
-     * @param {object} tileStart The tile the animation started on
-     */
-    setSize: (tileStart) => {
-        //getting the id of the animation element
-        let animatePiece = document.getElementById('piece-moving');
-
-        //element.offsetWidth source: https://softauthor.com/javascript-get-width-of-an-html-element/#using-innerwidth
-        animatePiece.style.width = `${tileStart.offsetWidth}px`;
-        animatePiece.style.height = `${tileStart.offsetHeight}px`;
+    getIntervalPosition: (animId) => {
+        if (pieceAnimation.activeAnimations.length > 0) {
+            for (let i = 0; i < pieceAnimation.activeAnimations.length; i++) {
+                let anim = pieceAnimation.activeAnimations[i]
+                if (anim.id === animId) {
+                    return i;
+                }
+            }
+        }
+        return -1;
     },
 
     /**
@@ -1484,7 +1476,7 @@ const pieceAnimation = {
             let animate = pieceAnimation.activeAnimations[i];
             if (animate.id === animId) {
                 //stopping the interval
-                clearInterval(animate.interval);
+                clearTimeout(animate.interval);
                 //removing the animation from activeAnimations
                 pieceAnimation.activeAnimations.splice(i, 1);
             }
