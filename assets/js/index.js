@@ -244,14 +244,7 @@ function updateTimeValues(timeType, value) {
     let hoursPrev = parseInt(localStorage.getItem('timeHours'));
     let minutesPrev = parseInt(localStorage.getItem('timeMinutes'));
     let secondsPrev = parseInt(localStorage.getItem('timeSeconds'));
-    let valueNum = parseInt(value);
-    let input;
-    if (isNaN(valueNum)) {
-        input = 0;
-    } else {
-        input = valueNum;
-    }
-    console.log(value + ' => ' + input);
+    let = validateNumber(value, 0);
     //setting the right type to the input
     switch (timeType) {
         case 'hours':
@@ -287,6 +280,21 @@ function updateTimeValues(timeType, value) {
     document.getElementById('hours').value = finalTime.hours;
     document.getElementById('minutes').value = finalTime.minutes;
     document.getElementById('seconds').value = finalTime.seconds;
+}
+
+/**
+ * Checks if a number input is valid, and returns it if it is
+ * @param {string} value The value the user has entered
+ * @param {integer} defaultValue The value that will be set if the number is invalid
+ * @returns value as an integer, or defaultValue if value is not a number
+ */
+function validateNumber(value, defaultValue) {
+    let valueNum = parseInt(value);
+    if (isNaN(valueNum)) {
+        return defaultValue;
+    } else {
+        return valueNum;
+    }
 }
 
 /**
@@ -326,15 +334,16 @@ function updateDifficulty(id, value) {
     let numberInput = document.getElementById(id + '-number');
     let rangeInput = document.getElementById(id + '-range');
 
-    if (value > 100) {
-        value = 100;
-    } else if (value < 0) {
-        value = 0;
+    let input = validateNumber(value, 50);
+    if (input > 100) {
+        input = 100;
+    } else if (input < 0) {
+        input = 0;
     }
     //updating the values of both inputs and setting it in local storage
-    numberInput.value = value;
-    rangeInput.value = value;
-    localStorage.setItem(id, value);
+    numberInput.value = input;
+    rangeInput.value = input;
+    localStorage.setItem(id, input);
 }
 
 /**
