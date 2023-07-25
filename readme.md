@@ -300,9 +300,31 @@ The website is deployed to Github Pages and can be found here: <https://shanebyr
 
 ### Deploy on Github Pages
 
+- The site has been successfully deployed to GitHub Pages. The steps to deploy are as follows:
+  - In the GitHub repository, navigate to the Settings tab.
+  - In the Pages tab, from the source drop-down menu, select "Deploy from a branch".
+  - Under the Branch heading, ensure the first drop-down menu has "main" selected and click the "Save" button to the right of it.
+  - Wait a few minutes and refresh the page. The link will appear under the GitHub Pages heading.
+- The live site can be visited [here](https://shanebyrne0963.github.io/chess-champions/).
+
 ### Cloning Repositories
 
+- The site was cloned onto my desktop. The steps to clone are as follows:
+  - In the GitHub repository, click on the green button that says "Code". A drop-down menu will appear.
+  - In the "Local" tab of the drop-down, there will be a link under the "HTTPS" section. Click the copy button to the right of the link.
+  - In the search bar of your PC desktop, search for terminal and open.
+  - Type the following command: `git clone https://github.com/ShaneByrne0963/chess-champions.git`.
+  - The site will be cloned to your desktop.
+
 ### Forking Repositories
+
+- The site was created using a forked repository created by Code Institute. This repository can be found [here](https://github.com/Code-Institute-Org/ci-full-template).
+- The steps to fork are as follows:
+  - Navigate to the page of the repository you wish to fork.
+  - Click on the green button that says "Use this template". A drop-down will appear underneath, and select "create a new repository"
+  - Enter a repository name where specified.
+  - Ensure the site is set to public
+  - Click "Create repository from template". Codeanywhere will begin to build a new project from that template.
 
 ## Credits
 
