@@ -8,6 +8,7 @@ const aiDifficulty = {
     checkTileSafety: [0, 70],
     protectAllies: [20, 85],
     considerTargets: [30, 90],
+    targetDilemma: [50, 100], //checks if multiple targets can be safely attacked from a single tile
     protectKing: [20, 90],
     surroundKing: [40, 100]
 };
@@ -702,7 +703,7 @@ function evaluateTargets(pieceData, tileEval, battleScore) {
             let targetEval = evaluateTile(target, pieceData);
             let tileBattle = simulateBattle(pieceData, targetEval);
             //adding the value of the lost piece to the battlescore
-            if (tileBattle.battleScore + targetValue >= 0) {
+            if (difficultyAllows(aiDifficulty.targetDilemma) && tileBattle.battleScore + targetValue >= 0) {
                 //if the result is positive for the ai, then the tile is considered "safe"
                 safeTargets.push(target);
             }
