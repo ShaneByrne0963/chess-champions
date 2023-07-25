@@ -473,7 +473,7 @@ function optionTimer() {
     if (localStorage.getItem('timeLimit') === 'disabled') {
         htmlString += ` disabled`;
     }
-    htmlString += ` onkeypress="return !pressedEnter()">
+    htmlString += `">
             <label for="minutes" class="small-text">Minutes</label>
             <input type="number" value="${localStorage.getItem('timeSeconds')}" id="seconds"
             class="text-right" onchange="updateTimeValues('seconds', value)"`;
@@ -495,9 +495,12 @@ function optionTimer() {
  */
 function playGame(event) {
     event.preventDefault();
-    
     window.location.href = "game.html";
-    
+}
+
+function submitForm() {
+    let form = document.getElementById('menu-settings');
+    form.submit();
 }
 
 /**

@@ -1,7 +1,7 @@
-//score evaluation ranges that will affect the ai based on the difficulty
-//if the difficulty is below the value of the first element, then this part of the evaluation will not happen
-//if the difficulty is above the value of the second element, then it will happen 100% of the time
-//if the difficulty is in between these values, then it will have a chance to happen
+/*score evaluation ranges that will affect the ai based on the difficulty
+    - if the difficulty is below the value of the first element, then this part of the evaluation will not happen
+    - if the difficulty is above the value of the second element, then it will happen 100% of the time
+    - if the difficulty is in between these values, then it will have a chance to happen*/
 const aiDifficulty = {
     attackPiece: [0, 30],
     addSpaces: [10, 40],
