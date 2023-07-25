@@ -499,10 +499,6 @@ function getPieceRelationship(tileData, evaluatingPiece, foundPiece, move, isBes
                 if (oppositePiece[0].color !== evaluatingPiece.color && pieceMovement.canAttack(oppositePiece[0], moveForward, false)) {
                     //if this piece will block an enemy from attacking another piece, it is guarding that piece
                     tileEval.allyProtect = foundPiece;
-                    console.log(`${evaluatingPiece.piece} [${evaluatingPiece.x}, ${evaluatingPiece.y}] => [${tileData.x}, ${tileData.y}],
-                    found ${oppositePiece[0].piece} [${oppositePiece[0].x}, ${oppositePiece[0].y}]`);
-                    console.log(`Adding ${foundPiece.piece} [${foundPiece.x}, ${foundPiece.y}]`);
-                    debugger;
                     isBlocking = true;
                 }
             } 
@@ -683,13 +679,14 @@ function evaluateTargets(pieceData, tileEval, battleScore) {
             if (targetValue.piece === 'king') {
                 let enemyColor = (pieceData.color === 'white') ? 'black' : 'white';
                 let tileToData = chessPiece.findData(tileEval.x, tileEval.y);
-                totalValue += (8 - getKingSafeTiles(enemyColor, pieceData, tileToData) * 25);
+                if (getKingSafeTiles(enemyColor, pieceData, tileToData) === 0) {
+                    totalValue += targetValue;
+                }
             } else {
                 //if it is any other piece
                 totalValue += targetValue;
             }
             //simulating a battle at this tile to get the end result
-            console.log(`${pieceData.piece} [${pieceData.x}, ${pieceData.y}] targeting ${target.piece} [${target.x}, ${target.y}]`);
             let targetEval = evaluateTile(target, pieceData);
             let tileBattle = simulateBattle(pieceData, targetEval);
             //adding the value of the lost piece to the battlescore
@@ -752,12 +749,6 @@ function getProtectingAllies(pieceData, moveTileData, allies, isBlocking) {
             if (battleBefore.battleScore < 0 && battleAfter.battleScore >= 0) {
                 //adding the value of the ally to the total score
                 totalScore += chessPiece.getValue(ally);
-
-                if (isBlocking) {
-                    console.log(`${pieceData.piece} [${pieceData.x}, ${pieceData.y}] => [${moveTileData.x}, ${moveTileData.y}]`);
-                    console.log(`Protecting ${ally.piece} [${ally.x}, ${ally.y}]`);
-                    debugger;
-                }
             }
         }
     }
