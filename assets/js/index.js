@@ -34,12 +34,14 @@ function settingsInit() {
         localStorage.setItem("castling", 'enabled');
         localStorage.setItem('passant', 'enabled');
     }
-    //getting what type of players will be playing the game
+    //getting what type of players will be playing the game and setting the player type dropdown's value to it
     let gameType = getGameType();
-
-    //setting the select dropdown to display the correct game type
     let gameTypeInput = document.getElementById('settings-players');
     gameTypeInput.value = gameType;
+
+    //preventing the enter key from submitting the form
+    let form = document.getElementById('menu-settings');
+    form.addEventListener('keypress', preventEnterSubmit);
 
     //building the dynamic html to be added to the settings
     buildDynamicSettings(gameType);
@@ -498,15 +500,11 @@ function playGame(event) {
     window.location.href = "game.html";
 }
 
-function submitForm() {
-    let form = document.getElementById('menu-settings');
-    form.submit();
-}
-
 /**
  * Used to prevent the form from submitting when the user presses enter
- * @returns {boolean} True if the user pressed enter
  */
-function pressedEnter() {
-    return (window.event && window.event.keyCode == 13);
+function preventEnterSubmit(event) {
+    if (event.keyCode == 13) {
+        event.preventDefault();
+    }
 }
