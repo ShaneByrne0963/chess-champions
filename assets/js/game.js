@@ -52,7 +52,7 @@ function gameInit() {
     }
     //adding what is already in the chess-board element (which is the banner HTML) to the new innerHTML
     chessGrid += chessBoard.innerHTML;
-    //setting the new HTML containing the chess tiles
+    
     chessBoard.innerHTML = chessGrid;
     startGame();
 }
@@ -64,23 +64,15 @@ function startGame() {
     //player1 always starts first
     setPlayerTurn(1);
 
-    //clears all the animations and announcements from the ui
+    //resetting everything that can be changed during the previous game
     pieceAnimation.clear();
     clearAnnouncements();
     removeBanner();
-
-    //removing the interaction from all tiles
     tile.removeAllInteraction();
-
-    //stops any timeouts still active in the game
     pieceMovement.clearDelay();
     timer.clear();
-
-    //clears the board before creating new pieces
     tile.deselectAll();
     tile.clearAll();
-
-    //removing any piece images from the graveyard
     graveyard.clearAll();
 
     //resetting the time limits for each player if applicable
@@ -91,7 +83,6 @@ function startGame() {
     //iterating through every tile on the board to create chess pieces where necessary
     for (let i = 0; i < boardSize; i++) {
         for (let j = 0; j < boardSize; j++) {
-            //getting the current tile's element
             let tileElement = tile.getElement(i, j);
             //finding what piece and color belongs on this tile
             let tilePiece = getStartingPiece(i, j);
@@ -149,7 +140,6 @@ function getStartingPiece(x, y) {
 
     //creating the back row of chess pieces for each side
     if (y === 0 || y === boardSize - 1) {
-        //setting the piece type
         if (x === 0 || x === boardSize - 1) {
             piece = 'rook';
         } else if (x === 1 || x === boardSize - 2) {
@@ -246,30 +236,25 @@ function setPlayerNames() {
  * @param {*} x The y position of the clicked tile
  */
 function tileClick(x, y) {
-    //only select the tile if it has a clickable class attached to it
     let clickedTile = tile.getElement(x, y);
     let clickedClass = clickedTile.className;
     //if the tile is enabled to be clicked on by the player
     if (clickedClass.includes('clickable')) {
         //checking if the tile that's been clicked on is a possible move
         if (canMoveHere(clickedTile)) {
-            //gets the selected tile
             let selectedTile = document.getElementById('tile-selected').parentNode;
             //deselects all the tiles and begins the piece movement animation
             tile.deselectAll();
             chessPiece.move(selectedTile, clickedTile);
         } else {
-            //clear all selected tiles
             tile.deselectAll();
-
-            //and selecting the new one
+            //selecting the piece that has been clicked on
             let pieceElement = tile.getPieceElement(clickedTile);
             if (pieceElement !== null) {
                 tile.select(clickedTile);
             }
         }
     } else {
-        //clear all selected tiles
         tile.deselectAll();
     }
 }
@@ -308,8 +293,7 @@ function getPlayerTurn() {
     //the name of the player
     let name = currentChildren[0].innerText;
 
-    //gets the place of the current player on the ui. the 7th character of the player ui divs is either 1 or 2.
-    //can be used to get the color. white is always first so if the value is 1 then the color is white
+    //gets the place of the current player on the ui. the 7th character of the player ui divs is either 1 or 2
     let playerPlace = parseInt(currentPlayerDiv.id[6]);
     let playerColor = (playerPlace === 1) ? 'white' : 'black';
 
@@ -379,14 +363,14 @@ function setPlayerTurn(playerPlace) {
  * Switches to the next turn
  */
 function nextTurn() {
+    //getting the information of the current player before moving on to the next turn
     let playerTurn = getPlayerTurn();
-    //for display if the other player is in checkmate
     let lastPlayerName = playerTurn.name;
     //if place = 2, then 3 - 2 = 1. if place = 1, then 3 - 1 = 2.
     let newTurn = 3 - playerTurn.place;
     setPlayerTurn(newTurn);
 
-    //updating the playerTurn info to the other player
+    //updating the playerTurn info to the new player
     playerTurn = getPlayerTurn();
     let checkmate = isCheckmate(playerTurn.color);
 
@@ -449,8 +433,8 @@ function allowTurn(color) {
  * @param {string} text the test you wish to display in the announcements
  */
 function addAnnouncement(text) {
-    //if the width of the screen is less than 800px, then clear any new announcements.
-    //only one announcement can be displayed at this width, so there can only be one new announcement at a time
+    /*if the width of the screen is less than 800px, then clear any new announcements.
+    only one announcement can be displayed at this width, so there can only be one new announcement at a time*/
     let width = window.innerWidth;
     if (width <= 800) {
         clearNewAnnouncements();
@@ -477,7 +461,7 @@ function addAnnouncement(text) {
 function announceElimination(pieceData) {
     let enemyColor = (pieceData.color === 'white') ? 'black' : 'white';
 
-    //changing the piece text to be more suitable for the announcement
+    //getting the type of piece that was eliminated
     let displayPiece = pieceData.piece;
     //making the first letter capital
     let firstLetter = displayPiece[0];
@@ -502,7 +486,7 @@ function clearNewAnnouncements() {
  * Clears all announcements in the ui
  */
 function clearAnnouncements() {
-    //getting the grandchildren of the announcement div
+    //getting the grandchildren of the announcement div, which will be the individual announcement text elements
     let announceChildren = document.getElementById('announcements').children[0].children;
 
     while (announceChildren.length > 0) {
@@ -518,25 +502,20 @@ function clearAnnouncements() {
  * @param {string} promotionColor The color of the pawn promotion icons, or an empty string if not wanted
  */
 function setBanner(heading, subheading, promotionColor) {
-    //finding the banner element
     let bannerDiv = document.getElementById('banner');
-    //removing the hidden display to show it on screen
+    //removing the hidden display css property to show it on screen
     bannerDiv.style.removeProperty('display');
 
-    //finding the children of the banner to update the heading and subheading
+    //updating the heading and subheading
     let bannerChildren = bannerDiv.children;
-    //the heading is the first child
     bannerChildren[0].innerText = heading;
-    //the subheading is the second child
     bannerChildren[1].innerText = subheading;
 
-    //displaying the pawn promotion grid if necessary
+    //displaying the pawn promotion grid if necessary, while changing the height of the banner to give appropriate room
     if (promotionColor !== '') {
-        //adding extra space underneath the banner to make room for the promote icons
         bannerDiv.className = 'pawn-pick';
         setPromotionIcons(promotionColor);
     } else {
-        //making the banner smaller if there are no promote icons
         bannerDiv.className = 'notify';
     }
 }
@@ -545,7 +524,6 @@ function setBanner(heading, subheading, promotionColor) {
  * Removes the banner
  */
 function removeBanner() {
-    //finding the banner element
     let bannerDiv = document.getElementById('banner');
     //setting its display style to none to remove it from the screen
     bannerDiv.style.display = 'none';
@@ -581,10 +559,9 @@ function setPromotionIcons(color) {
  * @param {string} piece The piece that has been chosen
  */
 function selectPromotion(piece) {
+    //promoting the pawn to the piece that was selected
     chessPiece.promotePlayerPawn(piece);
-    //making the banner invisible again
     removeBanner();
-    //moves to the next turn
     nextTurn();
 }
 
@@ -623,9 +600,8 @@ function isCheckmate(color) {
  * the other side of the board. Brings the piece back to life in place of the pawn
  */
 function revivePlayer() {
-    //disables the banner
     removeBanner();
-    //stops the pieces flashing
+    //stops the graveyard icons flashing
     graveyard.stopFlash();
     //replaces the pawn with the piece that was clicked on
     graveyard.replaceWithDead(this);
@@ -638,7 +614,6 @@ function revivePlayer() {
             reviveButton.removeEventListener('click', revivePlayer);
         }
     }
-    //continuing the game
     nextTurn();
 }
 

@@ -1345,8 +1345,7 @@ const graveyard = {
 const pieceAnimation = {
     //will be used to store the animation functions in order to stop it once it's done
     activeAnimations: [],
-    //will increment for every animation. this will give each animation a unique id which
-    //will be used to access it when you want an animation to stop
+    //will increment for every animation. this will give each animation a unique id which will be used to access it when you want an animation to stop
     animationId: 0,
 
     /**
