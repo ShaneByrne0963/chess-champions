@@ -13,7 +13,7 @@ The website is deployed to Github Pages and can be found here: <https://shanebyr
 ### Color Scheme
 
 - The website has a simple and uniform color scheme, with all text colored white displayed on a brown shaded background
-- The brown color is designed to resemble the outside chessboard, and gives the website a wood-like asthetic
+- The brown color is designed to resemble the outside of a chessboard, and gives the website a wood-like asthetic
 - Some areas of the website have different shades of brown to add color diversity to the page
 
 ### Typography
@@ -295,11 +295,25 @@ The website is deployed to Github Pages and can be found here: <https://shanebyr
 - **Form Inputs**
     - Any player name input, checkbox or number input displayed on the menu settings page is required and the form will not submit unless they are filled out
     - If the player names are more than 10 characters long, an alert will appear telling the user the name has to be smaller and remove the value
-    - If an invalid number for the time limit is 
+    - Number inputs have a default value that they will be set to if the user enters an invalid number
+    - If the user enters an invalid time, for example, 70 minutes, it will convert that time to 1 hour and 10 minutes, and will add 1 to the hour input
+    - The user cannot play with a time limit smaller than 30 seconds or larger than 10 hours
+    - If the time limit is not enabled, the user cannot change the values of the time limit
+    - The enter key has been manually disabled to prevent the user submitting the form prematurely by pressing enter
 - **User Interaction**
+    - The user cannot select pieces that do not belong to them, or cannot select any piece at all if it is not their turn
+    - The user cannot select any pieces while a banner is displaying over the board, or if the game has ended
+    - The user cannot make any moves that will result in checking their own king
+    - If the user has selected the option to promote pawns from eliminated pieces, their pawns cannot move to the other side of the board unless they have a piece to bring back
+    - Under the above conditions, a pawn cannot put a king in check if the king is at their end of the board
+    - If a pawn cannot attack a king this way, but is in a position to attack, the other player cannot eliminate any pieces higher than a pawn to prevent this attack
 - **Anchors and Buttons**
+    - Every link, internal and external, has been clicked on every page and each one works as intended.
+    - All external pages are opened in a new tab.
 - **Media Queries**
+    - Every page has been tested for responsive screen width, with nothing overflowing or overlapping above a screen width of 320px.
 - **Other Browsers**
+    - I have tested this site on Google Chrome, Microsoft Edge and Mozilla Firefox and confirmed the site works as intended on those platforms
 
 ### Validator Testing
 
