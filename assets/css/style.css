@@ -686,4 +686,12 @@ of the screen, so we will set the board to cover the width of the screen at this
     body {
         font-size: 1em;
     }
+
+    #settings-container {
+        padding: 0 8px;
+    }
+
+    #menu-settings {
+        padding: 8px;
+    }
 }
