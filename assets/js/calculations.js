@@ -7,6 +7,7 @@ const aiDifficulty = {
     addSpaces: [10, 75],
     checkTileSafety: [0, 50],
     protectAllies: [20, 85],
+    blockAttacks: [35, 90],
     considerTargets: [30, 90],
     targetDilemma: [50, 100], //checks if multiple targets can be safely attacked from a single tile
     protectKing: [20, 90],
@@ -166,6 +167,8 @@ function getTileScore(pieceData, moveTileData) {
         if (tileEval.allyGuarding.length > 0) {
             moveScore += getProtectingAllies(pieceData, moveTileData, tileEval.allyGuarding, false);
         }
+    }
+    if (difficultyAllows(aiDifficulty.blockAttacks)) {
         /*adding all the values of all the pieces where this tile will block an enemy attack.
             only do this if there are ally pieces that can attack this tile, in order to prevent pieces
             from moving into positions where the enemy can just attack and leave the ally piece vulnerable again*/
@@ -188,6 +191,13 @@ function getMoveOnlyScore(pieceData, moveTileData) {
     if (difficultyAllows(aiDifficulty.attackPiece)) {
         if (moveTileData.color !== '' && moveTileData.color !== pieceData.color) {
             moveScore += chessPiece.getValue(moveTileData);
+
+            //if the enemy at this tile could have attacked another piece, increase the score at this tile
+            let enemyEval = evaluateTile(pieceData, moveTileData);
+            /*checking how good this tile was for the enemy, and adding that score to this tile
+                - the battleScore is set to a very high value because it is usually compared to see if it is smaller than the target score
+                - but in this case it is irrelevant so we set it to a very high number for it to be ignored */
+            moveScore += evaluateTargets(pieceData, enemyEval, 100000);
         }
         //adding the score of any eliminated pawn from an en passant move
         if (pieceData.piece === 'pawn') {
