@@ -475,7 +475,7 @@ function optionTimer() {
     if (localStorage.getItem('timeLimit') === 'disabled') {
         htmlString += ` disabled`;
     }
-    htmlString += `">
+    htmlString += `>
             <label for="minutes" class="small-text">Minutes</label>
             <input type="number" value="${localStorage.getItem('timeSeconds')}" id="seconds"
             class="text-right" onchange="updateTimeValues('seconds', value)"`;
