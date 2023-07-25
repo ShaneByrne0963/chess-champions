@@ -322,4 +322,4 @@ The website is deployed to Github Pages and can be found here: <https://shanebyr
 
 ### Media
 
--
+- [Chess Piece Images](https://commons.wikimedia.org/wiki/Category:SVG_chess_pieces)
