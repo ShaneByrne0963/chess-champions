@@ -54,6 +54,7 @@ function settingsInit() {
  * @returns {string} 'pvp', 'pve' or 'eve'
  */
 function getGameType() {
+    //gets the number of players that will be manually moving the pieces
     let humanPlayers = 0;
     let gameType = '';
     if (localStorage.getItem('white') === 'player') {
@@ -61,6 +62,7 @@ function getGameType() {
     } if (localStorage.getItem('black') === 'player') {
         humanPlayers++;
     }
+    //finding the game type based on the number of players
     switch (humanPlayers) {
         case 0:
             gameType = 'eve';
@@ -82,6 +84,7 @@ function getGameType() {
  * @param {string} playerType Can be 'pvp', 'pve' or 'eve'
  */
 function buildDynamicSettings(playerType) {
+    let newHtml = ``;
     //updating the local storage variables to match the newly selected option
     updatePlayerVariables(playerType);
 
@@ -90,12 +93,9 @@ function buildDynamicSettings(playerType) {
     //getting the play game button to change its text
     let playButton = document.getElementById('to-game').children[0];
 
-    //the inner html that will be added to the div
-    let newHtml = ``;
-
+    //adding the html based on the type of players selected
     switch (playerType) {
         case 'pvp':
-            //adding name inputs for each of the players
             newHtml += optionPlayerName('Player 1 Name:', 'p1-name');
             newHtml += optionPlayerName('Player 2 Name:', 'p2-name');
             newHtml += optionWhitePosition();
@@ -103,7 +103,6 @@ function buildDynamicSettings(playerType) {
             playButton.innerText = 'Play Game!';
             break;
         case 'pve':
-            //adding name inputs for the human player
             newHtml += optionPlayerName('Player Name:', 'p1-name');
             newHtml += optionPlayerColor();
             newHtml += optionWhitePosition();
@@ -174,14 +173,12 @@ function updateAdvancedMoves() {
 
     //updating the castling checkbox
     let castlingDiv = document.getElementById('castling');
-    //only checking if castling is disabled as the checkbox is enabled by default
     if (localStorage.getItem('castling') === 'disabled') {
         castlingDiv.checked = false;
     }
 
     //updating the pawn passant checkbox
     let passantDiv = document.getElementById('en-passant');
-    //only checking if castling is disabled as the checkbox is enabled by default
     if (localStorage.getItem('passant') === 'disabled') {
         passantDiv.checked = false;
     }
@@ -366,15 +363,15 @@ function optionPlayerName(innerText, inputId) {
  */
 function optionDifficulty(innerText, inputId) {
     //getting the previously inputted difficulty to set the default value of the inputs to
-    let currentDiff = localStorage.getItem(inputId);
+    let currentDifficulty = localStorage.getItem(inputId);
     return `
     <div class="input-right">
         <label for="${inputId}-number">${innerText}</label>
         <div class="text-right">
-            <input type="number" id="${inputId}-number" class="text-right" onchange="updateDifficulty('${inputId}', value)" value="${currentDiff}" min="0" max="100" required>
+            <input type="number" id="${inputId}-number" class="text-right" onchange="updateDifficulty('${inputId}', value)" value="${currentDifficulty}" min="0" max="100" required>
         </div>
     </div>
-    <input type="range" id="${inputId}-range" class="input-gap" onchange="updateDifficulty('${inputId}', value)" min="0" max="100" value="${currentDiff}">
+    <input type="range" id="${inputId}-range" class="input-gap" onchange="updateDifficulty('${inputId}', value)" min="0" max="100" value="${currentDifficulty}">
     `;
 }
 
