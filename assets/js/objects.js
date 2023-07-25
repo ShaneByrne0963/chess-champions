@@ -610,13 +610,13 @@ const chessPiece = {
 //stores all the functions in relation to the movement of the pieces
 //will primarily work with piece data objects {x, y, piece, color}
 const pieceMovement = {
-    //chess move rules:
-    // 'normal' means add the following coordinates to the current tile
-    // 'first' means the move is only possible on the piece's first move
-    // 'attack' means the piece can only move to the tile if an enemy is on it
-    // 'disarmed' means the piece cannot move to the tile if an enemy is on it
-    // 'vector' means continue in that direction until an obstacle is reached
-    // 'forward' means in the direction of the enemy side, followed by a number which is the number of steps
+    /*chess move rules:
+        - 'normal' means add the following coordinates to the current tile
+        - 'first' means the move is only possible on the piece's first move
+        - 'attack' means the piece can only move to the tile if an enemy is on it
+        - 'disarmed' means the piece cannot move to the tile if an enemy is on it
+        - 'vector' means continue in that direction until an obstacle is reached
+        - 'forward' means in the direction of the enemy side, followed by a number which is the number of steps*/
     pawn: [['disarmed', 0, 'forward1'], ['first-disarmed', 0, 'forward2'], ['attack', -1, 'forward1'], ['attack', 1, 'forward1']],
 
     //can only move to the tiles diagonal to it.
@@ -659,10 +659,8 @@ const pieceMovement = {
             let availableTiles = pieceMovement.getTilesFromMove(pieceData, move);
             //looping through all the tiles the piece can reach from this move set
             for (let currentTile of availableTiles) {
-                //only add the tile if it doesn't leave it's king in a vulnerable position
-                //and if it is a pawn it meets the requirements to move
+                //only add the tile if it doesn't leave it's king in a vulnerable position and, if it is a pawn, meets the requirements to move
                 if (!pieceMovement.isKingThreatened(currentTile, pieceData) && pieceMovement.canPawnMove(currentTile, pieceData)) {
-                    //returns the element instead of the data as this function will be used outside of this object
                     moveTiles.push(tile.getElement(currentTile.x, currentTile.y));
                 }
             }
@@ -682,13 +680,11 @@ const pieceMovement = {
         let moveRule = move[0];
         //if the move is only available on the first move, only allow it if the piece hasn't moved yet
         if (moveRule.includes('first')) {
-            //ending the evaluation early if the piece has already moved
             let pieceElement = chessPiece.findElement(pieceData.x, pieceData.y);
             if (!pieceElement.classList.contains('not-moved')) {
                 return moveTiles;
             }
         }
-        //getting rid of the 'first' part of the rule as it is unnecessary at this point
         moveRule = moveRule.replace('first-', '');
 
         //declaring the variables storing the coordinates of the tiles to check
@@ -699,9 +695,9 @@ const pieceMovement = {
             //getting the piece information at the checked tile, if any
             let checkPiece = chessPiece.findData(newX, newY);
 
+            //if the move continues in a direction until an obstacle is met
             if (moveRule === 'vector') {
                 let vectorTiles = pieceMovement.getTilesFromVector(pieceData, newX, newY, move);
-                //adding all the tiles from this vector to the total tiles this piece can make
                 for (let vectorTile of vectorTiles) {
                     moveTiles.push(vectorTile);
                 }
@@ -771,7 +767,6 @@ const pieceMovement = {
     getTilesFromVector: (pieceData, xStart, yStart, move) => {
         let x = xStart;
         let y = yStart;
-        //storing all the tiles 
         let moveTiles = [];
         do {
             let checkPiece = chessPiece.findData(x, y);
@@ -811,20 +806,20 @@ const pieceMovement = {
 
             //determines which direction is forward
             let forwardDirection = pieceMovement.getForwardDirection(pieceData.color);
-            //adds the amount of tiles to move, in the forward direction
             y = yStart + (forwardAmount * forwardDirection);
 
             //if the forward value is greater than 1, then all tiles in between will be checked to see if they are blank
             let blockMove = false;
             for (let i = 1; i < forwardAmount && !blockMove; i++) {
                 let tileInfo = chessPiece.findData(xStart, yStart + (i * forwardDirection));
-                //if there is a friendly piece, or any piece at all if the rule 'disarmed' applies, the tile will be considered blocked
-                if (tileInfo.color === pieceData.color || (move[0].includes('disarmed') && tileInfo.color !== '')) {
+                //if there is any piece in between the start and end tiles, the tile will be considered blocked
+                if (tileInfo.color !== '') {
                     y = NaN;
                     break;
                 }
             }
         } else {
+            //simply add the vector to the starting coordinate if there is no forward movement involved
             y = yStart + moveY;
         }
         return y;
@@ -954,8 +949,8 @@ const pieceMovement = {
             if (tileData.piece !== '' && (tileData.x !== pieceMovingData.x || tileData.y !== pieceMovingData.y)) {
                 pieceValue = chessPiece.value[tileData.piece];
             }
-            //pawns cannot reach the end of the board without a graveyard piece to revive,
-            //so if the king is at the end of the board with these conditions it is safe from pawns
+            /*pawns cannot reach the end of the board without a graveyard piece to revive,
+            so if the king is at the end of the board with these conditions it is safe from pawns*/
             if (!(threat.piece === 'pawn' && chessPiece.isAtBoardEnd(threat.color, kingData.y) && !graveyard.canRevive(threat.color) && pieceValue <= chessPiece.value.pawn)) {
                 return true;
             }
@@ -982,7 +977,7 @@ const pieceMovement = {
     /**
      * Gets if a piece can perform a castling move, and returns the object it can castle with
      * @param {object} pieceData The data object {x, y, piece, color} of the piece checking for a castling move
-     * @param {integer} xDirection The direction (1 or -1) the piece is looking in
+     * @param {integer} xDirection The direction (1 or -1) the piece is moving in
      * @returns {object} The data object {x, y, piece, color} of the piece that can castle, or null if none
      */
     getCastle: (pieceData, xDirection) => {
@@ -1001,8 +996,8 @@ const pieceMovement = {
                 if (checkingTile.color === pieceData.color) {
                     //one piece has to be a king and the other has to be a rook
                     if ((checkingTile.piece === 'rook' && pieceData.piece === 'king') || (checkingTile.piece === 'king' && pieceData.piece === 'rook')) {
-                        //getting the elements of each piece to check if either piece has moved
-                        //if any of the pieces have already moved, then the castle is not valid
+                        /*getting the elements of each piece to check if either piece has moved
+                        if any of the pieces have already moved, then the castle is not valid*/
                         let pieceElement = chessPiece.findElement(pieceData.x, pieceData.y);
                         let checkElement = chessPiece.findElement(xCurrent, pieceData.y);
                         if (pieceElement.classList.contains('not-moved') && checkElement.classList.contains('not-moved')) {
@@ -1036,7 +1031,6 @@ const pieceMovement = {
                 secondPiece.classList.remove('not-moved');
                 //finding out which piece is the king and which is the rook
                 let kingElement, rookElement, kingData, rookData;
-                //setting the elements and data objects to the appropriate pieces
                 if (firstData.piece === 'king') {
                     kingElement = firstPiece;
                     rookElement = secondPiece;
@@ -1058,8 +1052,7 @@ const pieceMovement = {
                 //the rook will always be 1 tile beside the king's original tile, in the king's direction
                 let rookMoveTile = tile.getElement(kingData.x + kingDirection, kingData.y);
 
-                //starting both animations, with only one animation ending
-                //the turn to prevent nextTurn being called twice
+                //starting both animations, with only one animation ending the turn to prevent nextTurn being called twice
                 pieceAnimation.start('normal', kingElement, kingMoveTile);
                 pieceAnimation.start('endTurn', rookElement, rookMoveTile);
                 return true;
