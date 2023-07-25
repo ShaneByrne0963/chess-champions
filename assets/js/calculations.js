@@ -163,14 +163,14 @@ function getTileScore(pieceData, moveTileData) {
     }
     //adding all the values of allies this tile will protect to the total score
     if (difficultyAllows(aiDifficulty.protectAllies)) {
-        if (tileEval.allyGuarded.length > 0) {
+        if (tileEval.allyGuarding.length > 0) {
             moveScore += getProtectingAllies(pieceData, moveTileData, tileEval.allyGuarding, false);
         }
         /*adding all the values of all the pieces where this tile will block an enemy attack.
             only do this if there are ally pieces that can attack this tile, in order to prevent pieces
             from moving into positions where the enemy can just attack and leave the ally piece vulnerable again*/
-        if (tileEval.allyProtect.length > 0 && tileEval.allyGuarding.length > 0) {
-            moveScore += getProtectingAllies(pieceData, moveTileData, tileEval.allyGuarding, true);
+        if (tileEval.allyProtect.length > 0 && tileEval.allyGuarded.length > 0) {
+            moveScore += getProtectingAllies(pieceData, moveTileData, tileEval.allyProtect, true);
         }
     }
     return moveScore;
@@ -489,13 +489,25 @@ function getPieceRelationship(tileData, evaluatingPiece, foundPiece, move, isBes
     //reversing the move to evaluate pieces that can attack the evaluating piece at this tile
     let moveReverse = [moveRule, -move[1], -move[2]];
 
-    if (foundPiece.color === evaluatingPiece.color) { //if the evaluation runs into a friendly piece
+    //if the evaluation runs into a friendly piece
+    if (foundPiece.color === evaluatingPiece.color) {
         //checking if the piece at this tile is blocking an enemy from attacking another piece
-        let oppositePiece = getPieceFromVector(tileData, evaluatingPiece, moveReverse);
-        if (oppositePiece[0] !== null && pieceMovement.canAttack(oppositePiece[0], moveForward, false)) {
-            //if this piece will block an enemy from attacking another piece, it is guarding that piece
-            tileEval.allyProtect = foundPiece;
-        } else {
+        let isBlocking = false;
+        if (moveRule === 'vector') {
+            let oppositePiece = getPieceFromVector(tileData, evaluatingPiece, moveReverse);
+            if (oppositePiece[0] !== null) {
+                if (oppositePiece[0].color !== evaluatingPiece.color && pieceMovement.canAttack(oppositePiece[0], moveForward, false)) {
+                    //if this piece will block an enemy from attacking another piece, it is guarding that piece
+                    tileEval.allyProtect = foundPiece;
+                    console.log(`${evaluatingPiece.piece} [${evaluatingPiece.x}, ${evaluatingPiece.y}] => [${tileData.x}, ${tileData.y}],
+                    found ${oppositePiece[0].piece} [${oppositePiece[0].x}, ${oppositePiece[0].y}]`);
+                    console.log(`Adding ${foundPiece.piece} [${foundPiece.x}, ${foundPiece.y}]`);
+                    debugger;
+                    isBlocking = true;
+                }
+            } 
+        }
+        if (!isBlocking) {
             //if the current piece can attack the friendly piece tile if an enemy moves to it
             if (pieceMovement.canAttack(evaluatingPiece, moveForward, isBeside)) {
                 tileEval.allyGuarding = foundPiece;
@@ -649,6 +661,7 @@ function simulateBattle(pieceData, tileEval) {
 
 /**
  * Calculates how much the targets at a tile will add to the total tile score
+ * @param {object} pieceData The data object {x, y, piece, color} of the piece doing the evaluation
  * @param {object} tileEval The evaluation done at this tile
  * @param {integer} battleScore The final score after a battle has taken place (see simulateBattle function)
  * @returns {integer} The extra score from the targets
@@ -676,6 +689,7 @@ function evaluateTargets(pieceData, tileEval, battleScore) {
                 totalValue += targetValue;
             }
             //simulating a battle at this tile to get the end result
+            console.log(`${pieceData.piece} [${pieceData.x}, ${pieceData.y}] targeting ${target.piece} [${target.x}, ${target.y}]`);
             let targetEval = evaluateTile(target, pieceData);
             let tileBattle = simulateBattle(pieceData, targetEval);
             //adding the value of the lost piece to the battlescore
@@ -738,11 +752,14 @@ function getProtectingAllies(pieceData, moveTileData, allies, isBlocking) {
             if (battleBefore.battleScore < 0 && battleAfter.battleScore >= 0) {
                 //adding the value of the ally to the total score
                 totalScore += chessPiece.getValue(ally);
+
+                if (isBlocking) {
+                    console.log(`${pieceData.piece} [${pieceData.x}, ${pieceData.y}] => [${moveTileData.x}, ${moveTileData.y}]`);
+                    console.log(`Protecting ${ally.piece} [${ally.x}, ${ally.y}]`);
+                    debugger;
+                }
             }
         }
-    }
-    if (isBlocking) {
-        console.log(totalScore);
     }
     return totalScore;
 }
