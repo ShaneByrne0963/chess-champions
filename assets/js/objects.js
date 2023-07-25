@@ -262,14 +262,11 @@ const chessPiece = {
     create: (tileElement, piece, color) => {
         //creating a new element and setting it's classes
         let newPiece = document.createElement('div');
-
-        //setting all the classes for the piece
         newPiece.className = `chess-piece ${color} ${piece} not-moved`;
 
         //finding the correct image using pieceImage and color
         chessPiece.setImage(newPiece, piece, color);
 
-        //adding the newly created element to the specified tile element
         tileElement.appendChild(newPiece);
     },
 
@@ -282,10 +279,9 @@ const chessPiece = {
     findElement: (x, y) => {
         //getting the tile at the specified coordinates
         let tileElement = tile.getElement(x, y);
-        //getting all the children at that tile
-        let tileChildren = tileElement.children;
 
         //loops through the children to find a piece
+        let tileChildren = tileElement.children;
         for (let child of tileChildren) {
             if (child.classList.contains('chess-piece')) {
                 return child;
@@ -313,13 +309,12 @@ const chessPiece = {
      * @returns {string} The type of piece, or an empty string if the tile is empty
      */
     getType: (pieceElement) => {
-        let piece = '';
         if (pieceElement !== null) {
             let tileClass = pieceElement.classList;
             //searching through all the classes until one matches one of the piece types
-            piece = chessPiece.getTypeFromClass(tileClass);
+            return chessPiece.getTypeFromClass(tileClass);
         }
-        return piece;
+        return '';
     },
 
     /**
@@ -392,15 +387,14 @@ const chessPiece = {
      * @param {string} newPiece The new piece type
      */
     setPieceType: (pieceElement, newPiece) => {
-        //getting the original piece type from the element
+        //removing the original piece type from the element
         let oldPiece = chessPiece.getTypeFromClass(pieceElement.classList);
-        //removing the piece type
         pieceElement.classList.remove(oldPiece);
         //and replacing it with the new one
         pieceElement.classList.add(newPiece);
-        //getting the color of the piece from it's parent tile
-        let pieceData = tile.getData(pieceElement.parentNode);
+
         //updating the piece image
+        let pieceData = tile.getData(pieceElement.parentNode);
         chessPiece.setImage(pieceElement, newPiece, pieceData.color);
     },
 
@@ -435,10 +429,7 @@ const chessPiece = {
 
         //setting and removing the passant class from pawns when necessary
         if (localStorage.getItem('passant') === 'enabled') {
-            //clearing all instances of en passant before setting a new one, because en passant
-            //is only possible in the move after it was taken
             chessPiece.clearPassant();
-            //checking if the piece is a pawn for en passant
             let pieceType = chessPiece.getTypeFromClass(pieceElement.classList);
             if (pieceType === 'pawn') {
                 let pieceY = tile.getY(pieceElement.parentNode);
@@ -473,12 +464,9 @@ const chessPiece = {
             let pieceData = tile.getData(pieceElement.parentNode);
             if (pieceData.piece === 'pawn') {
                 let newTileData = tile.getData(newTileElement);
-                //if the x coordinates don't match, it is an en passant move
-                //because this block only runs if the tile is empty
                 if (newTileData.x !== pieceData.x) {
                     //The passant pawn will have the finishing tile's x coordinate and the starting tile's y coordinate
                     let passantElement = chessPiece.findElement(newTileData.x, pieceData.y);
-                    //destroying the pawn
                     chessPiece.destroy(passantElement);
                 }
             }
@@ -505,9 +493,7 @@ const chessPiece = {
                 }
             }
         }
-        //if a pawn has moved to the other side of the board,
-        //stop the game until a piece to promote the pawn to has been selected.
-        //if not, continue the game as normal if specified in the endTurn paramter
+        //if a pawn has moved to the other side of the board, stop the game until a piece to promote the pawn to has been selected.
         if (endTurn && !pawnPromote) {
             nextTurn();
         }
@@ -522,14 +508,11 @@ const chessPiece = {
 
         //if the piece belongs to a human player, enable the banner to select a piece
         if (localStorage.getItem(color) === 'player') {
-            //adding the promoting class to the pawn to be accessed later
             pieceElement.id = 'promoting';
-            //enabling the banner to allow the player to promote a pawn
             setBanner('Pawn Promoted!', 'Select one of the following to promote your pawn to:', color);
         } else {
             //changing the piece to a queen if it is the computer
             chessPiece.setPieceType(pieceElement, 'queen');
-            //moving on to the next turn
             nextTurn();
         }
     },
@@ -542,10 +525,8 @@ const chessPiece = {
         //getting the pawn which reached the end of the board
         let pawnElement = document.getElementById('promoting');
 
-        //replacing it's piece type with the selected dead piece
+        //replacing it's piece type with the selected dead piece, and removing the promoting id
         chessPiece.setPieceType(pawnElement, piece);
-
-        //removing the 'promoting' id from the piece
         pawnElement.removeAttribute('id');
     },
 
@@ -559,10 +540,7 @@ const chessPiece = {
         let graveyardDiv = (pieceData.color === 'black') ? document.getElementById('player1-graveyard') : document.getElementById('player2-graveyard');
         graveyard.add(graveyardDiv, pieceData.piece);
 
-        //adding an announcement for the piece elimination
         announceElimination(pieceData);
-
-        //removes the piece from the DOM
         pieceElement.remove();
     },
 
@@ -573,12 +551,9 @@ const chessPiece = {
      * @returns {boolean} if the given tile has reached the end of the board
      */
     isAtBoardEnd: (color, y) => {
-        //getting which color started at the top
         let topColor = localStorage.getItem('topPosition');
         //if the player started on the top, then the end of the board is at the bottom. if not then the end is at the top
         let endPosition = (color === topColor) ? boardSize - 1 : 0;
-
-        //return true if the y value of the tile is at the end position
         return (y === endPosition);
     },
 
@@ -591,6 +566,7 @@ const chessPiece = {
         let lowestValue = chessPiece.getValue(pieces[0]);
         let lowestPosition = 0;
 
+        //iterating through the array, noting the element with the lowest value
         for (let i = 1; i < pieces.length; i++) {
             let currentPiece = pieces[i];
             let pieceValue = chessPiece.getValue(currentPiece);
@@ -612,6 +588,7 @@ const chessPiece = {
         let pieceElements = document.getElementsByClassName(color);
         let pieces = [];
 
+        //adding all the piece data objects of the specified color to this array
         for (let element of pieceElements) {
             pieces.push(tile.getData(element.parentNode));
         }
