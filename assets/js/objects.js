@@ -1356,8 +1356,8 @@ const pieceAnimation = {
      * @param {object} endTileElement The element the animation will end on
      */
     start: (animType, pieceElement, endTileElement) => {
-        //storing the frame position in the session storage
-        sessionStorage.setItem(`animFrame-${pieceAnimation.animationId}`, '0');
+        //storing when the animation started in the session storage
+        sessionStorage.setItem(`anim-${pieceAnimation.animationId}`, Date.now());
 
         //storing the id and function of the animation in an object to be accessed when the animation ends
         let animationData = {
@@ -1386,14 +1386,14 @@ const pieceAnimation = {
      * @param {object} endTileElement The tile the animation will finish on
      */
     nextFrame: (animType, animId, pieceElement, endTileElement) => {
-        let frame = parseInt(sessionStorage.getItem(`animFrame-${animId}`));
+        //the frame position is the current time minus the time when the animation started
+        let startTime = parseInt(sessionStorage.getItem(`anim-${animId}`));
+        let frame = Date.now() - startTime;
         pieceAnimation.setPosition(pieceElement, endTileElement, frame);
 
-        frame++;
         if (frame >= animationTime) {
             pieceAnimation.end(animType, animId, pieceElement, endTileElement);
         } else {
-            sessionStorage.setItem(`animFrame-${animId}`, frame);
             //starting another timeout to resemble an interval
             let animData = pieceAnimation.activeAnimations[pieceAnimation.getIntervalPosition(animId)];
             animData.interval = setTimeout(pieceAnimation.nextFrame, 1, animType, animId, pieceElement, endTileElement);
@@ -1466,7 +1466,7 @@ const pieceAnimation = {
      */
     end: (animType, animId, pieceElement, endTileElement) => {
         //removes the frame position from session storage
-        sessionStorage.removeItem(`animFrame-${animId}`);
+        sessionStorage.removeItem(`anim-${animId}`);
 
         //removing the z index style
         pieceElement.style.removeProperty('z-index');
@@ -1502,7 +1502,7 @@ const pieceAnimation = {
         while (pieceAnimation.activeAnimations.length > 0) {
             let animate = pieceAnimation.activeAnimations[0];
             //stopping the interval
-            clearInterval(animate.interval);
+            clearTimeout(animate.interval);
             //removing the animation from activeAnimations
             pieceAnimation.activeAnimations.shift();
         }

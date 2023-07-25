@@ -1,8 +1,7 @@
 //constants
 const boardSize = 8; //the width and height of the board in terms of tiles
-const animationTime = 100; //the amount of time the animation takes to move from one tile to another
-//the maximum number of announcements that can be displayed
-//when this limit is reached the oldest will be destroyed
+const animationTime = 500; //the amount of time the animation takes to move from one tile to another, in milliseconds
+//the maximum number of announcements that can be displayed. when this limit is reached the oldest will be destroyed
 const announcementLimit = 10;
 //the time it takes for an ai to make its move
 const aiDelay = 1000;
