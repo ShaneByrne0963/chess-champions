@@ -307,6 +307,7 @@ The website is deployed to Github Pages and can be found here: <https://shanebyr
     - If the user has selected the option to promote pawns from eliminated pieces, their pawns cannot move to the other side of the board unless they have a piece to bring back
     - Under the above conditions, a pawn cannot put a king in check if the king is at their end of the board
     - If a pawn cannot attack a king this way, but is in a position to attack, the other player cannot eliminate any pieces higher than a pawn to prevent this attack
+    - If Javascript is disabled on the browser, the user will be notified about this on the page
 - **Anchors and Buttons**
     - Every link, internal and external, has been clicked on every page and each one works as intended.
     - All external pages are opened in a new tab.
