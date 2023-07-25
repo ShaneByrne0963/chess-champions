@@ -29,24 +29,19 @@
             </div>
             <!--important information about player 1-->
             <div id="player1-ui">
-                <!--the player heading with icon-->
                 <h3>Player 1
                     <span><i class="fa-solid fa-chess-king"></i></span>
                 </h3>
-                <!--displays the enemy pieces destroyed by this player-->
                 <p class="small-text">Pieces Eliminated:</p>
                 <!--spans of destroyed pieces will be added to this div-->
                 <div id="player1-graveyard" class="graveyard"></div>
-                <!--will display the player's remaining time, if applicable-->
                 <div id="player1-time" class="small-text text-right"></div>
             </div>
             <!--important information about player 2-->
             <div id="player2-ui">
-                <!--the player heading with icon-->
                 <h3>Player 2
                     <span><i class="fa-solid fa-chess-king"></i></span>
                 </h3>
-                <!--displays the enemy pieces destroyed by this player-->
                 <p class="small-text">Pieces Eliminated:</p>
                 <!--spans of destroyed pieces will be added to this div-->
                 <div id="player2-graveyard" class="graveyard"></div>
@@ -62,11 +57,11 @@
             </div>
             <!--buttons for restarting the game or returning to the main menu-->
             <div id="ui-buttons">
-                <button onclick="startGame();" class="clickable">Restart Game</button>
+                <button onclick="startGame();" class="clickable" aria-label="Start the game from the beginning">Restart Game</button>
                 <a href="index.html" aria-label="Return to the game settings page">Back to Menu</a>
             </div>
         </div>
-        <!--where the game takes place. the structure of this div will be implemented in javascript-->
+        <!--where the game takes place. the main structure of the chess board will be created in javascript-->
         <div id="game-area">
             <div id="turn-game"></div>
             <div id="chess-board">
@@ -77,7 +72,6 @@
                     <h3>Banner Subheading</h3>
                     <!--The grid that will have the pawn promotion icons-->
                     <div id="promotion-icons" style="display: none;">
-                        <!--Each div represents a pawn promotion icon-->
                         <div id="promote-knight" class="clickable" onclick="selectPromotion('knight')"></div>
                         <div id="promote-bishop" class="clickable" onclick="selectPromotion('bishop')"></div>
                         <div id="promote-rook" class="clickable" onclick="selectPromotion('rook')"></div>
