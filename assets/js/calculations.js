@@ -285,7 +285,7 @@ function evaluateTile(tileData, evaluatingPiece) {
  * @param {object} evaluatingPiece  The data object {x, y, piece, color} of the tile the piece will move to
  * @param {object} pieceFromElement The piece element that will simulate movement
  * @param {object} tileToElement The element of the tile the piece will simulate to
- * @returns {object} {x, y, availableSpaces, enemyTarget, enemyThreat, allyGuarded, allyGuarding}
+ * @returns {object} {x, y, availableSpaces, enemyTarget, enemyThreat, allyGuarded, allyGuarding, allyProtect}
  */
 function evaluateTileWithMove(tileData, evaluatingPiece, pieceFromElement, tileToElement) {
     //storing pieceFrom's parent element so it can be returned after the evaluation
@@ -311,10 +311,27 @@ function evaluateTileWithMove(tileData, evaluatingPiece, pieceFromElement, tileT
 }
 
 /**
+ * Scans a tile's surroundings for targets, threats and allies, simulating a piece removed from the board
+ * @param {object} tileData  The data object {x, y, piece, color} of the piece that will make the move
+ * @param {object} evaluatingPiece  The data object {x, y, piece, color} of the tile the piece will move to
+ * @param {object} pieceGone The piece element that will simulate being removed
+ * @returns {object} {x, y, availableSpaces, enemyTarget, enemyThreat, allyGuarded, allyGuarding, allyProtect}
+ */
+function evaluateTileWithoutPiece(tileData, evaluatingPiece, pieceGone) {
+    let tileGone = pieceGone.parentNode;
+    document.getElementById("game").appendChild(pieceGone);
+
+    let tileEvaluation = evaluateTile(tileData, evaluatingPiece);
+
+    tileGone.appendChild(pieceGone);
+    return tileEvaluation;
+}
+
+/**
  * Finds the correct coordinates of two pieces performing a castle and evaluates the tile with a simulated move
  * @param {object} pieceMoveData The data object {x, y, piece, color} of the piece that is doing the evaluation
  * @param {object} otherPieceData The data object {x, y, piece, color} of the other piece that will take part in the move
- * @returns {object} A tile evaluation {x, y, availableSpaces, enemyTarget, enemyThreat, allyGuarded, allyGuarding}
+ * @returns {object} A tile evaluation {x, y, availableSpaces, enemyTarget, enemyThreat, allyGuarded, allyGuarding, allyProtect}
  */
 function evaluateTileCastle(pieceMoveData, otherPieceData) {
     //getting if the king will be moving to the left or right
@@ -733,20 +750,13 @@ function getProtectingAllies(pieceData, moveTileData, allies, isBlocking) {
         /*protecting the king this way is pointless as the king cannot be eliminated like other pieces
             however, if the piece is in the way of the enemy attacking the king, then the protect is valid*/
         if (isBlocking || ally.piece !== 'king') {
-            //checking if the allied piece is safe at its current tile before the move
-            let tileEval = evaluateTileWithMove(ally, ally, pieceElement, tileElement);
-            let battleAfter = simulateBattle(ally, tileEval);
-            //removing the moving piece from the ally's allyGuarded array to see how safe the ally is without it
-            for (let i = 0; i < tileEval.allyGuarded.length; i++) {
-                let currentAlly = tileEval.allyGuarded[i];
-                if (currentAlly.x === moveTileData.x && currentAlly.y === moveTileData.y) {
-                    tileEval.allyGuarded.splice(i, 1);
-                    break;
-                }
-            }
-            //simulating another battle but without the piece protecting it
+            //checking if the allied piece is safe at its current tile without the piece
+            let tileEval = evaluateTileWithoutPiece(ally, ally, pieceElement);
             let battleBefore = simulateBattle(ally, tileEval);
-            if (battleBefore.battleScore < 0 && battleAfter.battleScore >= 0) {
+            //then evaluating the current tile with the piece there
+            tileEval = evaluateTileWithMove(ally, ally, pieceElement, tileElement);
+            let battleAfter = simulateBattle(ally, tileEval);
+            if ((battleBefore.battleScore < 0 && battleAfter.battleScore >= 0) || (isBlocking && ally.piece === 'king')) {
                 //adding the value of the ally to the total score
                 totalScore += chessPiece.getValue(ally);
             }
