@@ -23,7 +23,6 @@ function makeMove(color) {
 
     //getting all the pieces on the board that belong to the ai
     let pieces = chessPiece.getAll(color);
-
     //before checking all the moves, the scores of all the pieces in their current positions will be calculated and stored
     let currentScores = [];
     for (let pieceData of pieces) {
@@ -53,16 +52,13 @@ function getBestMoves(pieceDataList, pieceCurrentScores) {
     let highestScore = 0;
     //highestScore will be set to the first checked tile. after that any tile will have to beat the score to be set
     let isFirstCheck = true;
-    //in case there are multiple pieces with the highest score, their info will all be stored in this array and chosen at random
     let highestScorePieces = [];
     for (let i = 0; i < pieceDataList.length; i++) {
         let currentPiece = pieceDataList[i];
-        //only used for adding and removing the 'passant' class
+        currentPiece.highestMoves = [];
         let pieceElement = null;
         //if the piece has not yet been added to the high score array
         let added = false;
-        //stores any moves that have the same score as the highest score
-        currentPiece.highestMoves = [];
         //gets all of the tiles the current piece can move to
         let tileMoves = pieceMovement.getAllMoveTiles(currentPiece);
 
@@ -102,8 +98,7 @@ function getBestMoves(pieceDataList, pieceCurrentScores) {
                         added = true;
                         highestScorePieces.push(currentPiece);
                     }
-                    //if this score is higher than the highest score, then remove everything
-                    //from the high score lists and start over with the new high score
+                    //if this score is higher than the highest score, then remove everything from the high score lists and start over with the new high score
                     if (moveScore > highestScore) {
                         highestScorePieces = [currentPiece];
                         currentPiece.highestMoves = [];
@@ -119,14 +114,12 @@ function getBestMoves(pieceDataList, pieceCurrentScores) {
 
 /**
  * Gets how good a particular move would be using a score system
- * @param {object} currentPiece The data object {x, y, piece, color} of the piece that will make the move
- * @param {object} moveTile The data object {x, y, piece, color} of the tile the piece will move to
+ * @param {object} pieceData The data object {x, y, piece, color} of the piece that will make the move
+ * @param {object} moveTileData The data object {x, y, piece, color} of the tile the piece will move to
  * @returns {integer} The total score of the move
  */
 function getTileScore(pieceData, moveTileData) {
-    //each move will have a score
     let moveScore = 0;
-    //monitoring all the tiles around it for information
     let tileEval;
     if (!(pieceData.x === moveTileData.x && pieceData.y === moveTileData.y) && moveTileData.color === pieceData.color) {
         //for a castling move
@@ -143,13 +136,11 @@ function getTileScore(pieceData, moveTileData) {
     if (difficultyAllows(aiDifficulty.protectKing)) {
         moveScore += getKingSafeTiles(pieceData.color, pieceData, moveTileData) * 30;
     }
-    //increasing the score if the enemy king has less spaces to move to
+    //the less tiles the enemy king has to move to, the higher the score
     if (difficultyAllows(aiDifficulty.surroundKing)) {
         let enemyColor = (pieceData.color === 'white') ? 'black' : 'white';
-        //the less tiles the enemy king has to move to, the higher the score
         moveScore += (8 - getKingSafeTiles(enemyColor, pieceData, moveTileData)) * 30;
     }
-
     //calculates the risk of the piece getting eliminated if it moves to this tile
     let battleScore = 0;
     let tileBattle = simulateBattle(pieceData, tileEval);
@@ -172,13 +163,12 @@ function getTileScore(pieceData, moveTileData) {
     }
     //adding all the values of allies this tile will protect to the total score
     if (difficultyAllows(aiDifficulty.protectAllies)) {
-        //adding the values of all the pieces this piece can move to on an enemy attack
         if (tileEval.allyGuarded.length > 0) {
             moveScore += getProtectingAllies(pieceData, moveTileData, tileEval.allyGuarding, false);
         }
-        //adding all the values of all the pieces where this tile will block an enemy attack.
-        //only do this if there are ally pieces that can attack this tile, in order to prevent pieces
-        //from moving into positions where the enemy can just attack and leave the ally piece vulnerable again
+        /*adding all the values of all the pieces where this tile will block an enemy attack.
+            only do this if there are ally pieces that can attack this tile, in order to prevent pieces
+            from moving into positions where the enemy can just attack and leave the ally piece vulnerable again*/
         if (tileEval.allyProtect.length > 0 && tileEval.allyGuarding.length > 0) {
             moveScore += getProtectingAllies(pieceData, moveTileData, tileEval.allyGuarding, true);
         }
@@ -202,7 +192,6 @@ function getMoveOnlyScore(pieceData, moveTileData) {
         //adding the score of any eliminated pawn from an en passant move
         if (pieceData.piece === 'pawn') {
             if (moveTileData.piece === '') {
-                //finding the move the piece took to get to this tile using the differences between their coordinates
                 let move = ['', moveTileData.x - pieceData.x, moveTileData.y - pieceData.y];
                 if (pieceMovement.canPassant(pieceData, move)) {
                     //finding the pawn that will be eliminated from the passant, which will be to the left or right of the starting tile
@@ -234,10 +223,8 @@ function findPawnScore(pieceData, moveTileData) {
     if (localStorage.getItem('pawnPromotion') === 'any') {
         tileScore = 24;
     }
-    //if the pawn can only be promoted to pieces from the grave, then the
-    //score will depend on the best piece to revive
+    //if the pawn can only be promoted to pieces from the grave, then the score will depend on the best piece to revive
     else {
-        //finding the grave piece with the highest value, if any
         let highestValue = 0;
         let graves = graveyard.getElements(pieceData.color);
         for (let grave of graves) {
@@ -247,8 +234,8 @@ function findPawnScore(pieceData, moveTileData) {
                 highestValue = graveValue;
             }
         }
-        //adding 15 points added with 1% of the highest piece in the graveyard's value.
-        //if the queen in in the graveyard this brings the score to 24
+        /*adding 15 points added with 1% of the highest piece in the graveyard's value.
+            if the queen in in the graveyard this brings the score to 24*/
         tileScore = 15 + (highestValue / 100);
     }
     return pieceMovement.getForwardDistance(moveTileData.y, pieceData.color) * tileScore;
@@ -309,7 +296,6 @@ function evaluateTileWithMove(tileData, evaluatingPiece, pieceFromElement, tileT
     if (pieceTo !== null) {
         document.getElementById("game").appendChild(pieceTo);
     }
-
     //temporarily set pieceFrom's parent element to tileToElement
     tileToElement.appendChild(pieceFromElement);
 
@@ -325,8 +311,7 @@ function evaluateTileWithMove(tileData, evaluatingPiece, pieceFromElement, tileT
 }
 
 /**
- * Finds the correct coordinates of two pieces performing a castle and evaluates the tile
- * with a simulated move
+ * Finds the correct coordinates of two pieces performing a castle and evaluates the tile with a simulated move
  * @param {object} pieceMoveData The data object {x, y, piece, color} of the piece that is doing the evaluation
  * @param {object} otherPieceData The data object {x, y, piece, color} of the other piece that will take part in the move
  * @returns {object} A tile evaluation {x, y, availableSpaces, enemyTarget, enemyThreat, allyGuarded, allyGuarding}
@@ -372,8 +357,7 @@ function evaluateTileCastle(pieceMoveData, otherPieceData) {
  * @returns {object} {availableSpaces, enemyTarget, enemyThreat, allyGuarded, allyGuarding, allyProtect}
  */
 function evaluateTileVector(tileData, evaluatingPiece, move) {
-    //storing the relationships between the piece that is
-    //doing the checking and any piece it hits
+    //storing the relationships between the piece that is doing the checking and any piece it hits
     let tileEval = {
         availableSpaces: 0,
         enemyTarget: null,
@@ -419,7 +403,7 @@ function getPieceFromVector(tileData, evaluatingPiece, move) {
 
     //keep moving in the direction of the vector until it goes out of bounds, or it hits a piece (evaluated inside the loop)
     while (tile.inBounds(x, y)) {
-        //stop the vector if it comes into contact with itself
+        //stop the vector if it comes into contact with a piece that is not itself
         if (!(x === evaluatingPiece.x && y === evaluatingPiece.y)) {
             let foundPiece = chessPiece.findData(x, y);
             if (foundPiece.piece !== '') {
@@ -445,8 +429,7 @@ function evaluateTilePoint(tileData, evaluatingPiece, move) {
     let x = tileData.x + move[1];
     let y = tileData.y + move[2];
 
-    //storing the relationships between the piece that is
-    //doing the checking and any piece it hits
+    //storing the relationships between the piece that is doing the checking and any piece it hits
     let tileEval = {
         availableSpaces: 0,
         enemyTarget: null,
@@ -460,14 +443,12 @@ function evaluateTilePoint(tileData, evaluatingPiece, move) {
     if (tile.inBounds(x, y)) {
         //getting the information of a tile if it has a piece or not
         let foundPiece = chessPiece.findData(x, y);
-        //stop the vector if it comes into contact with itself
         if (!(x === evaluatingPiece.x && y === evaluatingPiece.y)) {
             if (foundPiece.piece !== '') {
                 tileEval = getPieceRelationship(tileData, evaluatingPiece, foundPiece, move, false);
             }
         }
         //if the tile can be moved to in the move after this one, it will increase availableSpaces
-        //we will include the the tile the piece is already on because it can always move back to it's original position
         if (evaluatingPiece.piece === 'knight' && (foundPiece.color !== evaluatingPiece.color || (x === evaluatingPiece.x && y === evaluatingPiece.y))) {
             tileEval.availableSpaces++;
         }
@@ -544,25 +525,20 @@ function getPieceRelationship(tileData, evaluatingPiece, foundPiece, move, isBes
  * @returns {object} The tileEvaluation array combined with the move result
  */
 function addPieceRelationship(tileEvaluation, moveResults) {
-    //adding the available spaces to the total evaluation
+    //adding all the elements in moveResults to the total evaluation
     tileEvaluation.availableSpaces += moveResults.availableSpaces;
-    //adding the allyGuarding results to the total evaluation
     if (moveResults.allyGuarding !== null) {
         tileEvaluation.allyGuarding.push(moveResults.allyGuarding);
     }
-    //adding the allyGuarded results to the total evaluation
     if (moveResults.allyGuarded !== null) {
         tileEvaluation.allyGuarded.push(moveResults.allyGuarded);
     }
-    //adding the allyProtect results to the total evaluation
     if (moveResults.allyProtect !== null) {
         tileEvaluation.allyProtect.push(moveResults.allyProtect);
     }
-    //adding the enemyTarget results to the total evaluation
     if (moveResults.enemyTarget !== null) {
         tileEvaluation.enemyTarget.push(moveResults.enemyTarget);
     }
-    //adding the enemyThreat results to the total evaluation
     if (moveResults.enemyThreat !== null) {
         tileEvaluation.enemyThreat.push(moveResults.enemyThreat);
     }
@@ -742,29 +718,25 @@ function getProtectingAllies(pieceData, moveTileData, allies, isBlocking) {
     //getting the element of the piece and the tile it is moving to to simulate the move in the evaluation
     let pieceElement = chessPiece.findElement(pieceData.x, pieceData.y);
     let tileElement = tile.getElement(moveTileData.x, moveTileData.y);
-    //iterating through all of the allies the piece can protect
     for (let ally of allies) {
-        //protecting the king this way is pointless as the king cannot be eliminated like other pieces
-        //however, if the piece is in the way of the enemy attacking the king, then the protect is valid
+        /*protecting the king this way is pointless as the king cannot be eliminated like other pieces
+            however, if the piece is in the way of the enemy attacking the king, then the protect is valid*/
         if (isBlocking || ally.piece !== 'king') {
             //checking if the allied piece is safe at its current tile before the move
             let tileEval = evaluateTileWithMove(ally, ally, pieceElement, tileElement);
-            //getting the score of the battle with the piece protecting it
             let battleAfter = simulateBattle(ally, tileEval);
-            //removing the moving piece from the ally's allyGuarded array
+            //removing the moving piece from the ally's allyGuarded array to see how safe the ally is without it
             for (let i = 0; i < tileEval.allyGuarded.length; i++) {
                 let currentAlly = tileEval.allyGuarded[i];
                 if (currentAlly.x === moveTileData.x && currentAlly.y === moveTileData.y) {
-                    //removing the piece from the array
                     tileEval.allyGuarded.splice(i, 1);
                     break;
                 }
             }
             //simulating another battle but without the piece protecting it
             let battleBefore = simulateBattle(ally, tileEval);
-            //if the ally is not safe without the piece but is safe with it
             if (battleBefore.battleScore < 0 && battleAfter.battleScore >= 0) {
-                //adding the value of that piece to the total score
+                //adding the value of the ally to the total score
                 totalScore += chessPiece.getValue(ally);
             }
         }
@@ -791,9 +763,8 @@ function getKingSafeTiles(color, pieceFromData, tileToData) {
     } else {
         kingData = tile.findKing(color);
     }
-    //iterating through all the possible moves the king can take
+    //iterating through all the possible moves the king can take, except for castling moves
     for (let move of pieceMovement.king) {
-        //not taking the castling moves into consideration
         if (move[0] === 'normal') {
             let tileX, tileY;
             //adding the move coordinates to where the king will be for this evaluation
@@ -814,14 +785,13 @@ function getKingSafeTiles(color, pieceFromData, tileToData) {
                     if (pieceFromData.piece === 'king' || (pieceFromData.x === tileToData.x && pieceFromData.y === tileToData.y)) {
                         tileEval = evaluateTile(moveTile, kingData);
                     } else {
-                        //if another piece is moving, this can affect how many safe spaces the king can
-                        //move to, so we will simulate this move before the evaluation
+                        /*if another piece is moving, this can affect how many safe spaces the king can
+                            move to, so we will simulate this move before the evaluation*/
                         let pieceFromElement = chessPiece.findElement(pieceFromData.x, pieceFromData.y);
                         let tileToElement = tile.getElement(tileToData.x, tileToData.y);
                         tileEval = evaluateTileWithMove(moveTile, kingData, pieceFromElement, tileToElement);
                     }
-                    //if there is no threat at this tile, or if an ally piece can move in the way
-                    //of an attack, then it is safe
+                    //if there is no threat at this tile, or if an ally piece can move in the way of an attack, then it is safe
                     if (tileEval.enemyThreat.length === 0 || tileEval.allyGuarded.length > 0) {
                         safeTiles++;
                     }
