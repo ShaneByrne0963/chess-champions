@@ -411,7 +411,7 @@ function nextTurn() {
             //ending the game
             timer.clear();
             addAnnouncement(`Stalemate! It's a draw!`);
-            setBanner('Checkmate!', `It's a draw!`, '');
+            setBanner('Stalemate!', `It's a draw!`, '');
             //removes the checkmate banner after a certain amount of time to allow the user to see the board again
             setTimeout(removeBanner, checkmateBannerTime);
         }

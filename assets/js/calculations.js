@@ -5,7 +5,7 @@
 const aiDifficulty = {
     attackPiece: [0, 20],
     addSpaces: [10, 75],
-    checkTileSafety: [0, 70],
+    checkTileSafety: [0, 50],
     protectAllies: [20, 85],
     considerTargets: [30, 90],
     targetDilemma: [50, 100], //checks if multiple targets can be safely attacked from a single tile
@@ -757,6 +757,7 @@ function getProtectingAllies(pieceData, moveTileData, allies, isBlocking) {
                 if (currentAlly.x === moveTileData.x && currentAlly.y === moveTileData.y) {
                     //removing the piece from the array
                     tileEval.allyGuarded.splice(i, 1);
+                    break;
                 }
             }
             //simulating another battle but without the piece protecting it
@@ -767,6 +768,9 @@ function getProtectingAllies(pieceData, moveTileData, allies, isBlocking) {
                 totalScore += chessPiece.getValue(ally);
             }
         }
+    }
+    if (isBlocking) {
+        console.log(totalScore);
     }
     return totalScore;
 }
