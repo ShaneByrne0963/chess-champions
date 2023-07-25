@@ -293,6 +293,7 @@ The website is deployed to Github Pages and can be found here: <https://shanebyr
 ### Manual Testing
 
 - **Form Inputs**
+    - Where relevant, the player name inputs, 
 - **User Interaction**
 - **Anchors and Buttons**
 - **Media Queries**

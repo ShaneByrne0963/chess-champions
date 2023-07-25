@@ -460,25 +460,31 @@ function optionTimer() {
         <div class="text-right">
             <input type="number" value="${localStorage.getItem('timeHours')}" id="hours"
             class="text-right" min="0" max="9" onchange="updateTimeValues('hours', value)"`;
-    //making the number input disabled if the time limit checkbox is not checked
+    //making the number input disabled if the time limit checkbox is not checked, and required if it is
     if (localStorage.getItem('timeLimit') === 'disabled') {
         htmlString += ` disabled`;
+    } else {
+        htmlString += ` required`;
     }
     htmlString += `>
             <label for="hours" class="small-text">Hours</label>
             <input type="number" value="${localStorage.getItem('timeMinutes')}" id="minutes"
             class="text-right" onchange="updateTimeValues('minutes', value)"`;
-    //making the number input disabled if the time limit checkbox is not checked
+    //making the number input disabled if the time limit checkbox is not checked, and required if it is
     if (localStorage.getItem('timeLimit') === 'disabled') {
         htmlString += ` disabled`;
+    } else {
+        htmlString += ` required`;
     }
     htmlString += `>
             <label for="minutes" class="small-text">Minutes</label>
             <input type="number" value="${localStorage.getItem('timeSeconds')}" id="seconds"
             class="text-right" onchange="updateTimeValues('seconds', value)"`;
-    //making the number input disabled if the time limit checkbox is not checked
+    //making the number input disabled if the time limit checkbox is not checked, and required if it is
     if (localStorage.getItem('timeLimit') === 'disabled') {
         htmlString += ` disabled`;
+    } else {
+        htmlString += ` required`;
     }
     htmlString += `>
             <label for="seconds" class="small-text">Seconds</label>
