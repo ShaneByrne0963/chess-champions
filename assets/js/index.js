@@ -153,13 +153,16 @@ function updatePlayerVariables(playerType) {
  * @param {string} value The text that will be set to the player name
  */
 function updatePlayerName(id, value) {
-    if (value.length <= 10) {
-        localStorage.setItem(id, value);
-    } else {
-        alert("Sorry, but the name cannot be longer than 10 characters!");
+    value = value.trim();
+    if (value == '' || value.length > 10) {
+        if (value.length > 10) {
+            alert("Sorry, but the name cannot be longer than 10 characters!");
+        }
         //resetting the input
         let playerElement = document.getElementById(id);
         playerElement.value = '';
+    } else {
+        localStorage.setItem(id, value);
     }
 }
 
