@@ -199,7 +199,6 @@ function setPlayerNames() {
     //setting the inner text to the names stored in local storage, or as 'Chess Bot' if the player is the computer
     let player1Type = localStorage.getItem('white');
     let player2Type = localStorage.getItem('black');
-    //setting player 1's name
     if (player1Type === 'player') {
         player1Heading.innerHTML = localStorage.getItem('p1-name');
     } else {
@@ -209,9 +208,12 @@ function setPlayerNames() {
             player1Heading.innerHTML = 'Chess Bot';
         }
     }
-    //setting player 2's name
     if (player2Type === 'player') {
-        player2Heading.innerHTML = localStorage.getItem('p2-name');
+        if (player1Type === 'computer') {
+            player2Heading.innerHTML = localStorage.getItem('p1-name');
+        } else {
+            player2Heading.innerHTML = localStorage.getItem('p2-name');
+        }
     } else {
         if (player1Type === 'computer') {
             player2Heading.innerHTML = 'Chess Bot 2';
