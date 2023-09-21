@@ -647,7 +647,7 @@ function simulateBattle(pieceData, tileEval) {
         //finding the values of the current piece and the piece with the lowest value that is threatening it
         //stops high value pieces moving to tiles where they can be attacked by low value pieces
         let pieceValue = chessPiece.getValue(pieceData);
-        let lowestEnemy = chessPiece.findLowestValue(tileEval.enemyThreat);
+        let lowestEnemy = chessPiece.findValuePlace(tileEval.enemyThreat, -1);
 
         //removing the current pieces value from the score
         //as the first move of the battle will be to eliminate the current piece
@@ -660,8 +660,8 @@ function simulateBattle(pieceData, tileEval) {
                 //finding the piece with the lowest value in each of the tiles
                 //and keeping their values (stored in the first element) and
                 //their positions in the array (stored in the second element)
-                lowestEnemy = chessPiece.findLowestValue(aftermath.remainingEnemies);
-                let lowestAlly = chessPiece.findLowestValue(aftermath.remainingAllies);
+                lowestEnemy = chessPiece.findValuePlace(aftermath.remainingEnemies, -1);
+                let lowestAlly = chessPiece.findValuePlace(aftermath.remainingAllies, -1);
 
                 //the first move of each loop in the battle will be the ally
                 //adding the value of the enemy most likely to have attacked (the one with the lowest value) to the score
@@ -672,7 +672,7 @@ function simulateBattle(pieceData, tileEval) {
                 //if there are still enemies that can attack, they will make the next move
                 if (aftermath.remainingEnemies.length > 0) {
                     //updating the lowest enemy value as the old one was removed from the array
-                    lowestEnemy = chessPiece.findLowestValue(aftermath.remainingEnemies);
+                    lowestEnemy = chessPiece.findValuePlace(aftermath.remainingEnemies, -1);
 
                     //removing the ally with the lowest value from the score and array
                     aftermath.battleScore -= lowestAlly[0];
@@ -728,7 +728,7 @@ function evaluateTargets(pieceData, tileEval, battleScore) {
         //the enemy, so give it a high score
         if (safeTargets.length > 1) {
             //finds the target with the lowest value. The first element in the array is the value
-            let lowestTarget = chessPiece.findLowestValue(safeTargets)[0];
+            let lowestTarget = chessPiece.findValuePlace(safeTargets, -1)[0];
             if (tileEval.enemyThreat.length > 0) {
                 //if there are threats at this tile, the enemy may start the battle if it benifits them more
                 targetScore = (lowestTarget < battleScore) ? lowestTarget : battleScore;

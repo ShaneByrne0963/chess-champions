@@ -558,25 +558,35 @@ const chessPiece = {
     },
 
     /**
-     * Finds the piece with the lowest value in an array
+     * Finds the piece in an array with a certain placed value
      * @param {object} pieces The tile data {x, y, piece, color} of all the pieces to be checked
-     * @returns An array containing the lowest value and it's position on the pieces array [lowestValue, lowestPosition]
+     * @param {int} place The place of the piece you wish to find (e.g 1 for highest value, 2 for second highest.... -1 for lowest)
+     * @returns An array containing the "place"th placed value and it's position on the pieces array [lowestValue, lowestPosition]
      */
-    findLowestValue: (pieces) => {
-        let lowestValue = chessPiece.getValue(pieces[0]);
-        let lowestPosition = 0;
+    findValuePlace: (pieces, place) => {
+        let sortedList = [];
 
-        //iterating through the array, noting the element with the lowest value
-        for (let i = 1; i < pieces.length; i++) {
+        for (let i = 0; i < pieces.length; i++) {
             let currentPiece = pieces[i];
             let pieceValue = chessPiece.getValue(currentPiece);
-            if (pieceValue < lowestValue) {
-                lowestValue = pieceValue;
-                lowestPosition = i;
+            if (sortedList.length === 0) {
+                sortedList.push([pieceValue, i]);
+            } else {
+                let j = 0;
+                while (j < sortedList.length) {
+                    arrayValue = sortedList[j][0];
+                    if (pieceValue > arrayValue) {
+                        break;
+                    }
+                    j++;
+                }
+                sortedList.splice(j, 0, [[pieceValue, i]]);
             }
         }
-
-        return [lowestValue, lowestPosition];
+        if (place < 0) {
+            place += sortedList.length;
+        }
+        return sortedList[place];
     },
 
     /**
