@@ -545,23 +545,51 @@ const chessPiece = {
     },
 
     /**
+     * Sets up the information before a piece simulates a move, in order to return
+     * it to it's original tile
+     */
+    alter: (pieceData) => {
+        let pieceElement = chessPiece.findElement(pieceData.x, pieceData.y);
+        if (pieceElement.id === '') {
+            let idIndex = 0;
+            let pieceId = 'altered-0';
+            // Finding a unique ID for the piece about to be altered
+            while (sessionStorage.getItem(pieceId) != null) {
+                idIndex++;
+                pieceId = `altered-${idIndex}`;
+            }
+            pieceElement.id = pieceId;
+            sessionStorage.setItem(pieceId, `${pieceData.x},${pieceData.y}`);
+        }
+    },
+
+    /**
+     * Simulates a piece moving on the board. Used for tile evaluation
+     * @param {object} pieceData The data object {x, y, piece, color} of the piece to be moved
+     * @param {integer} tileX The x coordinate of the tile the piece will move to
+     * @param {integer} tileY The y coordinate of the tile the piece will move to
+     */
+    simulateMove: (pieceData, tileX, tileY) => {
+        chessPiece.alter(pieceData);
+        let moveTileData = chessPiece.findData(tileX, tileY);
+
+        if (moveTileData.piece !== '') {
+            chessPiece.hide(moveTileData);
+        }
+        let pieceElement = chessPiece.findElement(pieceData.x, pieceData.y);
+        let moveTileElement = tile.getElement(tileX, tileY);
+        moveTileElement.appendChild(pieceElement);
+    },
+
+    /**
      * Hides a chess piece from the board. Used for evaluating the board without a piece(s).
      * If this is called, then chessPiece.returnAll() must be called on the same frame to avoid
      * visual errors
      * @param {object} pieceData The data object {x, y, piece, color} of the piece to be hidden
      */
     hide: (pieceData) => {
-        let idIndex = 0;
-        let pieceId = 'altered-0';
+        chessPiece.alter(pieceData);
         let pieceElement = chessPiece.findElement(pieceData.x, pieceData.y);
-
-        // Finding a unique ID for the 
-        while (sessionStorage.getItem(pieceId) != null) {
-            idIndex++;
-            pieceId = `altered-${idIndex}`;
-        }
-        pieceElement.id = pieceId;
-        sessionStorage.setItem(pieceId, `${pieceData.x},${pieceData.y}`);
         document.getElementById("game").appendChild(pieceElement);
     },
 

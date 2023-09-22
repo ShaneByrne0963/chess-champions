@@ -253,7 +253,6 @@ function tileClick(x, y) {
             //selecting the piece that has been clicked on
             let pieceElement = tile.getPieceElement(clickedTile);
             if (pieceElement !== null) {
-                let pieceData = tile.getData(clickedTile);
                 tile.select(clickedTile);
             }
         }
