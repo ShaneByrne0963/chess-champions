@@ -727,15 +727,19 @@ function evaluateTargets(pieceData, tileEval, battleScore) {
         //if there is more than one target that is safe to attack, then this tile is a real threat to
         //the enemy, so give it a high score
         if (safeTargets.length > 1) {
-            //finds the target with the lowest value. The first element in the array is the value
-            let lowestTarget = chessPiece.findValuePlace(safeTargets, -1)[0];
+            //finds the target with the second highest value. The first element in the array is the value
+            let debugPlace = -1;
+            if (pieceData.color === 'white') {
+                debugPlace = 2;
+            }
+            let bestTarget = chessPiece.findValuePlace(safeTargets, debugPlace)[0];
             if (tileEval.enemyThreat.length > 0) {
                 //if there are threats at this tile, the enemy may start the battle if it benifits them more
-                targetScore = (lowestTarget < battleScore) ? lowestTarget : battleScore;
+                targetScore = (bestTarget < battleScore) ? bestTarget : battleScore;
             } else {
                 //if there are no pieces threatening this tile, then add the target with the
                 //lowest score to this tile because the enemy may sacrifice it to save the higher value piece
-                targetScore = lowestTarget;
+                targetScore = bestTarget;
             }
         } else {
             //add 10% of the target's score if there is only one of them

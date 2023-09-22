@@ -580,11 +580,14 @@ const chessPiece = {
                     }
                     j++;
                 }
-                sortedList.splice(j, 0, [[pieceValue, i]]);
+                sortedList.splice(j, 0, [pieceValue, i]);
             }
         }
         if (place < 0) {
             place += sortedList.length;
+        } else {
+            // Removing 1 from the place to make it compatible with array indexing
+            place -= 1;
         }
         return sortedList[place];
     },
