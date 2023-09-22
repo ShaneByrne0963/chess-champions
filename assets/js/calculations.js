@@ -190,7 +190,7 @@ function getMoveOnlyScore(pieceData, moveTileData) {
     //if there is an enemy piece already on the tile, then add that piece's value to the score
     if (difficultyAllows(aiDifficulty.attackPiece)) {
         if (moveTileData.color !== '' && moveTileData.color !== pieceData.color) {
-            moveScore += chessPiece.getValue(moveTileData);
+            moveScore += (chessPiece.getValue(moveTileData) / 10) * 9;
 
             //if the enemy at this tile could have attacked another piece, increase the score at this tile
             if (difficultyAllows(aiDifficulty.protectAllies)) {
@@ -735,11 +735,11 @@ function evaluateTargets(pieceData, tileEval, battleScore) {
             let bestTarget = chessPiece.findValuePlace(safeTargets, debugPlace)[0];
             if (tileEval.enemyThreat.length > 0) {
                 //if there are threats at this tile, the enemy may start the battle if it benifits them more
-                targetScore = (bestTarget < battleScore) ? bestTarget : battleScore;
+                targetScore = (bestTarget < battleScore) ? (bestTarget / 10) * 9 : battleScore;
             } else {
                 //if there are no pieces threatening this tile, then add the target with the
                 //lowest score to this tile because the enemy may sacrifice it to save the higher value piece
-                targetScore = bestTarget;
+                targetScore = (bestTarget / 10) * 9;
             }
         } else {
             //add 10% of the target's score if there is only one of them
