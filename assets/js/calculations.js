@@ -749,6 +749,12 @@ function evaluateTargets(pieceData, tileEval, battleScore) {
     return targetScore;
 }
 
+function evaluateAlliesSaved(pieceData, attackingPieceData) {
+    let targetScore = 0;
+
+    return targetScore;
+}
+
 /**
  * Gets the score of a tile based on how many pieces the moving piece can protect
  * @param {object} pieceData The data object {x, y, piece, color} of the piece looking to move

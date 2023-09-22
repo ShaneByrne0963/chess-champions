@@ -545,6 +545,48 @@ const chessPiece = {
     },
 
     /**
+     * Hides a chess piece from the board. Used for evaluating the board without a piece(s).
+     * If this is called, then chessPiece.returnAll() must be called on the same frame to avoid
+     * visual errors
+     * @param {object} pieceData The data object {x, y, piece, color} of the piece to be hidden
+     */
+    hide: (pieceData) => {
+        let idIndex = 0;
+        let pieceId = 'altered-0';
+        let pieceElement = chessPiece.findElement(pieceData.x, pieceData.y);
+
+        // Finding a unique ID for the 
+        while (sessionStorage.getItem(pieceId) != null) {
+            idIndex++;
+            pieceId = `altered-${idIndex}`;
+        }
+        pieceElement.id = pieceId;
+        sessionStorage.setItem(pieceId, `${pieceData.x},${pieceData.y}`);
+        document.getElementById("game").appendChild(pieceElement);
+    },
+
+    /**
+     * Returns all hidden pieces back to their positions on the board
+     */
+    returnAll: () => {
+        let idIndex = 0;
+        let pieceId = 'altered-0';
+
+        while (sessionStorage.getItem(pieceId) != null) {
+            let pieceLocation = sessionStorage.getItem(pieceId);
+            let pieceX = parseInt(pieceLocation[0]);
+            let pieceY = parseInt(pieceLocation[2]);
+            let hiddenPiece = document.getElementById(pieceId);
+            let originalTile = tile.getElement(pieceX, pieceY);
+            originalTile.appendChild(hiddenPiece);
+            hiddenPiece.removeAttribute('id');
+            sessionStorage.removeItem(pieceId);
+            idIndex++;
+            pieceId = `altered-${idIndex}`;
+        }
+    },
+
+    /**
      * Gets if a certain tile is at the end of the board
      * @param {string} color The color of the piece
      * @param {integer} y The y position of the piece
