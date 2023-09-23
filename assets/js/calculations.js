@@ -326,16 +326,13 @@ function evaluateTileWithMove(tileData, evaluatingPiece, pieceFromElement, tileT
  * Scans a tile's surroundings for targets, threats and allies, simulating a piece removed from the board
  * @param {object} tileData  The data object {x, y, piece, color} of the piece that will make the move
  * @param {object} evaluatingPiece  The data object {x, y, piece, color} of the tile the piece will move to
- * @param {object} pieceGone The piece element that will simulate being removed
+ * @param {object} pieceGone The data object {x, y, piece, color} of the piece that will simulate being removed
  * @returns {object} {x, y, availableSpaces, enemyTarget, enemyThreat, allyGuarded, allyGuarding, allyProtect}
  */
 function evaluateTileWithoutPiece(tileData, evaluatingPiece, pieceGone) {
-    let tileGone = pieceGone.parentNode;
-    document.getElementById("game").appendChild(pieceGone);
-
+    chessPiece.hide(pieceGone)
     let tileEvaluation = evaluateTile(tileData, evaluatingPiece);
-
-    tileGone.appendChild(pieceGone);
+    chessPiece.returnLast();
     return tileEvaluation;
 }
 
@@ -735,11 +732,11 @@ function evaluateTargets(pieceData, tileEval, battleScore) {
             let bestTarget = chessPiece.findValuePlace(safeTargets, debugPlace)[0];
             if (tileEval.enemyThreat.length > 0) {
                 //if there are threats at this tile, the enemy may start the battle if it benifits them more
-                targetScore = (bestTarget < battleScore) ? (bestTarget / 10) * 9 : battleScore;
+                targetScore = (bestTarget < battleScore) ? (bestTarget / 10) * 8 : battleScore;
             } else {
                 //if there are no pieces threatening this tile, then add the target with the
                 //lowest score to this tile because the enemy may sacrifice it to save the higher value piece
-                targetScore = (bestTarget / 10) * 9;
+                targetScore = (bestTarget / 10) * 8;
             }
         } else {
             //add 10% of the target's score if there is only one of them
@@ -773,7 +770,7 @@ function getProtectingAllies(pieceData, moveTileData, allies, isBlocking) {
             however, if the piece is in the way of the enemy attacking the king, then the protect is valid*/
         if (isBlocking || ally.piece !== 'king') {
             //checking if the allied piece is safe at its current tile without the piece
-            let tileEval = evaluateTileWithoutPiece(ally, ally, pieceElement);
+            let tileEval = evaluateTileWithoutPiece(ally, ally, pieceData);
             let battleBefore = simulateBattle(ally, tileEval);
             //then evaluating the current tile with the piece there
             tileEval = evaluateTileWithMove(ally, ally, pieceElement, tileElement);

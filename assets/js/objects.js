@@ -568,17 +568,21 @@ const chessPiece = {
      * @param {object} pieceData The data object {x, y, piece, color} of the piece to be moved
      * @param {integer} tileX The x coordinate of the tile the piece will move to
      * @param {integer} tileY The y coordinate of the tile the piece will move to
+     * @returns {integer} The amount of pieces that have been affected by this move
      */
     simulateMove: (pieceData, tileX, tileY) => {
+        let totalChanges = 1;
         chessPiece.alter(pieceData);
         let moveTileData = chessPiece.findData(tileX, tileY);
 
         if (moveTileData.piece !== '') {
             chessPiece.hide(moveTileData);
+            totalChanges++;
         }
         let pieceElement = chessPiece.findElement(pieceData.x, pieceData.y);
         let moveTileElement = tile.getElement(tileX, tileY);
         moveTileElement.appendChild(pieceElement);
+        return totalChanges;
     },
 
     /**
