@@ -132,19 +132,6 @@ function getTileScore(pieceData, moveTileData) {
         //for every other move
         tileEval = evaluateTile(moveTileData, pieceData);
     }
-    //adding the total number of moves the piece could make on this tile multiplied by 1% of it's value to the score
-    if (difficultyAllows(aiDifficulty.addSpaces)) {
-        moveScore += tileEval.availableSpaces * (chessPiece.value[pieceData.piece] / 100);
-    }
-    //adding the total number of spaces the king can safely move to x30 to the score
-    if (difficultyAllows(aiDifficulty.protectKing)) {
-        moveScore += getKingSafeTiles(pieceData.color, pieceData, moveTileData) * 30;
-    }
-    //the less tiles the enemy king has to move to, the higher the score
-    if (difficultyAllows(aiDifficulty.surroundKing)) {
-        let enemyColor = (pieceData.color === 'white') ? 'black' : 'white';
-        moveScore += (8 - getKingSafeTiles(enemyColor, pieceData, moveTileData)) * 30;
-    }
     //calculates the risk of the piece getting eliminated if it moves to this tile
     let battleScore = 0;
     let tileBattle = simulateBattle(pieceData, tileEval);
@@ -161,9 +148,24 @@ function getTileScore(pieceData, moveTileData) {
             color: pieceData.color
         };
         moveScore -= chessPiece.getValue(newPieceData);
-    } else if (difficultyAllows(aiDifficulty.considerTargets)) {
+    } else {
         //taking targets into consideration if the move is low risk
-        moveScore += evaluateTargets(pieceData, tileEval, tileBattle.battleScore);
+        if (difficultyAllows(aiDifficulty.considerTargets)) {
+            moveScore += evaluateTargets(pieceData, tileEval, tileBattle.battleScore);
+        }
+        //adding the total number of spaces the king can safely move to x30 to the score
+        if (difficultyAllows(aiDifficulty.protectKing)) {
+            moveScore += getKingSafeTiles(pieceData.color, pieceData, moveTileData) * 30;
+        }
+        //the less tiles the enemy king has to move to, the higher the score
+        if (difficultyAllows(aiDifficulty.surroundKing)) {
+            let enemyColor = (pieceData.color === 'white') ? 'black' : 'white';
+            moveScore += (8 - getKingSafeTiles(enemyColor, pieceData, moveTileData)) * 30;
+        }
+        //adding the total number of moves the piece could make on this tile multiplied by 1% of it's value to the score
+        if (difficultyAllows(aiDifficulty.addSpaces)) {
+            moveScore += tileEval.availableSpaces * (chessPiece.value[pieceData.piece] / 100);
+        }
     }
     //adding all the values of allies this tile will protect to the total score
     if (difficultyAllows(aiDifficulty.protectAllies)) {
