@@ -601,17 +601,41 @@ const chessPiece = {
         let pieceId = 'altered-0';
 
         while (sessionStorage.getItem(pieceId) != null) {
-            let pieceLocation = sessionStorage.getItem(pieceId);
-            let pieceX = parseInt(pieceLocation[0]);
-            let pieceY = parseInt(pieceLocation[2]);
-            let hiddenPiece = document.getElementById(pieceId);
-            let originalTile = tile.getElement(pieceX, pieceY);
-            originalTile.appendChild(hiddenPiece);
-            hiddenPiece.removeAttribute('id');
-            sessionStorage.removeItem(pieceId);
+            chessPiece.returnAtIndex(idIndex);
             idIndex++;
             pieceId = `altered-${idIndex}`;
         }
+    },
+
+    /**
+     * Returns the piece that has most recently simulated a move back to
+     * it's original position
+     */
+    returnLast: () => {
+        if (sessionStorage.getItem('altered-0') != null) {
+            let idIndex = 0;
+            while (sessionStorage.getItem(`altered-${idIndex + 1}`) != null) {
+                idIndex++;
+            }
+            chessPiece.returnAtIndex(idIndex);
+        }
+    },
+
+    /**
+     * Returns a piece with a specific ID back to it's original position.
+     * Can break the simulation if used on it's own. Use returnLast or returnAll instead
+     * @param {integer} idIndex The index ID of the piece to return
+     */
+    returnAtIndex: (idIndex) => {
+        let pieceId = `altered-${idIndex}`
+        let pieceLocation = sessionStorage.getItem(pieceId);
+        let pieceX = parseInt(pieceLocation[0]);
+        let pieceY = parseInt(pieceLocation[2]);
+        let alteredPiece = document.getElementById(pieceId);
+        let originalTile = tile.getElement(pieceX, pieceY);
+        originalTile.appendChild(alteredPiece);
+        alteredPiece.removeAttribute('id');
+        sessionStorage.removeItem(pieceId);
     },
 
     /**

@@ -240,6 +240,7 @@ function setPlayerNames() {
 function tileClick(x, y) {
     let clickedTile = tile.getElement(x, y);
     let clickedClass = clickedTile.className;
+
     //if the tile is enabled to be clicked on by the player
     if (clickedClass.includes('clickable')) {
         //checking if the tile that's been clicked on is a possible move
