@@ -21,6 +21,7 @@ const aiDifficulty = {
 function makeMove(color) {
     //removing the timeout reference for making this move
     pieceMovement.moveWait = null;
+    let startTime = Date.now();
 
     //getting all the pieces on the board that belong to the ai
     let pieces = chessPiece.getAll(color);
@@ -40,6 +41,8 @@ function makeMove(color) {
     let movingElement = chessPiece.findElement(movePiece.x, movePiece.y);
 
     chessPiece.move(movingElement, finalTile);
+    console.clear();
+    console.log(`Time taken to calculate best move: ${(Date.now() - startTime)}ms`);
 }
 
 /**
@@ -691,10 +694,7 @@ function simulateBattle(pieceData, tileEval) {
 function evaluateTargets(pieceData, tileEval, battleScore) {
     let targetScore = 0;
     if (tileEval.enemyTarget.length > 0) {
-        //checking which target tiles are safe to attack
         let safeTargets = [];
-        //the total value of all targets at this tile. 10% of this will be added to the tile
-        //score if there is no more than 1 target the piece can safely attack
         let totalValue = 0;
 
         //checks if moving to the tile will result in a net gain for the ai
@@ -702,7 +702,7 @@ function evaluateTargets(pieceData, tileEval, battleScore) {
             let targetValue = chessPiece.getValue(target);
             //if the target is a king, its value will depend on how many spaces it can move to. the fewer the spaces, the higher the score
             //this should reduce the chance of the ai trying to get checks that can easily be avoided
-            if (targetValue.piece === 'king') {
+            if (target.piece === 'king') {
                 let enemyColor = (pieceData.color === 'white') ? 'black' : 'white';
                 let tileToData = chessPiece.findData(tileEval.x, tileEval.y);
                 if (getKingSafeTiles(enemyColor, pieceData, tileToData) === 0) {
