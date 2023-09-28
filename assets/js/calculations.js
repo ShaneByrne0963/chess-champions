@@ -19,6 +19,7 @@ const aiDifficulty = {
  * @param {string} color The color of the AI making the move
  */
 function makeMove(color) {
+    console.clear();
     //removing the timeout reference for making this move
     pieceMovement.moveWait = null;
     let startTime = Date.now();
@@ -41,7 +42,6 @@ function makeMove(color) {
     let movingElement = chessPiece.findElement(movePiece.x, movePiece.y);
 
     chessPiece.move(movingElement, finalTile);
-    console.clear();
     console.log(`Time taken to calculate best move: ${(Date.now() - startTime)}ms`);
 }
 
@@ -170,7 +170,7 @@ function getTileScore(pieceData, moveTileData) {
     //adding all the values of allies this tile will protect to the total score
     if (difficultyAllows(aiDifficulty.protectAllies)) {
         if (tileEval.allyGuarding.length > 0) {
-            moveScore += getProtectingAllies(pieceData, moveTileData, tileEval.allyGuarding, false);
+            moveScore += getProtectingAllies(pieceData, moveTileData, tileEval.allyGuarding, false, false);
         }
     }
     if (difficultyAllows(aiDifficulty.blockAttacks)) {
@@ -178,7 +178,7 @@ function getTileScore(pieceData, moveTileData) {
             only do this if there are ally pieces that can attack this tile, in order to prevent pieces
             from moving into positions where the enemy can just attack and leave the ally piece vulnerable again*/
         if (tileEval.allyProtect.length > 0 && tileEval.allyGuarded.length > 0) {
-            moveScore += getProtectingAllies(pieceData, moveTileData, tileEval.allyProtect, true);
+            moveScore += getProtectingAllies(pieceData, moveTileData, tileEval.allyProtect, true, false);
         }
     }
     return moveScore;
@@ -199,11 +199,12 @@ function getMoveOnlyScore(pieceData, moveTileData) {
 
             //if the enemy at this tile could have attacked another piece, increase the score at this tile
             if (difficultyAllows(aiDifficulty.protectAllies)) {
-                let enemyEval = evaluateTile(pieceData, moveTileData);
-                /*checking how good this tile was for the enemy, and adding that score to this tile
-                    - the battleScore is set to a very high value because it is usually compared to see if it is smaller than the target score
-                    - but in this case it is irrelevant so we set it to a very high number for it to be ignored */
-                moveScore += evaluateTargets(pieceData, enemyEval, 100000);
+                let pieceElement = chessPiece.findElement(pieceData.x, pieceData.y);
+                let moveTileElement = tile.getElement(moveTileData.x, moveTileData.y);
+                let enemyPiece = chessPiece.findData(moveTileData.x, moveTileData.y);
+                let enemyEval = evaluateTileWithMove(enemyPiece, moveTileData, pieceElement, moveTileElement);
+
+                moveScore += getProtectingAllies(pieceData, moveTileData, enemyEval.enemyTarget, true, true);
             }
         }
         //adding the score of any eliminated pawn from an en passant move
@@ -335,7 +336,7 @@ function evaluateTileWithMove(tileData, evaluatingPiece, pieceFromElement, tileT
  * @returns {object} {x, y, availableSpaces, enemyTarget, enemyThreat, allyGuarded, allyGuarding, allyProtect}
  */
 function evaluateTileWithoutPiece(tileData, evaluatingPiece, pieceGone) {
-    chessPiece.hide(pieceGone)
+    chessPiece.hide(pieceGone);
     let tileEvaluation = evaluateTile(tileData, evaluatingPiece);
     chessPiece.returnLast();
     return tileEvaluation;
@@ -399,7 +400,7 @@ function evaluateTileVector(tileData, evaluatingPiece, move) {
     };
     //if neither of the vectors are 0 then the piece is moving diagonally
     let isDiagonal = (Math.abs(move[1]) === Math.abs(move[2]));
-    
+
     let foundPiece = getPieceFromVector(tileData, evaluatingPiece, move);
     if (foundPiece[0] !== null) {
         //if there is only one tile between the pieces, then they are beside each other
@@ -532,7 +533,7 @@ function getPieceRelationship(tileData, evaluatingPiece, foundPiece, move, isBes
                     tileEval.allyProtect = foundPiece;
                     isBlocking = true;
                 }
-            } 
+            }
         }
         if (!isBlocking) {
             //if the current piece can attack the friendly piece tile if an enemy moves to it
@@ -748,21 +749,16 @@ function evaluateTargets(pieceData, tileEval, battleScore) {
     return targetScore;
 }
 
-function evaluateAlliesSaved(pieceData, attackingPieceData) {
-    let targetScore = 0;
-
-    return targetScore;
-}
-
 /**
  * Gets the score of a tile based on how many pieces the moving piece can protect
  * @param {object} pieceData The data object {x, y, piece, color} of the piece looking to move
  * @param {object} moveTileData The data object {x, y, piece, color} of the tile the piece will move to
  * @param {object} allies A list of all the allied pieces the piece can protect
  * @param {boolean} isBlocking Wether the piece is protecting the ally by blocking an enemy move
+ * @param {boolean} isHighestValue If true, only returns the highest value piece being protected. If false, returns all values
  * @returns {integer} The total values of all pieces that will rely on this piece moving here
  */
-function getProtectingAllies(pieceData, moveTileData, allies, isBlocking) {
+function getProtectingAllies(pieceData, moveTileData, allies, isBlocking, isHighestValue) {
     let totalScore = 0;
     //getting the element of the piece and the tile it is moving to to simulate the move in the evaluation
     let pieceElement = chessPiece.findElement(pieceData.x, pieceData.y);
@@ -778,10 +774,19 @@ function getProtectingAllies(pieceData, moveTileData, allies, isBlocking) {
             tileEval = evaluateTileWithMove(ally, ally, pieceElement, tileElement);
             let battleAfter = simulateBattle(ally, tileEval);
             if ((battleBefore.battleScore < 0 && battleAfter.battleScore >= 0) || (isBlocking && ally.piece === 'king')) {
-                //adding the value of the ally to the total score
-                totalScore += chessPiece.getValue(ally);
+                let allyValue = chessPiece.getValue(ally);
+                if (isHighestValue) {
+                    if (allyValue > totalScore) {
+                        totalScore = allyValue;
+                    }
+                } else {
+                    totalScore += allyValue;
+                }
             }
         }
+    }
+    if (isHighestValue) {
+        console.log(totalScore);
     }
     return totalScore;
 }
