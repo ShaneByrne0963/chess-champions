@@ -1,4 +1,4 @@
-/*score evaluation ranges that will affect the ai based on the difficulty
+/*score evaluation ranges that will affect the ai based on the difficulty:
     - if the difficulty is below the value of the first element, then this part of the evaluation will not happen
     - if the difficulty is above the value of the second element, then it will happen 100% of the time
     - if the difficulty is in between these values, then it will have a chance to happen*/
@@ -27,12 +27,17 @@ function makeMove(color) {
     //getting all the pieces on the board that belong to the ai
     let pieces = chessPiece.getAll(color);
     //before checking all the moves, the scores of all the pieces in their current positions will be calculated and stored
-    let currentScores = [];
+    let currentBoardInfo = {
+        scores: [],
+        allyKingSpaces: -1,
+        enemyKingSpaces: -1
+    }
     for (let pieceData of pieces) {
-        currentScores.push(getTileScore(pieceData, pieceData));
+        let scoreResults = getTileScore(pieceData, pieceData);
+        currentBoardInfo.scores.push(scoreResults.score);
     }
     //getting a list of all the moves that have the highest score
-    let highestScorePieces = getBestMoves(pieces, currentScores);
+    let highestScorePieces = getBestMoves(pieces, currentBoardInfo);
 
     //picking a piece at random out of the array that has a move that matches the high score
     let movePiece = highestScorePieces[Math.floor(Math.random() * highestScorePieces.length)];
@@ -48,10 +53,10 @@ function makeMove(color) {
 /**
  * Returns a list of the best moves the ai can take on the board
  * @param {object} pieceDataList An array of data objects {x, y, piece, color} of all the pieces the AI has
- * @param {object} pieceCurrentScores An array of the scores all the pieces have at their current tiles
+ * @param {object} currentBoardInfo An object containing the information of the board's current arrangement
  * @returns {object} An array of data objects {x, y, piece, color, highestMoves[]} of all the pieces that have the best moves
  */
-function getBestMoves(pieceDataList, pieceCurrentScores) {
+function getBestMoves(pieceDataList, currentBoardInfo) {
     //all tiles will be given an individual score based on a number of parameters. the tile with the highest score will be chosen
     let highestScore = 0;
     //highestScore will be set to the first checked tile. after that any tile will have to beat the score to be set
@@ -77,11 +82,12 @@ function getBestMoves(pieceDataList, pieceCurrentScores) {
                 }
             }
             //calculates the score of the tile based on several parameters
-            let moveScore = getTileScore(currentPiece, moveData);
+            let moveResults = getTileScore(currentPiece, moveData);
+            let moveScore = moveResults.score;
             //adding the extra parameters to the total score
-            moveScore += getMoveOnlyScore(currentPiece, moveData);
+            moveScore += getMoveOnlyScore(currentPiece, moveData, currentBoardInfo, moveResults);
             //finally, subtracting the current score from the new score
-            moveScore -= pieceCurrentScores[i];
+            moveScore -= currentBoardInfo.scores[i];
 
             //removing the 'passant' class and returning the piece element to the way it was
             if (pieceElement !== null) {
@@ -120,7 +126,7 @@ function getBestMoves(pieceDataList, pieceCurrentScores) {
  * Gets how good a particular move would be using a score system
  * @param {object} pieceData The data object {x, y, piece, color} of the piece that will make the move
  * @param {object} moveTileData The data object {x, y, piece, color} of the tile the piece will move to
- * @returns {integer} The total score of the move
+ * @returns {object} {score: The final Score of the move, isSafe: If the piece is not in danger at this tile}
  */
 function getTileScore(pieceData, moveTileData) {
     let moveScore = 0;
@@ -181,7 +187,10 @@ function getTileScore(pieceData, moveTileData) {
             moveScore += getProtectingAllies(pieceData, moveTileData, tileEval.allyProtect, true, false);
         }
     }
-    return moveScore;
+    return {
+        score: moveScore,
+        isSafe: (battleScore >= 0)
+    };
 }
 
 /**
