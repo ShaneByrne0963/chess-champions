@@ -76,6 +76,25 @@ const tile = {
     },
 
     /**
+     * Gets the piece information at a given tile
+     * @param {integer} x The x coordinate of the tile
+     * @param {integer} y The y coordinate of the tile
+     * @returns {object} The type and color of the piece at this tile
+     */
+    getInfo: (x, y) => {
+        let tileInfo = {
+            piece: '',
+            color: ''
+        };
+        let pieceElement = chessPiece.findElement(x, y);
+        if (pieceElement !== null) {
+            tileInfo.piece = chessPiece.getType(pieceElement);
+            tileInfo.color = chessPiece.getColor(pieceElement);
+        }
+        return tileInfo;
+    },
+
+    /**
      * Finds the tile data of the king with the specified color
      * @param {string} color The color of the king
      * @returns {object} The tile data object {x, y, piece, color} of the king

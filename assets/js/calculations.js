@@ -73,12 +73,8 @@ function createBoardInfo() {
         // Creates a new row
         boardInfo.tiles.push([])
         for (let j = 0; j < boardSize; j++) {
-            let foundPiece = chessPiece.findData(i, j);
-            if (foundPiece.piece !== "") {
-                boardInfo.tiles[i].push(foundPiece);
-            } else {
-                boardInfo.tiles[i].push(null);
-            }
+            let foundPiece = tile.getInfo(i, j);
+            boardInfo.tiles[i].push(foundPiece);
         }
     }
     return boardInfo;
