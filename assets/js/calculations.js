@@ -62,6 +62,29 @@ function makeMove(color) {
 }
 
 /**
+ * Creates an object containing the information about the current arrangement of the board
+ * @returns {object} The board object
+ */
+function createBoardInfo() {
+    let boardInfo = {
+        tiles: []
+    }
+    for (let i = 0; i < boardSize; i++) {
+        // Creates a new row
+        boardInfo.tiles.push([])
+        for (let j = 0; j < boardSize; j++) {
+            let foundPiece = chessPiece.findData(i, j);
+            if (foundPiece.piece !== "") {
+                boardInfo.tiles[i].push(foundPiece);
+            } else {
+                boardInfo.tiles[i].push(null);
+            }
+        }
+    }
+    return boardInfo;
+}
+
+/**
  * Returns a list of the best moves the ai can take on the board
  * @param {object} pieceDataList An array of data objects {x, y, piece, color} of all the pieces the AI has
  * @param {object} currentBoardInfo An object containing the information of the board's current arrangement
