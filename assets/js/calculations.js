@@ -45,9 +45,10 @@ function makeMove(color) {
         let enemyColor = color === 'white' ? 'black' : 'white';
         currentBoardInfo.enemyKingSpaces = getKingSafeTiles(enemyColor, pieces[0], pieces[0]);
     }
-    
+
     //getting a list of all the moves that have the highest score
-    let highestScorePieces = getBestMoves(pieces, currentBoardInfo);
+    let bestMoves = getBestMoves(pieces, currentBoardInfo);
+    let highestScorePieces = bestMoves.moves;
 
     //picking a piece at random out of the array that has a move that matches the high score
     let movePiece = highestScorePieces[Math.floor(Math.random() * highestScorePieces.length)];
@@ -129,7 +130,10 @@ function getBestMoves(pieceDataList, currentBoardInfo) {
             }
         }
     }
-    return highestScorePieces;
+    return {
+        moves: highestScorePieces,
+        score: highestScore
+    };
 }
 
 /**
@@ -215,8 +219,9 @@ function getMoveOnlyScore(pieceData, moveTileData, currentBoardInfo, moveResults
                 let moveTileElement = tile.getElement(moveTileData.x, moveTileData.y);
                 let enemyPiece = chessPiece.findData(moveTileData.x, moveTileData.y);
                 let enemyEval = evaluateTileWithMove(enemyPiece, moveTileData, pieceElement, moveTileElement);
-
-                moveScore += getProtectingAllies(pieceData, moveTileData, enemyEval.enemyTarget, true, true);
+                if (enemyEval.enemyTarget.length > 0) {
+                    moveScore += getProtectingAllies(pieceData, moveTileData, enemyEval.enemyTarget, true, true);
+                }
             }
         }
         //adding the score of any eliminated pawn from an en passant move
@@ -810,9 +815,6 @@ function getProtectingAllies(pieceData, moveTileData, allies, isBlocking, isHigh
                 }
             }
         }
-    }
-    if (isHighestValue) {
-        console.log(totalScore);
     }
     return totalScore;
 }
