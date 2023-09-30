@@ -36,6 +36,16 @@ function makeMove(color) {
         let scoreResults = getTileScore(pieceData, pieceData);
         currentBoardInfo.scores.push(scoreResults.score);
     }
+
+    // Getting the amount of spaces both kings can move to
+    if (difficultyAllows(aiDifficulty.protectKing)) {
+        currentBoardInfo.allyKingSpaces = getKingSafeTiles(color, pieces[0], pieces[0]);
+    }
+    if (difficultyAllows(aiDifficulty.surroundKing)) {
+        let enemyColor = color === 'white' ? 'black' : 'white';
+        currentBoardInfo.enemyKingSpaces = getKingSafeTiles(enemyColor, pieces[0], pieces[0]);
+    }
+    
     //getting a list of all the moves that have the highest score
     let highestScorePieces = getBestMoves(pieces, currentBoardInfo);
 
@@ -159,15 +169,6 @@ function getTileScore(pieceData, moveTileData) {
         if (difficultyAllows(aiDifficulty.considerTargets)) {
             moveScore += evaluateTargets(pieceData, tileEval, tileBattle.battleScore);
         }
-        //adding the total number of spaces the king can safely move to x30 to the score
-        if (difficultyAllows(aiDifficulty.protectKing)) {
-            moveScore += getKingSafeTiles(pieceData.color, pieceData, moveTileData) * 30;
-        }
-        //the less tiles the enemy king has to move to, the higher the score
-        if (difficultyAllows(aiDifficulty.surroundKing)) {
-            let enemyColor = (pieceData.color === 'white') ? 'black' : 'white';
-            moveScore += (8 - getKingSafeTiles(enemyColor, pieceData, moveTileData)) * 30;
-        }
         //adding the total number of moves the piece could make on this tile multiplied by 1% of it's value to the score
         if (difficultyAllows(aiDifficulty.addSpaces)) {
             moveScore += tileEval.availableSpaces * (chessPiece.value[pieceData.piece] / 100);
@@ -197,9 +198,11 @@ function getTileScore(pieceData, moveTileData) {
  * Adds or subtracts to the total tile score using parameters only related to a piece moving
  * @param {object} pieceData The data object {x, y, piece, value} of the piece that will move
  * @param {object} moveTileData The data object {x, y, piece, value} of the tile the piece will move to
+ * @param {object} currentBoardInfo An object containing the information of the board's current arrangement
+ * @param {object} moveResults The results of the score evaluation this function will add to
  * @returns {integer} The extra score of the tile
  */
-function getMoveOnlyScore(pieceData, moveTileData) {
+function getMoveOnlyScore(pieceData, moveTileData, currentBoardInfo, moveResults) {
     let moveScore = 0;
     //if there is an enemy piece already on the tile, then add that piece's value to the score
     if (difficultyAllows(aiDifficulty.attackPiece)) {
@@ -228,10 +231,24 @@ function getMoveOnlyScore(pieceData, moveTileData) {
             }
         }
     }
-    //add extra points for pawns to encourage movement
+    // Add extra points for pawns to encourage movement
     if (difficultyAllows(aiDifficulty.addSpaces)) {
         if (pieceData.piece === 'pawn') {
             moveScore += findPawnScore(pieceData, moveTileData);
+        }
+    }
+    // Taking how many spaces both kings can move to if the piece is safe
+    if (moveResults.isSafe) {
+        //adding the total number of spaces the king can safely move to x30 to the score
+        if (currentBoardInfo.allyKingSpaces >= 0) {
+            let currentKingSpaces = getKingSafeTiles(pieceData.color, pieceData, moveTileData);
+            moveScore += (currentKingSpaces - currentBoardInfo.allyKingSpaces) * 30;
+        }
+        //the less tiles the enemy king has to move to, the higher the score
+        if (currentBoardInfo.enemyKingSpaces >= 0) {
+            let enemyColor = (pieceData.color === 'white') ? 'black' : 'white';
+            let currentKingSpaces = getKingSafeTiles(enemyColor, pieceData, moveTileData);
+            moveScore += (currentBoardInfo.enemyKingSpaces - currentKingSpaces) * 30;
         }
     }
     return moveScore;
