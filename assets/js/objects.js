@@ -54,13 +54,13 @@ const board = {
     /**
      * Moves a piece from one position to another
      * @param {Object} boardInfo The board the moving piece is stored in
-     * @param {Array} posFrom The starting coordinate of the piece
-     * @param {Array} posTo The ending coordinate of the piece
+     * @param {Object} posFrom {x, y} The starting coordinate of the piece
+     * @param {Object} posTo {x, y} The end coordinate of the piece
      */
     movePiece: (boardInfo, posFrom, posTo) => {
-        let foundPiece = board.getTile(boardInfo, posFrom[0], posFrom[1]);
-        board.deletePiece(boardInfo, posFrom[0], posFrom[1]);
-        board.setTile(boardInfo, posTo[0], posTo[1], foundPiece);
+        let foundPiece = board.getTile(boardInfo, posFrom.x, posFrom.y);
+        board.deletePiece(boardInfo, posFrom.x, posFrom.y);
+        board.setTile(boardInfo, posTo.x, posTo.y, foundPiece);
     },
     
     /**
@@ -72,6 +72,28 @@ const board = {
     deletePiece: (boardInfo, x, y) => {
         let emptyTile = tile.getEmpty();
         board.setTile(boardInfo, x, y, emptyTile);
+    },
+
+    /**
+     * Finds all pieces of a specific color on a board
+     * @param {Object} boardInfo The board to get the pieces from
+     * @param {String} color The color of the pieces to get
+     * @returns {Array} A list of coordinate objects {x, y}
+     */
+    findPieces: (boardInfo, color) => {
+        let coordinates = [];
+        for (let i = 0; i < boardSize; i++) {
+            for (let j = 0; j < boardSize; j++) {
+                let foundPiece = board.getTile(boardInfo, i, j);
+                if (foundPiece.color === color) {
+                    coordinates.push({
+                        x: i,
+                        y: j
+                    });
+                }
+            }
+        }
+        return coordinates;
     }
 }
 
