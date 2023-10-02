@@ -366,6 +366,7 @@ function setPlayerTurn(playerPlace) {
  * Switches to the next turn
  */
 function nextTurn() {
+    removeCheckIcons();
     //getting the information of the current player before moving on to the next turn
     let playerTurn = getPlayerTurn();
     let lastPlayerName = playerTurn.name;
@@ -376,7 +377,6 @@ function nextTurn() {
     //updating the playerTurn info to the new player
     playerTurn = getPlayerTurn();
     let checkmate = isCheckmate(playerTurn.color);
-
     
     //alerting the player if there is a check this round
     if (isCheck(playerTurn.color)) {
@@ -390,6 +390,8 @@ function nextTurn() {
             setTimeout(removeBanner, checkmateBannerTime);
         } else {
             addAnnouncement("Check");
+            // Adding an exclamation mark for the king in check
+            addCheckIcon(playerTurn.color);
         }
     } else {
         //checking if the player is in stalemate, i.e. has no legal moves but is not in check
@@ -576,6 +578,27 @@ function selectPromotion(piece) {
 function isCheck(color) {
     let kingData = tile.findKing(color);
     return pieceMovement.isKingThreatened(kingData, kingData);
+}
+
+/**
+ * Adds a danger icon to a specified king
+ * @param {string} color The color of the king to add the icon to
+ */
+function addCheckIcon(color) {
+    let king = document.getElementsByClassName(`king ${color}`)[0];
+    let dangerIcon = document.createElement('i');
+    dangerIcon.className = "fa-solid fa-circle-exclamation";
+    king.appendChild(dangerIcon);
+}
+
+/**
+ * Removes all check icons from the board
+ */
+function removeCheckIcons() {
+    let icons = document.getElementsByClassName("fa-solid fa-circle-exclamation");
+    for (let icon of icons) {
+        icon.remove();
+    }
 }
 
 /**
