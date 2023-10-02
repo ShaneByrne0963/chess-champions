@@ -1,3 +1,80 @@
+// Object that stores the board data functions
+const board = {
+    /**
+     * Creates an object containing the information about the current arrangement of the board
+     * @returns {Object} The board object that has been created
+     */
+    create: () => {
+        let boardInfo = {
+            tiles: []
+        };
+        for (let i = 0; i < boardSize; i++) {
+            // Creates a new row
+            boardInfo.tiles.push([]);
+            for (let j = 0; j < boardSize; j++) {
+                let foundPiece = tile.getInfo(i, j);
+                boardInfo.tiles[i].push(foundPiece);
+            }
+        }
+        return boardInfo;
+    },
+
+    /**
+     * Creates a copy of a board
+     * @param {Object} board The board to be copied
+     * @returns {Object} The copied board
+     */
+    copy: (boardInfo) => {
+        return {...boardInfo};
+    },
+
+    /**
+     * Returns the information of a piece at a specified tile
+     * @param {Object} board The board object to get the information from
+     * @param {Integer} x The x coordinate of the tile
+     * @param {Integer} y The y coordinate of the tile
+     * @returns {Object} The information of the piece at this tile
+     */
+    getTile: (boardInfo, x, y) => {
+        let foundPiece = boardInfo.tiles[x][y];
+        return {...foundPiece};
+    },
+
+    /**
+     * Assigns a piece to a tile
+     * @param {Object} boardInfo The board where the piece will be set
+     * @param {Integer} x The x coordinate of the tile
+     * @param {Integer} y The y coordinate of the tile
+     * @param {Object} piece The piece to set the tile to
+     */
+    setTile: (boardInfo, x, y, piece) => {
+        boardInfo.tiles[x][y] = piece;
+    },
+
+    /**
+     * Moves a piece from one position to another
+     * @param {Object} boardInfo The board the moving piece is stored in
+     * @param {Array} posFrom The starting coordinate of the piece
+     * @param {Array} posTo The ending coordinate of the piece
+     */
+    movePiece: (boardInfo, posFrom, posTo) => {
+        let foundPiece = board.getTile(boardInfo, posFrom[0], posFrom[1]);
+        board.deletePiece(boardInfo, posFrom[0], posFrom[1]);
+        board.setTile(boardInfo, posTo[0], posTo[1], foundPiece);
+    },
+    
+    /**
+     * Removes a piece from the board
+     * @param {Object} boardInfo The board to delete the piece from
+     * @param {Integer} x The x coordinate of the piece
+     * @param {Integer} y The y coordinate of the piece
+     */
+    deletePiece: (boardInfo, x, y) => {
+        let emptyTile = tile.getEmpty();
+        board.setTile(boardInfo, x, y, emptyTile);
+    }
+}
+
 //object that stores tile functions
 const tile = {
     /**
@@ -76,16 +153,24 @@ const tile = {
     },
 
     /**
+     * Returns an object of a tile with no piece
+     * @returns {object} the empty tile
+     */
+    getEmpty: () => {
+        return {
+            piece: '',
+            color: ''
+        };
+    },
+
+    /**
      * Gets the piece information at a given tile
      * @param {integer} x The x coordinate of the tile
      * @param {integer} y The y coordinate of the tile
      * @returns {object} The type and color of the piece at this tile
      */
     getInfo: (x, y) => {
-        let tileInfo = {
-            piece: '',
-            color: ''
-        };
+        let tileInfo = tile.getEmpty();
         let pieceElement = chessPiece.findElement(x, y);
         if (pieceElement !== null) {
             tileInfo.piece = chessPiece.getType(pieceElement);
