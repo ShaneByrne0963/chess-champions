@@ -19,10 +19,8 @@ const aiDifficulty = {
  * @param {string} color The color of the AI making the move
  */
 function makeMove(color) {
-    console.clear();
     //removing the timeout reference for making this move
     pieceMovement.moveWait = null;
-    let startTime = Date.now();
 
     //getting all the pieces on the board that belong to the ai
     let pieces = chessPiece.getAll(color);
@@ -58,7 +56,6 @@ function makeMove(color) {
     let movingElement = chessPiece.findElement(movePiece.x, movePiece.y);
 
     chessPiece.move(movingElement, finalTile);
-    console.log(`Time taken to calculate best move: ${(Date.now() - startTime)}ms`);
 }
 
 /**
